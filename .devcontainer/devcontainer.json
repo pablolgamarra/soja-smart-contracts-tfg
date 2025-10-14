@@ -1,0 +1,17 @@
+{
+    "name": "Smart Contract Compra Venta Soja",
+    "dockerFile": "Dockerfile",
+    "customizations": {
+        "vscode": {
+                "extensions":[
+                "esbenp.prettier-vscode"
+            ],
+            "settings":{
+                "terminal.integrated.shell.linux": "/bin/bash"
+            }
+        }
+    },
+    "forwardPorts": [8543],
+    "postCreateCommand": "git config core.autocrlf input && npm install",
+    "remoteUser":"node"
+}
