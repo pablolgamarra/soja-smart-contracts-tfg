@@ -4,7 +4,17 @@
     "customizations": {
         "vscode": {
                 "extensions":[
-                "esbenp.prettier-vscode"
+                "esbenp.prettier-vscode",
+                "nomicfoundation.hardhat-solidity",
+                "wallabyjs.console-ninja", 
+                "visualstudioexptteam.vscodeintellicode", 
+                "visualstudioexptteam.vscodeintellicode", 
+                "maciejdems.add-to-gitignore", 
+                "dbaeumer.vscode-eslint", 
+                "ms-vscode.vscode-typescript-next", 
+                "github.copilot", 
+                "christian-kohler.path-intellisense", 
+                "visualstudioexptteam.intellicode-api-usage-examples"
             ],
             "settings":{
                 "terminal.integrated.shell.linux": "/bin/bash"
