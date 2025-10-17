@@ -8,17 +8,16 @@ import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 contract ContratoGranosSoja is ERC721, Ownable {
     // ENUMS
     enum TipoContrato {PrecioFijo, PrecioAFijar}
-    enum AccionIncumplimiento {Rechazo, Renogociacion, Descuento}
+    enum AccionIncumplimiento {Rechazo, Renegociacion, Descuento}
 
-   // ===== STRUCT PRINCIPAL =====
-    struct Contrato {
-        // A. Identificación de las partes
+    // ===== STRUCTS =====
+    struct IdentificadorPartes{
         address comprador;
         address vendedor;
         address intermediario;
-        string tipoProducto;
+    }
 
-        // B. Condiciones comerciales
+    struct CondicionesComerciales{
         string incoterm;
         string fleteACargoDe;
         string puntoControlCalidad;
@@ -28,23 +27,44 @@ contract ContratoGranosSoja is ERC721, Ownable {
         uint fechaEntrega;
         string lugarEntrega;
         string condicionesCalidad;
+    }
 
-        // C. Condiciones económicas
+    struct CondicionesEconomicas{
         string modalidadPago;
         uint montoTotal;
+    }
+
+    struct PenalizacionIncumplimiento{
+        AccionIncumplimiento accionIncumplimiento;
+        uint porcentajeDescuento;
+        address arbitro;
+    }
+    
+    struct EstadoContrato{
+        bool firmado;
+        bool entregado;
         bool pagado;
+        bool cerrado;
+    }
+
+   // ===== STRUCT PRINCIPAL =====
+    struct Contrato {
+        // A. Identificación de las partes
+        IdentificadorPartes identificadorPartes;
+
+        // B. Condiciones comerciales
+        string tipoProducto;
+        CondicionesComerciales condicionesComerciales;
+
+        // C. Condiciones económicas
+        CondicionesEconomicas condicionesEconomicas;
 
         // D. Cumplimiento y penalizaciones
-        uint penalizacion;
-        bool esPenalizacionPorcentaje;
-        AccionIncumplimiento accionIncumplimiento;
-        address arbitro;
+        PenalizacionIncumplimiento penalizacionIncumplimiento;
         string hashVersionContrato;
 
         // E. Estado
-        bool firmado;
-        bool entregado;
-        bool cerrado;
+        EstadoContrato estadoContrato;
     }
 
     // ===== VARIABLES =====
@@ -69,85 +89,98 @@ contract ContratoGranosSoja is ERC721, Ownable {
 
     /// @notice Crea un nuevo contrato NFT por parte del comprador
     function crearContrato(
-        address _vendedor,
-        address _intermediario,
+        IdentificadorPartes memory _identificadorPartes,
         // string memory _tipoProducto,
-        string memory _incoterm,
-        string memory _fleteACargoDe,
-        string memory _puntoControlCalidad,
-        uint _cantidadToneladas,
-        uint _precioPorTonelada,
-        TipoContrato _tipoContrato,
-        uint _fechaEntrega,
-        string memory _lugarEntrega,
-        string memory _condicionesCalidad,
+        CondicionesComerciales memory _condicionesComerciales,
+        // string memory _incoterm,
+        // string memory _fleteACargoDe,
+        // string memory _puntoControlCalidad,
+        // uint _cantidadToneladas,
+        // uint _precioPorTonelada,
+        // TipoContrato _tipoContrato,
+        // uint _fechaEntrega,
+        // string memory _lugarEntrega,
+        // string memory _condicionesCalidad,
         string memory _modalidadPago,
-        uint _penalizacion,
-        bool _esPenalizacionPorcentaje,
+        AccionIncumplimiento _accionIncumplimiento,
+        uint _porcentajeDescuento,
         address _arbitro,
         string memory _hashVersionContrato
     ) external {
         contadorContratos++;
         uint id = contadorContratos;
 
-        uint montoTotal = _cantidadToneladas * _precioPorTonelada;
+        uint montoTotal = _condicionesComerciales.cantidadToneladas * _condicionesComerciales.precioPorTonelada;
 
         contratos[id] = Contrato({
-            comprador: msg.sender,
-            vendedor: _vendedor,
-            intermediario: _intermediario,
+            identificadorPartes: IdentificadorPartes({
+                comprador: msg.sender,
+                vendedor: _identificadorPartes.vendedor,
+                intermediario: _identificadorPartes.intermediario
+            }),
+
             tipoProducto: "soja",
-            incoterm: _incoterm,
-            fleteACargoDe: _fleteACargoDe,
-            puntoControlCalidad: _puntoControlCalidad,
-            cantidadToneladas: _cantidadToneladas,
-            precioPorTonelada: _precioPorTonelada,
-            tipoContrato: _tipoContrato,
-            fechaEntrega: _fechaEntrega,
-            lugarEntrega: _lugarEntrega,
-            condicionesCalidad: _condicionesCalidad,
-            modalidadPago: _modalidadPago,
-            montoTotal: montoTotal,
-            pagado: false,
-            penalizacion: _penalizacion,
-            esPenalizacionPorcentaje: _esPenalizacionPorcentaje,
-            accionIncumplimiento: AccionIncumplimiento.Rechazo,
-            arbitro: _arbitro,
+            
+            condicionesComerciales: CondicionesComerciales({
+                incoterm: _condicionesComerciales.incoterm,
+                fleteACargoDe: _condicionesComerciales.fleteACargoDe,
+                puntoControlCalidad: _condicionesComerciales.puntoControlCalidad,
+                cantidadToneladas: _condicionesComerciales.cantidadToneladas,
+                precioPorTonelada: _condicionesComerciales.precioPorTonelada,
+                tipoContrato: _condicionesComerciales.tipoContrato,
+                fechaEntrega: _condicionesComerciales.fechaEntrega,
+                lugarEntrega: _condicionesComerciales.lugarEntrega,
+                condicionesCalidad: _condicionesComerciales.condicionesCalidad
+            }),
+
+            condicionesEconomicas: CondicionesEconomicas({
+                modalidadPago: _modalidadPago,
+                montoTotal: montoTotal
+            }),
+
+            penalizacionIncumplimiento: PenalizacionIncumplimiento({
+                accionIncumplimiento: _accionIncumplimiento,
+                porcentajeDescuento: _porcentajeDescuento,
+                arbitro: _arbitro
+            }),
             hashVersionContrato: _hashVersionContrato,
-            firmado: false,
-            entregado: false,
-            cerrado: false
+            estadoContrato: EstadoContrato({
+                firmado: false,
+                entregado: false,
+                pagado: false,
+                cerrado: false
+            })
         });
 
         _mint(msg.sender, id);
-        emit ContratoCreado(id, msg.sender, _vendedor);
+        emit ContratoCreado(id, msg.sender, _identificadorPartes.vendedor);
     }
 
     /// @notice El vendedor firma el contrato para validarlo
     function firmarContrato(uint _idContrato) external {
         Contrato storage contratoStorage = contratos[_idContrato];
-        require(msg.sender == contratoStorage.vendedor, "Solo el vendedor puede firmar");
-        require(!contratoStorage.firmado, "Ya fue firmado");
-        contratoStorage.firmado = true;
+        require(msg.sender == contratoStorage.identificadorPartes.vendedor, "Solo el vendedor puede firmar");
+        require(!contratoStorage.estadoContrato.firmado, "Ya fue firmado");
+        contratoStorage.estadoContrato.firmado = true;
         emit ContratoFirmado(_idContrato, msg.sender);
     }
 
     /// @notice El vendedor confirma que entrego el producto
     function confirmarEntrega(uint _idContrato) external {
         Contrato storage contratoStorage = contratos[_idContrato];
-        require(msg.sender == contratoStorage.vendedor, "Solo el vendedor puede confirmar");
-        require(contratoStorage.firmado, "El contrato debe estar firmado");
-        contratoStorage.entregado = true;
+        require(msg.sender == contratoStorage.identificadorPartes.vendedor, "Solo el vendedor puede confirmar");
+        require(contratoStorage.estadoContrato.firmado, "El contrato debe estar firmado");
+        contratoStorage.estadoContrato.entregado = true;
         emit EntregaConfirmada(_idContrato, msg.sender);
     }
 
     /// @notice El comprador valida si la calidad cumple (simulado)
     function validarCalidad(uint _idContrato, bool _cumple) external {
         Contrato storage contratoStorage = contratos[_idContrato];
-        require(msg.sender == contratoStorage.comprador, "Solo el comprador valida");
-        require(contratoStorage.entregado, "No se confirmo entrega");
+        require(msg.sender == contratoStorage.identificadorPartes.comprador, "Solo el comprador valida");
+        require(contratoStorage.estadoContrato.entregado, "No se confirmo entrega");
         if (!_cumple) {
-            contratoStorage.accionIncumplimiento = AccionIncumplimiento.Descuento;
+            contratoStorage.penalizacionIncumplimiento.accionIncumplimiento = AccionIncumplimiento.Descuento;
         }
         emit CalidadValidada(_idContrato, _cumple);
     }
@@ -155,39 +188,37 @@ contract ContratoGranosSoja is ERC721, Ownable {
     /// @notice El comprador realiza el pago al vendedor
     function pagar(uint _idContrato) external payable {
         Contrato storage contratoStorage = contratos[_idContrato];
-        require(msg.sender == contratoStorage.comprador, "Solo el comprador puede pagar");
-        require(contratoStorage.entregado, "Entrega no confirmada");
-        require(!contratoStorage.pagado, "Ya fue pagado");
-        require(msg.value == contratoStorage.montoTotal, "Monto incorrecto");
+        require(msg.sender == contratoStorage.identificadorPartes.comprador, "Solo el comprador puede pagar");
+        require(contratoStorage.estadoContrato.entregado, "Entrega no confirmada");
+        require(!contratoStorage.estadoContrato.pagado, "Ya fue pagado");
+        require(msg.value == contratoStorage.condicionesEconomicas.montoTotal, "Monto incorrecto");
 
-        payable(contratoStorage.vendedor).transfer(msg.value);
-        contratoStorage.pagado = true;
+        payable(contratoStorage.identificadorPartes.vendedor).transfer(msg.value);
+        contratoStorage.estadoContrato.pagado = true;
         emit PagoEjecutado(_idContrato, msg.value);
     }
 
     /// @notice Aplica penalización si hay incumplimiento
     function aplicarPenalizacion(uint _idContrato, string memory _motivo) external {
         Contrato storage contratoStorage = contratos[_idContrato];
-        require(msg.sender == contratoStorage.comprador || msg.sender == contratoStorage.arbitro, "No autorizado");
-        require(!contratoStorage.cerrado, "Contrato cerrado");
-        require(contratoStorage.pagado, "Debe estar pagado");
+        require(msg.sender == contratoStorage.identificadorPartes.comprador || msg.sender == contratoStorage.penalizacionIncumplimiento.arbitro, "No autorizado");
+        require(!contratoStorage.estadoContrato.cerrado, "Contrato cerrado");
+        require(contratoStorage.estadoContrato.pagado, "Debe estar pagado");
 
-        uint penalizacionMonto = contratoStorage.penalizacion;
-        if (contratoStorage.esPenalizacionPorcentaje) {
-            penalizacionMonto = (contratoStorage.montoTotal * contratoStorage.penalizacion) / 100;
-        }
-
-        payable(contratoStorage.comprador).transfer(penalizacionMonto);
+        uint penalizacionMonto = contratoStorage.penalizacionIncumplimiento.porcentajeDescuento > 0 ?
+            (contratoStorage.condicionesEconomicas.montoTotal * contratoStorage.penalizacionIncumplimiento.porcentajeDescuento) / 100 : 0;
+        
+        payable(contratoStorage.identificadorPartes.comprador).transfer(penalizacionMonto);
         emit PenalizacionAplicada(_idContrato, penalizacionMonto, _motivo);
     }
 
     /// @notice Cierra definitivamente el contrato
     function cerrarContrato(uint _idContrato) external {
         Contrato storage contratoStorage = contratos[_idContrato];
-        require(msg.sender == contratoStorage.comprador || msg.sender == contratoStorage.arbitro, "No autorizado");
-        require(contratoStorage.pagado, "Debe estar pagado");
-        require(!contratoStorage.cerrado, "Ya fue cerrado");
-        contratoStorage.cerrado = true;
+        require(msg.sender == contratoStorage.identificadorPartes.comprador || msg.sender == contratoStorage.penalizacionIncumplimiento.arbitro, "No autorizado");
+        require(contratoStorage.estadoContrato.pagado, "Debe estar pagado");
+        require(!contratoStorage.estadoContrato.cerrado, "Ya fue cerrado");
+        contratoStorage.estadoContrato.cerrado = true;
         emit ContratoCerrado(_idContrato);
     }
 }
