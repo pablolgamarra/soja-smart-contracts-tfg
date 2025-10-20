@@ -2,17 +2,16 @@ import type { HardhatUserConfig } from "hardhat/config";
 
 import hardhatToolboxMochaEthersPlugin from "@nomicfoundation/hardhat-toolbox-mocha-ethers";
 import { configVariable } from "hardhat/config";
-import hardhatIgnitionEthersPlugin from "@nomicfoundation/hardhat-ignition-ethers";
 
 const config: HardhatUserConfig = {
-  plugins: [hardhatIgnitionEthersPlugin, hardhatToolboxMochaEthersPlugin],
+  plugins: [hardhatToolboxMochaEthersPlugin],
   solidity: {
     profiles: {
       default: {
         version: "0.8.30",
       },
       production: {
-          version: "0.8.30",
+        version: "0.8.30",
         settings: {
           optimizer: {
             enabled: true,
