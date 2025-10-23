@@ -1,7 +1,18 @@
 import {buildModule} from "@nomicfoundation/hardhat-ignition/modules";
+import ForwarderModule from "./Forwarder.js";
 
-export default buildModule("TokenContratoSoja",(m)=> {
-    const tokenContratoSoja = m.contract("ContratoGranosSoja");
+const ContratoGranosSojaModule = buildModule("ContratoGranosSoja",(m)=> {
+    const forwarder = m.useModule(ForwarderModule);
 
-    return {tokenContratoSoja};
+    const relayerAddress = m.getParameter("relayerAddress");
+
+    const contratoGranosSoja = m.contract("ContratoGranosSoja", [
+        forwarder,
+        relayerAddress
+    ]);
+
+    return {contratoGranosSoja};
 })
+
+
+export default ContratoGranosSojaModule;
