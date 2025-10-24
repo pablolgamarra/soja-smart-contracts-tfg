@@ -1,7 +1,7 @@
 import { buildModule } from "@nomicfoundation/hardhat-ignition/modules";
 
-const ForwarderModule = buildModule("Forwarder", (m) => {4
-    const minimalForwarder = m.contract("MinimalForwarder");
+const ForwarderModule = buildModule("ERC2771Forwarder", (m) => {4
+    const minimalForwarder = m.contract("ERC2771Forwarder");
 
     return {minimalForwarder};
 });

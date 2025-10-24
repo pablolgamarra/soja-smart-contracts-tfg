@@ -1,5 +1,5 @@
 import { expect } from "chai";
-import {network} from "hardhat";
+import { network } from "hardhat";
 
 describe("ContratoGranosSoja", function () {
     let forwarder: any;
@@ -10,16 +10,17 @@ describe("ContratoGranosSoja", function () {
     let arbitro: any;
 
     beforeEach(async function () {
-        const {ethers} = await network.connect();
+        const { ethers } = await network.connect("hardhatMainnet");
+        console.log(network);
 
         [ deployer, comprador, relayer, arbitro ] = await ethers.getSigners();
 
-        // 1️⃣ Deploy del MinimalForwarder
-        const Forwarder = await ethers.getContractFactory("MinimalForwarder");
-        forwarder = await Forwarder.deploy();
+        // 1️⃣ Deploy del ERC2771Forwarder (solo este contrato, no es necesario el MinimalForwarder)
+        const ERC2771Forwarder = await ethers.getContractFactory("ERC2771Forwarder");
+        forwarder = await ERC2771Forwarder.deploy("SoySmart Forwarder");
         await forwarder.waitForDeployment();
 
-        // 2️⃣ Deploy del ContratoGranosSoja
+        // 2️⃣ Deploy del ContratoGranosSoja, pasando los parámetros correctos
         const Contrato = await ethers.getContractFactory("ContratoGranosSoja");
         contrato = await Contrato.deploy(await forwarder.getAddress(), await relayer.getAddress());
         await contrato.waitForDeployment();

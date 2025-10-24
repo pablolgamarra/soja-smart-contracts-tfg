@@ -24,9 +24,15 @@ const config: HardhatUserConfig = {
   },
   networks: {
     hardhatMainnet: {
-      type: "edr-simulated",
-      chainType: "l1",
+        type: "http",
+        url: "http://127.0.0.1:8545",
+        accounts: "remote",
+        chainType: "l1",
     },
+    // hardhatMainnet: {
+    //   type: "edr-simulated",
+    //   chainType: "l1",
+    // },
     hardhatOp: {
       type: "edr-simulated",
       chainType: "op",
