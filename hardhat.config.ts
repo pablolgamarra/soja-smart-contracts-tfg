@@ -27,22 +27,22 @@ const config: HardhatUserConfig = {
         type: "http",
         url: "http://127.0.0.1:8545",
         accounts: "remote",
-        chainType: "l1",
+        chainType: "op",
     },
-    // hardhatMainnet: {
+    // // hardhatMainnet: {
+    // //   type: "edr-simulated",
+    // //   chainType: "l1",
+    // // },
+    // hardhatOp: {
     //   type: "edr-simulated",
-    //   chainType: "l1",
+    //   chainType: "op",
     // },
-    hardhatOp: {
-      type: "edr-simulated",
-      chainType: "op",
-    },
-    sepolia: {
-      type: "http",
-      chainType: "l1",
-      url: configVariable("SEPOLIA_RPC_URL"),
-      accounts: [configVariable("SEPOLIA_PRIVATE_KEY")],
-    },
+    // sepolia: {
+    //   type: "http",
+    //   chainType: "l1",
+    //   url: configVariable("SEPOLIA_RPC_URL"),
+    //   accounts: [configVariable("SEPOLIA_PRIVATE_KEY")],
+    // },
   },
 };
 
