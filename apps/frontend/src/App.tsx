@@ -1,62 +1,35 @@
-import { useState } from "react";
-import { ethers } from "ethers";
-import FormCrearContrato from "./components/ContratoForm";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Navigation from "./components/Navigation";
+import ListarContratos from "./components/ListarContratos";
+import FormContrato from "./components/ContratoForm";
 import FirmarContrato from "./components/FirmarContrato";
+import Login from "./components/Login";
+import { useState } from "react";
 
-function App() {
-    const [ address, setAddress ] = useState<string | null>(null);
-    const [ isConnected, setIsConnected ] = useState(false);
-
-    // Función para conectar MetaMask
-    const connectWallet = async () => {
-        if (window.ethereum) {
-            try {
-                // Solicita acceso a la cuenta de MetaMask
-                const provider = new ethers.BrowserProvider((window as any).ethereum);
-                await provider.send("eth_requestAccounts", []);
-                const signer = provider.getSigner();
-                const userAddress = (await signer).getAddress();
-                setAddress(await userAddress);
-                setIsConnected(true);
-            } catch (error) {
-                console.error("Error al conectar con MetaMask:", error);
-            }
-        } else {
-            alert("Por favor, instala MetaMask.");
-        }
-    };
-
+export default function App() {
+    const [ userAddress, setUserAddress ] = useState<string>("");
     return (
-        <div className="min-h-screen p-8 bg-gray-50 flex flex-col items-center gap-10">
-            <h1 className="text-4xl font-bold text-green-800">
-                🌾 DApp Smart Soy — Contratos Inteligentes de Compra y Venta
-            </h1>
+        <Router>
+            <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-10">
+                <h1 className="text-4xl font-bold mb-10 text-green-700">🌾 Smart Soy — Contratos Inteligentes para Compra y Venta de Granos</h1>
 
-            {/* Botón para conectar MetaMask */}
-            {!isConnected ? (
-                <button
-                    onClick={connectWallet}
-                    className="px-6 py-3 bg-blue-500 text-white font-bold rounded-lg"
-                >
-                    Conectar con MetaMask
-                </button>
-            ) : (
-                <div>
-                    <h2 className="text-xl font-semibold text-green-700">
-                        Bienvenido, {address}
-                    </h2>
-                </div>
-            )}
+                <Navigation />
 
-            {/* Mostrar componentes solo si MetaMask está conectado */}
-            {isConnected && (
-                <div className="flex gap-10 mt-8">
-                    <FormCrearContrato />
-                    <FirmarContrato />
+                <div className="w-full max-w-4xl mt-10">
+                    {userAddress ? (
+                        // Si el usuario está logueado, muestra los contratos
+                            <Routes>
+                                <Route path="/" element={<ListarContratos userAddress={userAddress}/>} />
+                                <Route path="/crear" element={<FormContrato />} />
+                                <Route path="/firmar" element={<FirmarContrato />} />
+                            </Routes>
+                    ) : (
+                        // Si no está logueado, muestra el formulario de login
+                        <Login setUserAddress={setUserAddress} />
+                    )}
                 </div>
-            )}
-        </div>
+
+            </div>
+        </Router>
     );
 }
-
-export default App;

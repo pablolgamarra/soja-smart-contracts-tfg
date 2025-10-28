@@ -2,39 +2,40 @@ import { useEffect, useState } from "react";
 import { useContrato } from "../hooks/useContrato";
 
 
-export default function ListarContratos({ userAddress }: { userAddress: string }) {
+export default function ListarContratos(props: {userAddress: string}) {
+    const {userAddress} = props;
+
     const [ contratos, setContratos ] = useState<any[]>([]);
     const [ loading, setLoading ] = useState(false);
-    const { contrato } = useContrato();
 
-    const obtenerContratos = async () => {
-        setLoading(true);
-        try {
-            if (!window.ethereum) throw new Error("Metamask no detectado");
-
-            if (!contrato) {
-                alert("Contrato no inicializado");
-                return;
-            }
-            // Obtener todos los contratos
-            const contratosData = await contrato.obtenerContratos();
-
-            // Filtrar contratos creados por el comprador (userAddress)
-            const contratosFiltrados = contratosData.filter((contrato: any) => contrato.identificadorPartes.comprador === userAddress);
-            setContratos(contratosFiltrados);
-        } catch (err: any) {
-            console.error(err);
-            alert("❌ Error al obtener contratos");
-        } finally {
-            setLoading(false);
-        }
-    };
+    const {contrato} = useContrato();
 
     useEffect(() => {
         if (userAddress) {
+            const obtenerContratos = async () => {
+                setLoading(true);
+                try {
+                    if (!contrato || contrato == null) {
+                        alert("Contrato no encontrado");
+                        throw new Error("Contrato no encontrado");
+                    }
+                    // Obtener todos los contratos
+                    const contratosData = await contrato.obtenerContratos();
+
+                    // Filtrar contratos creados por el comprador (userAddress)
+                    const contratosFiltrados = contratosData.filter((contrato: any) => contrato.identificadorPartes.comprador === userAddress);
+                    setContratos(contratosFiltrados);
+                } catch (err: any) {
+                    console.error(err);
+                    alert("❌ Error al obtener contratos");
+                } finally {
+                    setLoading(false);
+                }
+            };
+
             obtenerContratos();
         }
-    }, [ userAddress ]);
+    }, [ contrato, userAddress ]);
 
     return (
         <div className="p-6">
