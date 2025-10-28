@@ -1,16 +1,18 @@
-/* https://github.com/tsconfig/bases/blob/501da2bcd640cf95c95805783e1012b992338f28/bases/node22.json */
 {
   "compilerOptions": {
-    "types": ["node", "mocha", "hardhat"],
+    "types": ["node"],
     "lib": ["es2023"],
-    "module": "node16",
     "target": "es2022",
+    "module": "Node16",
+    "moduleResolution": "Node16",
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
-    "moduleResolution": "node16",
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
     "outDir": "dist",
-    "include": ["./src", "./scripts"],//only the "scripts" part.
-    "files": ["./hardhat.config.ts"]
-  }
+    "baseUrl": ".",
+    "ignoreDeprecations": true,
+  },
+  "exclude": ["node_modules", "dist", "build"]
 }

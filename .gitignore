@@ -1,51 +1,25 @@
-# Node modules
-/node_modules
+# Node
+node_modules/
+dist/
+build/
+.env
+.env.local
 
-# Compilation output
-/dist
+# TypeScript
+*.tsbuildinfo
 
-# pnpm deploy output
-/bundle
-
-# Hardhat Build Artifacts
-/artifacts
-
-# Hardhat compilation (v2) support directory
-/cache
-
-# Typechain output
-/types
-
-# Hardhat coverage reports
-/coverage
-
-# Package.json lock files
-/package-lock.json
-package-lock.json
-
-
-# ---------FRONT
 # Logs
-logs
-*.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-pnpm-debug.log*
-lerna-debug.log*
 
-node_modules
-dist
-dist-ssr
-*.local
+# IDEs
+.vscode/
+.idea/
 
-# Editor directories and files
-.vscode/*
-!.vscode/extensions.json
-.idea
+# OS
 .DS_Store
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-*.sw?
+
+# Hardhat
+artifacts/
+cache/

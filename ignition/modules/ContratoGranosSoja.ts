@@ -1,18 +1,21 @@
-import {buildModule} from "@nomicfoundation/hardhat-ignition/modules";
+import { buildModule } from "@nomicfoundation/hardhat-ignition/modules";
 import ForwarderModule from "./Forwarder.js";
 
-const ContratoGranosSojaModule = buildModule("ContratoGranosSoja",(m)=> {
-    const forwarder = m.useModule(ForwarderModule);
+// Aquí usamos `useModule` para obtener el forwarder desplegado
+const ContratoGranosSojaModule = buildModule("ContratoGranosSojaModule", (m) => {
+    // Esperamos a que el forwarder se haya desplegado correctamente
+    const { forwarder } = m.useModule(ForwarderModule);
 
+    // Parámetro de relayer que debe pasarse en el comando de despliegue
     const relayerAddress = m.getParameter("relayerAddress");
 
-    const contratoGranosSoja = m.contract("ContratoGranosSoja", [
-        forwarder,
-        relayerAddress
+    // Desplegamos el contrato, pasando la dirección del forwarder y del relayer
+    const contrato = m.contract("ContratoGranosSoja", [
+        forwarder,  // Aquí resolvemos el `forwarder` para obtener la dirección
+        relayerAddress,     // Dirección del relayer
     ]);
 
-    return {contratoGranosSoja};
-})
-
+    return { contrato };
+});
 
 export default ContratoGranosSojaModule;

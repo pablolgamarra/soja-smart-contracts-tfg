@@ -190,6 +190,18 @@ contract ContratoGranosSoja is ERC721, Ownable, ERC2771Context {
         emit ContratoCerrado(_idContrato, Estado.Cancelled);
     }
 
+    function obtenerContratos() external view returns (Contrato[] memory) {
+        uint totalContratos = contadorContratos;
+        Contrato[] memory contratosListados = new Contrato[](totalContratos);
+
+        for (uint i = 1; i <= totalContratos; i++) {
+            contratosListados[i - 1] = contratos[i]; // Guardar cada contrato en el array
+        }
+
+        return contratosListados;
+    }
+
+
     // ===== OVERRIDES EIP-2771 =====
     function _msgSender()
         internal
