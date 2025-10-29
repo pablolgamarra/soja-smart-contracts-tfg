@@ -1,63 +1,61 @@
 import { useEffect, useState } from "react";
-import { useContrato } from "../hooks/useContrato";
+import { useWeb3Context } from "../hooks/useWeb3Context";
 
 
-export default function ListarContratos(props: {userAddress: string}) {
-    const {userAddress} = props;
-
-    const [ contratos, setContratos ] = useState<any[]>([]);
+export default function Listarcontracts() {
+    const [ contracts, setcontracts ] = useState<any[]>([]);
     const [ loading, setLoading ] = useState(false);
 
-    const {contrato} = useContrato();
+    const {contract, userAddress} = useWeb3Context();
 
     useEffect(() => {
         if (userAddress) {
-            const obtenerContratos = async () => {
+            const obtenercontracts = async () => {
                 setLoading(true);
                 try {
-                    if (!contrato || contrato == null) {
-                        alert("Contrato no encontrado");
-                        throw new Error("Contrato no encontrado");
+                    if (!contract || contract == null) {
+                        alert("contract no encontrado");
+                        throw new Error("contract no encontrado");
                     }
-                    // Obtener todos los contratos
-                    const contratosData = await contrato.obtenerContratos();
+                    // Obtener todos los contracts
+                    const contractsData = await contract.obtenercontracts();
 
-                    // Filtrar contratos creados por el comprador (userAddress)
-                    const contratosFiltrados = contratosData.filter((contrato: any) => contrato.identificadorPartes.comprador === userAddress);
-                    setContratos(contratosFiltrados);
+                    // Filtrar contracts creados por el comprador (userAddress)
+                    const contractsFiltrados = contractsData.filter((contract: any) => contract.identificadorPartes.comprador === userAddress);
+                    setcontracts(contractsFiltrados);
                 } catch (err: any) {
                     console.error(err);
-                    alert("❌ Error al obtener contratos");
+                    alert("❌ Error al obtener contracts");
                 } finally {
                     setLoading(false);
                 }
             };
 
-            obtenerContratos();
+            obtenercontracts();
         }
-    }, [ contrato, userAddress ]);
+    }, [ contract, userAddress ]);
 
     return (
         <div className="p-6">
-            <h2 className="text-2xl font-semibold mb-4">Lista de Contratos</h2>
+            <h2 className="text-2xl font-semibold mb-4">Lista de contracts</h2>
             {loading ? (
-                <p>Cargando contratos...</p>
+                <p>Cargando contracts...</p>
             ) : (
                 <div>
-                    {contratos.length === 0 ? (
-                        <p>No has creado contratos aún.</p>
+                    {contracts.length === 0 ? (
+                        <p>No has creado contracts aún.</p>
                     ) : (
                         <ul>
-                            {contratos.map((contrato: any, index: number) => (
+                            {contracts.map((contract: any, index: number) => (
                                 <li key={index} className="mb-4 p-3 border rounded-md">
                                     <div>
-                                        <strong>Contrato #{index + 1}</strong>
+                                        <strong>contract #{index + 1}</strong>
                                     </div>
                                     <div>
-                                        <strong>Vendedor:</strong> {contrato.identificadorPartes.vendedor}
+                                        <strong>Vendedor:</strong> {contract.identificadorPartes.vendedor}
                                     </div>
                                     <div>
-                                        <strong>Estado:</strong> {contrato.estado === 1 ? "Offered" : contrato.estado === 2 ? "Accepted" : "Other"}
+                                        <strong>Estado:</strong> {contract.estado === 1 ? "Offered" : contract.estado === 2 ? "Accepted" : "Other"}
                                     </div>
                                 </li>
                             ))}
