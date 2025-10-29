@@ -4,7 +4,6 @@ import dotenv from "dotenv";
 import router from '@routes/index.ts';
 
 dotenv.config();
-console.log(process.env.RELAYER_KEY)
 
 const app = express();
 app.use(cors());
