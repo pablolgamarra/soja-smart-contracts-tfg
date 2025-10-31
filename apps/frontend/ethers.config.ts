@@ -1222,4 +1222,4 @@ export const CONTRACT_ABI = [
       "type": "function"
     }
   ];
-export const RPC_URL = "http://127.0.0.1:8545";
+export const RPC_URL = "http://localhost:8545";

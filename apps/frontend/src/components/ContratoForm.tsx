@@ -1,10 +1,11 @@
 import { useState } from "react";
 import { useWeb3Context } from "../hooks/useWeb3Context";
-import { Link, Route, Routes } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 export default function FormCrearContrato() {
-    const {contract, signer} = useWeb3Context();
+    const { signer, deployedContract, isConnected, connectWallet } = useWeb3Context();
 
+    const [ loading, setLoading ] = useState(false);
     const [ form, setForm ] = useState({
         vendedor: "",
         intermediario: "",
@@ -23,22 +24,25 @@ export default function FormCrearContrato() {
         arbitro: "",
     });
 
-    const [ loading, setLoading ] = useState(false);
-
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         setForm({ ...form, [ e.target.name ]: e.target.value });
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        
+
+        if (!isConnected) {
+            alert("Por favor, conecte su wallet antes de continuar.");
+            return;
+        }
+
+        if (!deployedContract || !signer) {
+            alert("Contrato o signer no inicializado.");
+            return;
+        }
+
         try {
             setLoading(true);
-            
-            if (!contract || !signer) {
-                window.alert("Contrato o signer no inicializado");
-                return;
-            }
 
             const partes = {
                 comprador: await signer.getAddress(),
@@ -58,68 +62,102 @@ export default function FormCrearContrato() {
                 condicionesCalidad: form.condicionesCalidad,
             };
 
-            const accion = form.accionIncumplimiento === "Rechazo" ? 0 :
-                form.accionIncumplimiento === "Renegociacion" ? 1 : 2;
+            const accion =
+                form.accionIncumplimiento === "Rechazo"
+                    ? 0
+                    : form.accionIncumplimiento === "Renegociacion"
+                        ? 1
+                        : 2;
 
-            const tx = await contract.crearContrato(
-                partes,
-                condicionesComerciales,
-                form.modalidadPago,
-                accion,
-                Number(form.porcentajeDescuento),
-                form.arbitro,
-                "hashVersionContrato_v1"
-            );
+            console.log("🧾 Enviando transacción...");
+
+            const tx = await deployedContract
+                .connect(signer)
+                .crearContrato(
+                    partes,
+                    condicionesComerciales,
+                    form.modalidadPago,
+                    accion,
+                    Number(form.porcentajeDescuento),
+                    form.arbitro,
+                    "hashVersionContrato_v1"
+                );
 
             await tx.wait();
-            alert("✅ Contrato creado con éxito!");
+
+            alert("✅ Contrato creado con éxito");
+            console.log("📦 TX confirmada:", tx.hash);
         } catch (err: any) {
-            console.error(err);
-            alert("❌ Error al crear contrato: " + err.message);
+            console.error("❌ Error al crear contrato:", err);
+            alert(`Error: ${err.message || "Error desconocido"}`);
         } finally {
             setLoading(false);
         }
     };
 
+    if (!isConnected) {
+        return (
+            <div className="p-6 text-center">
+                <p className="mb-3 text-gray-300">Debe conectar su wallet para crear un contrato.</p>
+                <button
+                    onClick={connectWallet}
+                    className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+                >
+                    Conectar Wallet
+                </button>
+            </div>
+        );
+    }
+
     return (
         <>
             <Link
-                    to="/"
-                    className="bg-red-600 hover:bg-green-500 transform hover:-translate-y-1 transition-all rounded-xl p-6 text-center font-semibold shadow-lg shadow-green-900/50"
-                >
-                    Volver Atrás
+                to="/"
+                className="bg-gray-700 hover:bg-gray-600 transition-all rounded-xl px-4 py-2 inline-block mb-6 text-white"
+            >
+                ← Volver Atrás
             </Link>
-            <Routes>
-                <Route
-                path="/"
-                />
-            </Routes>
+
             <form
                 onSubmit={handleSubmit}
                 className="flex flex-col gap-3 p-6 border border-gray-700 rounded-xl bg-gray-800 shadow-lg max-w-xl mx-auto text-gray-100"
             >
-                <h2 className="text-2xl font-bold mb-4 text-green-400 text-center animate-pulse">
+                <h2 className="text-2xl font-bold mb-4 text-green-400 text-center">
                     🧾 Crear contrato de granos
                 </h2>
 
-                <label>Dirección del vendedor:</label>
-                <input
-                    name="vendedor"
-                    className="input-dark"
-                    onChange={handleChange}
-                    required
-                />
-
-                <label>Intermediario (opcional):</label>
-                <input name="intermediario" className="input-dark" onChange={handleChange} />
+                {Object.entries({
+                    vendedor: "Dirección del vendedor",
+                    intermediario: "Intermediario (opcional)",
+                    puntoControlCalidad: "Punto de control de calidad",
+                    cantidadToneladas: "Cantidad (toneladas)",
+                    precioPorTonelada: "Precio por tonelada (wei)",
+                    fechaEntrega: "Fecha estimada de entrega",
+                    lugarEntrega: "Lugar de entrega",
+                    condicionesCalidad: "Condiciones de calidad",
+                    porcentajeDescuento: "Porcentaje de descuento (%)",
+                    arbitro: "Dirección del árbitro",
+                }).map(([ key, label ]) => (
+                    <div key={key}>
+                        <label>{label}:</label>
+                        <input
+                            name={key}
+                            className="input-dark"
+                            type={
+                                key.includes("precio") || key.includes("cantidad") || key.includes("porcentaje")
+                                    ? "number"
+                                    : key === "fechaEntrega"
+                                        ? "date"
+                                        : "text"
+                            }
+                            onChange={handleChange}
+                            required={![ "intermediario" ].includes(key)}
+                        />
+                    </div>
+                ))}
 
                 <label>Incoterm:</label>
-                <input
-                    name="incoterm"
-                    className="input-dark"
-                    defaultValue="FOB"
-                    onChange={handleChange}
-                />
+                <input name="incoterm" defaultValue="FOB" className="input-dark" onChange={handleChange} />
 
                 <label>Flete a cargo de:</label>
                 <select name="fleteACargoDe" className="input-dark" onChange={handleChange}>
@@ -127,81 +165,26 @@ export default function FormCrearContrato() {
                     <option>Vendedor</option>
                 </select>
 
-                <label>Punto de control de calidad:</label>
-                <input
-                    name="puntoControlCalidad"
-                    className="input-dark"
-                    onChange={handleChange}
-                />
-
-                <label>Cantidad (toneladas):</label>
-                <input
-                    name="cantidadToneladas"
-                    type="number"
-                    className="input-dark"
-                    onChange={handleChange}
-                    required
-                />
-
-                <label>Precio por tonelada (wei o unidad base):</label>
-                <input
-                    name="precioPorTonelada"
-                    type="number"
-                    className="input-dark"
-                    onChange={handleChange}
-                    required
-                />
-
                 <label>Tipo de contrato:</label>
                 <select name="tipoContrato" className="input-dark" onChange={handleChange}>
                     <option>PrecioFijo</option>
                     <option>PrecioAFijar</option>
                 </select>
 
-                <label>Fecha estimada de entrega:</label>
-                <input
-                    name="fechaEntrega"
-                    type="date"
-                    className="input-dark"
-                    onChange={handleChange}
-                    required
-                />
-
-                <label>Lugar de entrega:</label>
-                <input name="lugarEntrega" className="input-dark" onChange={handleChange} />
-
-                <label>Condiciones de calidad:</label>
-                <input
-                    name="condicionesCalidad"
-                    className="input-dark"
-                    onChange={handleChange}
-                />
-
                 <label>Modalidad de pago:</label>
-                <input name="modalidadPago" className="input-dark" onChange={handleChange} />
+                <input
+                    name="modalidadPago"
+                    defaultValue="Transferencia bancaria"
+                    className="input-dark"
+                    onChange={handleChange}
+                />
 
                 <label>Acción ante incumplimiento:</label>
-                <select
-                    name="accionIncumplimiento"
-                    className="input-dark"
-                    onChange={handleChange}
-                >
+                <select name="accionIncumplimiento" className="input-dark" onChange={handleChange}>
                     <option>Descuento</option>
                     <option>Rechazo</option>
                     <option>Renegociacion</option>
                 </select>
-
-                <label>Porcentaje de descuento (%):</label>
-                <input
-                    name="porcentajeDescuento"
-                    type="number"
-                    className="input-dark"
-                    onChange={handleChange}
-                    required
-                />
-
-                <label>Dirección del árbitro:</label>
-                <input name="arbitro" className="input-dark" onChange={handleChange} required />
 
                 <button
                     type="submit"
