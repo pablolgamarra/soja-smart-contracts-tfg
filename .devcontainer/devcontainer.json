@@ -21,7 +21,7 @@
             }
         }
     },
-    "forwardPorts": [5173, 8543],
+    "forwardPorts": [5173, 8545, 3000],
     "postCreateCommand": "git config core.autocrlf input && npm install",
     "remoteUser": "node"
 }
