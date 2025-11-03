@@ -1,5 +1,10 @@
 import { Request, Response, NextFunction } from "express";
 
+export const requestLogger = (err: Error, req: Request, res: Response, next: NextFunction) => {
+    console.log(`${req.method}. TIME: ${new Date(Date.now())}. Host: ${req.host}. Path: ${req.url}`)
+    next();
+}
+
 //Error handling middleware
 export const handleError = (err:Error, req:Request, res:Response, next:NextFunction) => {
     console.error('API ERROR', err);
