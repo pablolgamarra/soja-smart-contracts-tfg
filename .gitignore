@@ -23,3 +23,6 @@ yarn-error.log*
 # Hardhat
 artifacts/
 cache/
+
+#Package-lock
+package-lock.json
