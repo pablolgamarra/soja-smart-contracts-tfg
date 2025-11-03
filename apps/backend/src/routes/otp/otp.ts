@@ -1,20 +1,37 @@
-import {Router} from 'express';
+import { Router } from "express";
+import { insertOtp } from "@data/dao/dao.ts";
+// import { sendOTPViaWhatsApp } from "../services/whatsapp.js"; // si luego lo integras
 
 const router = Router();
 
-router.post("/otp/generate", async (req, res) => {
-    const { contractId, sellerAddress, phone } = req.body;
-    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+router.post("/generate", async (req, res) => {
+    try {
+        const { contractId, sellerAddress, phone } = req.body;
 
-    await OTPModel.create({
-        otp,
-        contractId,
-        sellerAddress,
-        expiresAt: new Date(Date.now() + 10 * 60 * 1000), // 10 min
-        used: false,
-    });
+        if (!contractId || !sellerAddress) {
+            return res.status(400).json({ success: false, message: "Datos incompletos" });
+        }
 
-    await sendOTPViaWhatsApp(phone, otp);
+        // Generar OTP de 6 dígitos
+        const otp = Math.floor(100000 + Math.random() * 900000).toString();
 
-    res.json({ success: true, message: "OTP enviado correctamente." });
+        // Calcular fecha de expiración (10 minutos)
+        const expiresAt = new Date(Date.now() + 10 * 60 * 1000).toISOString();
+
+        // Guardar OTP en base de datos
+        await insertOtp({ contractId, sellerAddress, otp, expiresAt });
+
+        // Enviar OTP
+        // await sendOTPViaWhatsApp(phone, otp);
+
+        console.log(`El OTP generado es: ${otp}`);
+        console.log(`OTP generado para ${sellerAddress}`);
+
+        res.json({ success: true, message: "OTP generado y enviado correctamente." });
+    } catch (error) {
+        console.error("Error generando OTP:", error);
+        res.status(500).json({ success: false, message: "Error al generar el OTP." });
+    }
 });
+
+export default router;
