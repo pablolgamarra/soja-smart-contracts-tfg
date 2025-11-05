@@ -9,7 +9,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const { Database } = sqlite;
 
 // SELECT
-export function makePromiseQuery(query:string, params:any[] = []) {
+export function makePromiseQuery<T = any>(query: string, params: any[] = []): Promise<T[]> {
     return new Promise((resolve, reject) => {
         try {
             if (process.env.NODE_ENV === 'development') {
@@ -22,7 +22,7 @@ export function makePromiseQuery(query:string, params:any[] = []) {
                     console.error(`Query: ${query}`);
                     reject(error);
                 } else {
-                    resolve(rows);
+                    resolve(rows as T[]);
                 }
             });
         } catch (e) {
@@ -32,8 +32,14 @@ export function makePromiseQuery(query:string, params:any[] = []) {
     });
 }
 
+
 // INSERT, UPDATE, DELETE
-export function makePromiseRun(query:string, params: any[] = []) {
+export interface RunResult {
+    lastId?: number;
+    changes?: number;
+}
+
+export function makePromiseRun(query: string, params: any[] = []): Promise<RunResult> {
     return new Promise((resolve, reject) => {
         try {
             if (process.env.NODE_ENV === 'development') {
@@ -59,7 +65,7 @@ export function makePromiseRun(query:string, params: any[] = []) {
     });
 }
 
-export function closeDb() {
+export function closeDb(): Promise<void> {
     return new Promise((resolve, reject) => {
         db.close((err) => {
             if (err) {
@@ -67,12 +73,11 @@ export function closeDb() {
                 reject(err);
             } else {
                 console.log('Database connection closed');
-                resolve(void 0);
+                resolve();
             }
         });
     });
 }
-
 process.on('SIGINT', async () => {
     console.log('\nShutting down gracefully...');
     try {
@@ -120,7 +125,7 @@ if (!fs.existsSync(dbDir)) {
     console.log(`Created database directory: ${dbDir}`);
 }
 
-const db = new Database(dbPath, (err) => {
+const db: sqlite.Database = new Database(dbPath, (err) => {
     if (err) {
         console.error(`Error opening DB -> ${err}`);
         process.exit(1);
@@ -128,6 +133,7 @@ const db = new Database(dbPath, (err) => {
         console.log(`Database connected successfully`);
     }
 });
+
 
 try {
     const dbInitialized = await initializeDb(db);
