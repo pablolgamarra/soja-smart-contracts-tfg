@@ -8,6 +8,7 @@ export default function FormCrearContrato() {
     const [ loading, setLoading ] = useState(false);
     const [ form, setForm ] = useState({
         vendedor: "",
+        emailVendedor: "",
         intermediario: "",
         incoterm: "FOB",
         fleteACargoDe: "Comprador",
@@ -84,8 +85,38 @@ export default function FormCrearContrato() {
                 );
 
             await tx.wait();
+            
+            // Obtener el ID del contrato creado (usualmente es el contador de contratos en el mapping)
+            const contractId = await deployedContract.contadorContratos();
+            const contractIdString = contractId.toString();
 
-            alert("✅ Contrato creado con éxito");
+            console.log(`✅ Contrato creado con ID: ${contractId}`);
+            console.log(`✅ Tipo: ${typeof (contractId)}`);
+            console.log(`✅ OBJ ENVIADO: ${
+                contractIdString
+            },${form.emailVendedor
+             },${form.vendedor
+              }`);
+
+            // Ahora, genera el OTP con el contractId
+            const otpRes = await fetch("http://localhost:3000/otp/generate", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    contractIdString,
+                    sellerAddress: form.vendedor,
+                    email: form.emailVendedor,  // O usa la dirección de correo del vendedor si lo prefieres
+                }),
+            });
+
+            const otpData = await otpRes.json();
+            
+            if (otpRes.ok) {
+                alert("✅ Contrato creado con éxito. Enviando OTP al vendedor");
+            } else {
+                alert("❌ Error al generar OTP");
+            }
+
             console.log("📦 TX confirmada:", tx.hash);
         } catch (err: any) {
             console.error("❌ Error al crear contrato:", err);
@@ -127,8 +158,9 @@ export default function FormCrearContrato() {
                 </h2>
 
                 {Object.entries({
-                    vendedor: "Dirección del vendedor",
-                    intermediario: "Intermediario (opcional)",
+                    vendedor: "Direccion de Billetera del Vendedor",
+                    emailVendedor: "Direccion de Correo del Vendedor",
+                    intermediario: "Direccion de Billetera del Intermediario (Opcional)",
                     puntoControlCalidad: "Punto de control de calidad",
                     cantidadToneladas: "Cantidad (toneladas)",
                     precioPorTonelada: "Precio por tonelada (wei)",
