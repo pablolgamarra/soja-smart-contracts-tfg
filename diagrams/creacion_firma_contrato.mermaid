@@ -1,0 +1,36 @@
+flowchart TD
+    %% Roles
+    subgraph Roles
+        R1["🏢 Empresa Agrícola = Comprador"]
+        R2["🌾 Empresa Productora = Vendedor"]
+    end
+
+    %% Inicio del proceso
+    A1["Comprador crea un contrato con las condiciones acordadas"]
+    A2["Contrato de compra-venta de soja sin firmar"]
+    A3["Se guarda en blockchain (estado: ENVIADO)"]
+    A4["Se genera OTP único asociado al contrato"]
+    A5["Se envía OTP al vendedor por WhatsApp/correo"]
+    A6["Contrato visible en la lista del comprador"]
+
+    %% Firma del vendedor
+    B1["Vendedor recibe OTP y accede al portal"]
+    B2["Vendedor ingresa OTP y contractId"]
+    B3["Backend verifica validez del OTP"]
+    B4["Se muestra el contrato con botón 'Firmar'"]
+    B5["Vendedor confirma firma"]
+    B6["Backend firma on-chain usando cuenta custodial"]
+    B7["Blockchain actualiza estado del contrato a FIRMADO"]
+    B8["Comprador y vendedor reciben confirmación"]
+
+    %% Conexiones
+    A1 --> A2 --> A3 --> A4 --> A5 --> A6
+    A5 --> B1 --> B2 --> B3
+    B3 -->|OTP válido| B4 --> B5 --> B6 --> B7 --> B8
+    B3 -->|OTP inválido| B1
+
+    %% Estilos
+    classDef onchain fill:#b6fcb6,stroke:#2a7c2a,stroke-width:1px;
+    classDef offchain fill:#f0f0f0,stroke:#333,stroke-width:1px;
+    class A3,B6,B7 onchain;
+    class A1,A2,A4,A5,A6,B1,B2,B3,B4,B5,B8 offchain;

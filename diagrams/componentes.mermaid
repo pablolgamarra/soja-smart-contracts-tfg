@@ -1,0 +1,53 @@
+%% UML de Componentes — Prototipo de Contrato Inteligente Blockchain (Soja)
+%% Autor: P. Gamarra et al.
+
+flowchart TB
+    %% ==== ACTORES ====
+    actorComprador["👤 Comprador (Empresa)"]
+    actorVendedor["👤 Vendedor (Productor)"]
+
+    %% ==== COMPONENTES ====
+    subgraph FRONTEND_COMPRADOR["Frontend Comprador (Web App + Metamask)"]
+        F1["Componente UI: Formulario de creación de contrato"]
+        F2["Módulo Web3: Firma on-chain (Metamask)"]
+        F3["Módulo de consulta: Listado y estado de contratos"]
+    end
+
+    subgraph FRONTEND_VENDEDOR["Frontend Vendedor (Web/Bot WhatsApp)"]
+        V1["Componente UI: Visualización de contrato"]
+        V2["Módulo de autenticación: Ingreso de OTP"]
+    end
+
+    subgraph BACKEND["Backend Node.js (Express + Ethers.js)"]
+        B1["Controlador REST API"]
+        B2["Servicio de OTP: Generación y verificación"]
+        B3["Módulo de Firma Custodial: SignContractSeller()"]
+        B4["Integración externa: Servicio de mensajería (WhatsApp API)"]
+        B5["Base de Datos: Contratos + OTP"]
+    end
+
+    subgraph BLOCKCHAIN["Blockchain (Ethereum / BNB Testnet)"]
+        C1["Smart Contract: GrainContract.sol (ERC-721)"]
+        C2["Registro inmutable de contratos"]
+        C3["Eventos: Creación, Firma, Finalización"]
+    end
+
+    %% ==== CONEXIONES ====
+    actorComprador -->|Crea contrato| F1
+    F1 --> F2 -->|Transacción createContract()| C1
+    C1 -->|Evento 'ContractCreated'| B1
+    B1 -->|Genera OTP| B2 -->|Envía OTP| B4 --> V1
+
+    actorVendedor -->|Recibe OTP y consulta contrato| V1 --> B1
+    V2 -->|Verifica OTP| B2 -->|Firma válida| B3 -->|signContractSeller()| C1
+
+    C1 -->|Actualiza estado| F3
+    C3 -->|Eventos escuchados| B5
+    B5 -->|Sincroniza datos| F3
+
+    %% ==== NOTAS ====
+    note right of C1
+      - ERC-721 (NFT) representa contrato único
+      - Metadata en IPFS (condiciones, fecha, partes)
+      - Compatible con modelo RWA
+    end

@@ -1,0 +1,65 @@
+flowchart LR
+    %% ==== FRONTEND ====
+    subgraph FRONTEND_SERVER["Frontend Server (React + Vite)"]
+        direction TB
+        subgraph FRONT_COMPRADOR["Frontend Comprador (Empresas)"]
+            F1["React + Ethers.js + Metamask"]
+            F2["Funcionalidades:
+            - Generar contrato
+            - Listar contratos creados"]
+        end
+
+        subgraph FRONT_VENDEDOR["Frontend Vendedor (Productores)"]
+            F3["React + Ethers.js (sin wallet directa)
+            - Ingresar OTP
+            - Ver detalles del contrato
+            - Firmar contrato"]
+        end
+    end
+
+    %% ==== BACKEND ====
+    subgraph BACKEND["Backend (Node.js + Express + Ethers.js)\nDev: http://localhost:3000"]
+        direction TB
+        B1["API REST"]
+        B2["Rutas principales:
+        /contracts → creación y firma\n
+        /otp → generación y verificación"]
+        B3["Servicio de OTP\nGeneración y validación temporal"]
+        B4["Servicio de Firma Custodial\nFirma on-chain del vendedor"]
+        B5["Base de datos SQLite\nAlmacena OTPs y contratos"]
+        B6["Servicio de Notificaciones (pendiente)\nEnvío a WhatsApp y correo"]
+    end
+
+    %% ==== BLOCKCHAIN ====
+    subgraph BLOCKCHAIN["Blockchain (Ethereum / BNB Testnet)\nNodo RPC: http://localhost:8545"]
+        direction TB
+        C1["Smart Contract: GrainContract.sol (ERC-721)"]
+        C2["Funciones: createContract(), signContractSeller()"]
+        C3["Eventos: ContractCreated, ContractSigned"]
+    end
+
+    %% ==== SERVICIOS EXTERNOS ====
+    subgraph NOTIFICACIONES["Servicios Externos"]
+        direction TB
+        W1["WhatsApp Alert Bot\nWebhook: /webhooks/envOtp\nhttp://localhost:5000"]
+        E1["Servidor SMTP\nsmtp.google.com | smtp.office365.com"]
+    end
+
+    %% ==== CONEXIONES ====
+    FRONT_COMPRADOR -->|HTTP REST API| BACKEND
+    FRONT_VENDEDOR -->|HTTP REST API| BACKEND
+    BACKEND -->|RPC| BLOCKCHAIN
+    BACKEND -->|Webhook HTTP| W1
+    BACKEND -->|SMTP| E1
+    BLOCKCHAIN -->|Eventos on-chain| BACKEND
+
+    %% ==== ESTILOS ====
+    classDef onchain fill:#c5f7c1,stroke:#2a7c2a,stroke-width:1px;
+    classDef backend fill:#fff3b0,stroke:#aa8b00,stroke-width:1px;
+    classDef frontend fill:#b8e0ff,stroke:#004a7c,stroke-width:1px;
+    classDef external fill:#ffe0e0,stroke:#c42d2d,stroke-width:1px;
+
+    class FRONTEND_SERVER,FRONT_COMPRADOR,FRONT_VENDEDOR frontend;
+    class BACKEND,B1,B2,B3,B4,B5,B6 backend;
+    class BLOCKCHAIN,C1,C2,C3 onchain;
+    class NOTIFICACIONES,W1,E1 external;
