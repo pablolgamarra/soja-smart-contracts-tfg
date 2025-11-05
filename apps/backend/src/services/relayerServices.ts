@@ -1,27 +1,63 @@
-import {ethers} from 'ethers';
-import dotenv from 'dotenv';
-import { CONTRACT_ABI, CONTRACT_ADDRESS } from "../../ethers.config.ts"; 
+import { contratoRelayer as contrato } from "src/blockchain/index.ts";
 
-dotenv.config();
-
-const provider = new ethers.JsonRpcProvider(process.env.RPC_URL);
-const signer = new ethers.Wallet(process.env.RELAYER_KEY as string, provider);
-
-export async function crearTransaccion(data) {
-    const { contractId, sellerAddress } = data;
-
+/** ========= 📄 OBTENER CONTRATO DESDE BLOCKCHAIN ========= **/
+export async function obtenerContratoDesdeBlockchain(idContrato: string) {
     try {
-        const contract = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, signer);
+        const data = await contrato.contratos(idContrato);
 
-        console.log(`🔗 Ejecutando firma para contrato #${contractId} con vendedor ${sellerAddress}`);
+        // Adaptamos el resultado del struct a un formato más legible
+        return {
+            comprador: data.identificadorPartes.comprador,
+            vendedor: data.identificadorPartes.vendedor,
+            intermediario: data.identificadorPartes.intermediario,
+            tipoProducto: data.tipoProducto,
+            condicionesComerciales: {
+                incoterm: data.condicionesComerciales.incoterm,
+                fleteACargoDe: data.condicionesComerciales.fleteACargoDe,
+                puntoControlCalidad: data.condicionesComerciales.puntoControlCalidad,
+                cantidadToneladas: data.condicionesComerciales.cantidadToneladas.toString(),
+                precioPorTonelada: data.condicionesComerciales.precioPorTonelada.toString(),
+                fechaEntrega: data.condicionesComerciales.fechaEntrega.toString(),
+                lugarEntrega: data.condicionesComerciales.lugarEntrega,
+                condicionesCalidad: data.condicionesComerciales.condicionesCalidad,
+            },
+            condicionesEconomicas: {
+                modalidadPago: data.condicionesEconomicas.modalidadPago,
+                montoTotal: data.condicionesEconomicas.montoTotal.toString(),
+            },
+            penalizacionIncumplimiento: {
+                accionIncumplimiento: data.penalizacionIncumplimiento.accionIncumplimiento,
+                porcentajeDescuento: data.penalizacionIncumplimiento.porcentajeDescuento.toString(),
+                arbitro: data.penalizacionIncumplimiento.arbitro,
+            },
+            estado: Number(data.estado),
+            hashVersionContrato: data.hashVersionContrato,
+            evidenceURI: data.evidenceURI,
+        };
+    } catch (err) {
+        console.error("❌ Error obteniendo contrato desde blockchain:", err);
+        return null;
+    }
+}
 
-        const tx = await contract.firmarContrato(contractId, sellerAddress); // método del Smart Contract
+/** ========= ✍️ CREAR TRANSACCIÓN META-TX (Relayer) ========= **/
+export async function crearTransaccion({ contractId, sellerAddress }: { contractId: number; sellerAddress: string }) {
+    try {
+        console.log(`🔗 Enviando firma meta-tx para contrato #${contractId}`);
+
+        // Ejecuta la función del contrato por parte del relayer
+        const tx = await contrato.firmarContratoMetaTx(
+            contractId,
+            `consentHash_${Date.now()}`,   // simulación hash de consentimiento (podrías usar uno real desde el front)
+            `ipfs://evidencias/${sellerAddress}_${Date.now()}` // URI de evidencia (ej. logs u OTP en IPFS)
+        );
+
         const receipt = await tx.wait();
 
-        console.log(`✅ Transacción confirmada: ${receipt.transactionHash}`);
+        console.log(`✅ Contrato firmado por relayer. Hash: ${receipt.hash}`);
 
         return {
-            hash: receipt.transactionHash,
+            hash: receipt.hash,
             status: receipt.status,
         };
     } catch (error) {
