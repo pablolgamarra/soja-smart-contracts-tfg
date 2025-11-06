@@ -1,9 +1,9 @@
-import { contratoRelayer as contrato } from "src/blockchain/index.ts";
+import { blockchainConnection } from "src/blockchain/BlockchainConnection.ts";
 
 /** ========= 📄 OBTENER CONTRATO DESDE BLOCKCHAIN ========= **/
 export async function obtenerContratoDesdeBlockchain(idContrato: string) {
     try {
-        const data = await contrato.contratos(idContrato);
+        const data = await blockchainConnection.contratoView.contratos(idContrato);
 
         // Adaptamos el resultado del struct a un formato más legible
         return {
@@ -46,7 +46,7 @@ export async function crearTransaccion({ contractId, sellerAddress }: { contract
         console.log(`🔗 Enviando firma meta-tx para contrato #${contractId}`);
 
         // Ejecuta la función del contrato por parte del relayer
-        const tx = await contrato.firmarContratoMetaTx(
+        const tx = await blockchainConnection.contratoView.firmarContratoMetaTx(
             contractId,
             `consentHash_${Date.now()}`,   // simulación hash de consentimiento (podrías usar uno real desde el front)
             `ipfs://evidencias/${sellerAddress}_${Date.now()}` // URI de evidencia (ej. logs u OTP en IPFS)
