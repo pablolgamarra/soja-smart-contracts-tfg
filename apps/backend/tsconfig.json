@@ -14,10 +14,14 @@
     "allowImportingTsExtensions": true,
     "baseUrl": ".",
     "paths": {
+      "@blockchain/*": ["src/blockchain/*"],
+      "@controllers/*": ["src/controllers/*"],
+      "@data/*": ["src/data/*"],
+      "@helpers/*": ["src/helpers/*"],
+      "@interfaces/*": ["src/interfaces/*"],
+      "@middlewares/*": ["src/middlewares/*"],
       "@routes/*": ["src/routes/*"],
       "@services/*": ["src/services/*"],
-      "@middlewares/*": ["src/middlewares/*"],
-      "@data/*": ["src/data/*"],
       "@types/*": ["src/types/*"]
     }
   },
