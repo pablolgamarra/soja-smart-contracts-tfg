@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { contratosController } from "@controllers/contratos/contratosController.ts";
+import contratosController from "@controllers/contratos/contratosController.ts";
 
 const router = Router();
 
