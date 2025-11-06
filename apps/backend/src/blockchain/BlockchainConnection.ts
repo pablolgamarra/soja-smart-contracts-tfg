@@ -1,0 +1,34 @@
+import { Contract, ethers, JsonRpcProvider, Wallet } from "ethers";
+import { getEnv } from "src/helpers/index.ts";
+import { CONTRACT_ABI } from "./abis/ContratoGranosSoja.ts";
+
+const CONFIG = {
+    RPC: getEnv("RPC_URL"),
+    RELAYER_KEY: getEnv("RELAYER_KEY"),
+    CONTRACT_ADDRESS: getEnv("DEPLOYED_CONTRACT_ADDRESS")
+};
+
+export class BlockchainConnection {
+    readonly rpcProvider: JsonRpcProvider;
+    readonly relayerWallet: Wallet;
+    readonly contratoView: Contract;
+    readonly contratoRelayer: Contract;
+
+    constructor() {
+        // Inicializar provider y contrato
+        this.rpcProvider = new ethers.JsonRpcProvider(CONFIG.RPC);
+        this.relayerWallet = new ethers.Wallet(CONFIG.RELAYER_KEY, this.rpcProvider);
+        this.contratoView = new ethers.Contract(CONFIG.CONTRACT_ADDRESS, CONTRACT_ABI, this.rpcProvider);
+        this.contratoRelayer = new ethers.Contract(CONFIG.CONTRACT_ADDRESS, CONTRACT_ABI, this.relayerWallet);
+    }
+
+    /**
+     * Retorna información de la red actual
+     */
+    async getNetworkInfo() {
+        const network = await this.rpcProvider.getNetwork();
+        console.log(`Conectado a red: ${network.name} (chainId: ${network.chainId})`);
+    }
+}
+
+export const blockchainConnection = new BlockchainConnection();
