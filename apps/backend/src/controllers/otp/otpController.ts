@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { otpService } from '@services/otpService.ts'; // Importando el servicio
+import { otpService } from '@services/otpService.ts';
 import notificatorService from '@services/notifications/notificationService.ts';
 
 class OTPController {
