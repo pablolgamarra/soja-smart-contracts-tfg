@@ -1,92 +1,3 @@
-// import React, { createContext, useEffect, useState } from "react";
-// import { ethers } from "ethers";
-
-// export interface Web3ContextType {
-//     provider: ethers.BrowserProvider | null;
-//     signer: ethers.Signer | null;
-//     userAddress: string;
-//     connectWallet: () => Promise<void>;
-// }
-
-// export const Web3Context = createContext<Web3ContextType | null>(null);
-
-// export const Web3ContextProvider = ({ children }: { children: React.ReactNode }): React.ReactNode => {
-//     const [ provider, setProvider ] = useState<ethers.BrowserProvider | null>(null);
-//     const [ signer, setSigner ] = useState<ethers.Signer | null>(null);
-//     const [ userAddress, setUserAddress ] = useState<string>("");
-//     // const [ deployedContract, setDeployedContract ] = useState<ethers.Contract | null>(null);
-//     // const [ contractReady, setContractReady ] = useState<boolean>(false);
-
-//     // 🔹 Conectar wallet
-//     const connectWallet = async () => {
-//         if (!window.ethereum) {
-//             alert("Metamask no detectado");
-//             return;
-//         }
-
-//         try {
-//             const newProvider = new ethers.BrowserProvider(window.ethereum);
-//             await newProvider.send("eth_requestAccounts", []);
-//             const newSigner = await newProvider.getSigner();
-//             const address = await newSigner.getAddress();
-
-//             setProvider(newProvider);
-//             setSigner(newSigner);
-//             setUserAddress(address);
-
-//             console.log(`✅ Conectado con: ${address}`);
-//         } catch (error) {
-//             console.error(error);
-//             alert("Error al conectar con Metamask");
-//         }
-//     };
-
-//     // 🔹 Detectar cambios en cuenta o red
-//     useEffect(() => {
-//         if (!window.ethereum) return;
-
-//         const handleAccountsChanged = (accounts: string[]) => {
-//             if (accounts.length > 0) setUserAddress(accounts[ 0 ]);
-//             else setUserAddress("");
-//         };
-
-//         const handleChainChanged = () => window.location.reload();
-
-//         window.ethereum.on("accountsChanged", handleAccountsChanged);
-//         window.ethereum.on("chainChanged", handleChainChanged);
-
-//         return () => {
-//             window.ethereum.removeListener("accountsChanged", handleAccountsChanged);
-//             window.ethereum.removeListener("chainChanged", handleChainChanged);
-//         };
-//     }, []);
-
-//     // 🔹 Inicializar contrato cuando haya signer o provider
-//     // useEffect(() => {
-
-//     //     const getDeployedContract = async () => {
-//     //         try {
-//     //             const contractInstance = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, signer ?? provider);
-//     //             setDeployedContract(contractInstance);
-//     //             setContractReady(true);
-//     //             console.log("📜 Contrato inicializado:", CONTRACT_ADDRESS);
-//     //         } catch (err) {
-//     //             console.error("❌ Error creando instancia del contrato:", err);
-//     //         }
-//     //     }
-
-//     //     getDeployedContract();
-//     // }, [ signer, provider ]);
-
-//     return (
-//         <Web3Context.Provider value={{ provider, signer, userAddress, connectWallet }}>
-//             {children}
-//         </Web3Context.Provider>
-//     );
-// };
-
-
-
 import React, {
     createContext,
     useCallback,
@@ -108,7 +19,7 @@ export interface Web3ContextType {
     connectWallet: () => Promise<void>;
 }
 
-export const Web3Context = createContext<Web3ContextType | null>(null);
+const Web3Context = createContext<Web3ContextType | null>(null);
 
 export const Web3ContextProvider = ({
     children,
