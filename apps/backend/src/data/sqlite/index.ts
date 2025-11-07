@@ -112,8 +112,7 @@ const getDbPath = () => {
     }
 
     //Development
-    console.log(__dirname);
-    return path.join(__dirname, '../app.db');
+    return path.join(__dirname, '../app.dev.db');
 };
 
 const dbPath = getDbPath();
