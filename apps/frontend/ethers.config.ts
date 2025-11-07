@@ -202,6 +202,56 @@ export const CONTRACT_ABI = [
           "type": "uint256"
         },
         {
+          "indexed": true,
+          "internalType": "address",
+          "name": "ejecutor",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "string",
+          "name": "motivo",
+          "type": "string"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "fechaCancelacion",
+          "type": "uint256"
+        }
+      ],
+      "name": "ContratoCancelado",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "idContrato",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "fechaCelebracion",
+          "type": "uint256"
+        }
+      ],
+      "name": "ContratoCelebrado",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "idContrato",
+          "type": "uint256"
+        },
+        {
           "indexed": false,
           "internalType": "enum ContratoGranosSoja.Estado",
           "name": "nuevoEstado",
@@ -234,6 +284,25 @@ export const CONTRACT_ABI = [
         }
       ],
       "name": "ContratoCreado",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "idContrato",
+          "type": "uint256"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "comprador",
+          "type": "address"
+        }
+      ],
+      "name": "ContratoEditado",
       "type": "event"
     },
     {
@@ -317,36 +386,11 @@ export const CONTRACT_ABI = [
         {
           "indexed": false,
           "internalType": "uint256",
-          "name": "monto",
+          "name": "precioFinal",
           "type": "uint256"
         }
       ],
-      "name": "PagoEjecutado",
-      "type": "event"
-    },
-    {
-      "anonymous": false,
-      "inputs": [
-        {
-          "indexed": true,
-          "internalType": "uint256",
-          "name": "idContrato",
-          "type": "uint256"
-        },
-        {
-          "indexed": false,
-          "internalType": "uint256",
-          "name": "monto",
-          "type": "uint256"
-        },
-        {
-          "indexed": false,
-          "internalType": "string",
-          "name": "motivo",
-          "type": "string"
-        }
-      ],
-      "name": "PenalizacionAplicada",
+      "name": "PrecioFijado",
       "type": "event"
     },
     {
@@ -396,24 +440,6 @@ export const CONTRACT_ABI = [
     {
       "inputs": [
         {
-          "internalType": "uint256",
-          "name": "_idContrato",
-          "type": "uint256"
-        },
-        {
-          "internalType": "string",
-          "name": "_motivo",
-          "type": "string"
-        }
-      ],
-      "name": "aplicarPenalizacion",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
           "internalType": "address",
           "name": "to",
           "type": "address"
@@ -452,7 +478,25 @@ export const CONTRACT_ABI = [
       "inputs": [
         {
           "internalType": "uint256",
-          "name": "_idContrato",
+          "name": "id",
+          "type": "uint256"
+        },
+        {
+          "internalType": "string",
+          "name": "motivo",
+          "type": "string"
+        }
+      ],
+      "name": "cancelarContrato",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "id",
           "type": "uint256"
         }
       ],
@@ -492,52 +536,96 @@ export const CONTRACT_ABI = [
               "type": "address"
             },
             {
+              "internalType": "string",
+              "name": "nroIdentidadComprador",
+              "type": "string"
+            },
+            {
+              "internalType": "string",
+              "name": "nombreComprador",
+              "type": "string"
+            },
+            {
               "internalType": "address",
               "name": "vendedor",
               "type": "address"
             },
             {
+              "internalType": "string",
+              "name": "nroIdentidadVendedor",
+              "type": "string"
+            },
+            {
+              "internalType": "string",
+              "name": "nombreVendedor",
+              "type": "string"
+            },
+            {
               "internalType": "address",
-              "name": "intermediario",
+              "name": "broker",
               "type": "address"
+            },
+            {
+              "internalType": "string",
+              "name": "nroIdentidadBroker",
+              "type": "string"
+            },
+            {
+              "internalType": "string",
+              "name": "nombreBroker",
+              "type": "string"
             }
           ],
-          "internalType": "struct ContratoGranosSoja.IdentificadorPartes",
-          "name": "identificadorPartes",
+          "internalType": "struct ContratoGranosSoja.Partes",
+          "name": "partes",
           "type": "tuple"
         },
         {
-          "internalType": "string",
-          "name": "tipoProducto",
-          "type": "string"
+          "components": [
+            {
+              "internalType": "uint256",
+              "name": "cantidadToneladasMetricas",
+              "type": "uint256"
+            },
+            {
+              "internalType": "string",
+              "name": "tipoGrano",
+              "type": "string"
+            },
+            {
+              "internalType": "string",
+              "name": "cosecha",
+              "type": "string"
+            }
+          ],
+          "internalType": "struct ContratoGranosSoja.CondicionesGrano",
+          "name": "condicionesGrano",
+          "type": "tuple"
         },
         {
           "components": [
             {
               "internalType": "string",
-              "name": "incoterm",
-              "type": "string"
-            },
-            {
-              "internalType": "string",
-              "name": "fleteACargoDe",
-              "type": "string"
-            },
-            {
-              "internalType": "string",
-              "name": "puntoControlCalidad",
+              "name": "empaque",
               "type": "string"
             },
             {
               "internalType": "uint256",
-              "name": "cantidadToneladas",
+              "name": "fechaEntregaInicio",
               "type": "uint256"
             },
             {
               "internalType": "uint256",
-              "name": "precioPorTonelada",
+              "name": "fechaEntregaFin",
               "type": "uint256"
-            },
+            }
+          ],
+          "internalType": "struct ContratoGranosSoja.CondicionesEntrega",
+          "name": "condicionesEntrega",
+          "type": "tuple"
+        },
+        {
+          "components": [
             {
               "internalType": "enum ContratoGranosSoja.TipoContrato",
               "name": "tipoContrato",
@@ -545,61 +633,54 @@ export const CONTRACT_ABI = [
             },
             {
               "internalType": "uint256",
-              "name": "fechaEntrega",
+              "name": "precioPorToneladaMetrica",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "precioCBOTBushel",
+              "type": "uint256"
+            },
+            {
+              "internalType": "int256",
+              "name": "ajusteCBOT",
+              "type": "int256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "fechaPrecioChicago",
               "type": "uint256"
             },
             {
               "internalType": "string",
-              "name": "lugarEntrega",
+              "name": "incoterm",
               "type": "string"
             },
             {
-              "internalType": "string",
-              "name": "condicionesCalidad",
-              "type": "string"
+              "internalType": "uint256",
+              "name": "precioFinal",
+              "type": "uint256"
             }
           ],
-          "internalType": "struct ContratoGranosSoja.CondicionesComerciales",
-          "name": "condicionesComerciales",
+          "internalType": "struct ContratoGranosSoja.CondicionesPrecio",
+          "name": "condicionesPrecio",
           "type": "tuple"
         },
         {
           "components": [
             {
               "internalType": "string",
-              "name": "modalidadPago",
+              "name": "puertoEmbarque",
               "type": "string"
             },
             {
-              "internalType": "uint256",
-              "name": "montoTotal",
-              "type": "uint256"
+              "internalType": "string",
+              "name": "destinoFinal",
+              "type": "string"
             }
           ],
-          "internalType": "struct ContratoGranosSoja.CondicionesEconomicas",
-          "name": "condicionesEconomicas",
-          "type": "tuple"
-        },
-        {
-          "components": [
-            {
-              "internalType": "enum ContratoGranosSoja.AccionIncumplimiento",
-              "name": "accionIncumplimiento",
-              "type": "uint8"
-            },
-            {
-              "internalType": "uint256",
-              "name": "porcentajeDescuento",
-              "type": "uint256"
-            },
-            {
-              "internalType": "address",
-              "name": "arbitro",
-              "type": "address"
-            }
-          ],
-          "internalType": "struct ContratoGranosSoja.PenalizacionIncumplimiento",
-          "name": "penalizacionIncumplimiento",
+          "internalType": "struct ContratoGranosSoja.CondicionesEmbarque",
+          "name": "condicionesEmbarque",
           "type": "tuple"
         },
         {
@@ -611,6 +692,11 @@ export const CONTRACT_ABI = [
           "internalType": "string",
           "name": "evidenceURI",
           "type": "string"
+        },
+        {
+          "internalType": "uint256",
+          "name": "fechaCelebracionContrato",
+          "type": "uint256"
         },
         {
           "internalType": "enum ContratoGranosSoja.Estado",
@@ -626,101 +712,184 @@ export const CONTRACT_ABI = [
         {
           "components": [
             {
-              "internalType": "address",
-              "name": "comprador",
-              "type": "address"
+              "components": [
+                {
+                  "internalType": "address",
+                  "name": "comprador",
+                  "type": "address"
+                },
+                {
+                  "internalType": "string",
+                  "name": "nroIdentidadComprador",
+                  "type": "string"
+                },
+                {
+                  "internalType": "string",
+                  "name": "nombreComprador",
+                  "type": "string"
+                },
+                {
+                  "internalType": "address",
+                  "name": "vendedor",
+                  "type": "address"
+                },
+                {
+                  "internalType": "string",
+                  "name": "nroIdentidadVendedor",
+                  "type": "string"
+                },
+                {
+                  "internalType": "string",
+                  "name": "nombreVendedor",
+                  "type": "string"
+                },
+                {
+                  "internalType": "address",
+                  "name": "broker",
+                  "type": "address"
+                },
+                {
+                  "internalType": "string",
+                  "name": "nroIdentidadBroker",
+                  "type": "string"
+                },
+                {
+                  "internalType": "string",
+                  "name": "nombreBroker",
+                  "type": "string"
+                }
+              ],
+              "internalType": "struct ContratoGranosSoja.Partes",
+              "name": "partes",
+              "type": "tuple"
             },
             {
-              "internalType": "address",
-              "name": "vendedor",
-              "type": "address"
+              "components": [
+                {
+                  "internalType": "uint256",
+                  "name": "cantidadToneladasMetricas",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "string",
+                  "name": "tipoGrano",
+                  "type": "string"
+                },
+                {
+                  "internalType": "string",
+                  "name": "cosecha",
+                  "type": "string"
+                }
+              ],
+              "internalType": "struct ContratoGranosSoja.CondicionesGrano",
+              "name": "condicionesGrano",
+              "type": "tuple"
             },
             {
-              "internalType": "address",
-              "name": "intermediario",
-              "type": "address"
-            }
-          ],
-          "internalType": "struct ContratoGranosSoja.IdentificadorPartes",
-          "name": "_identificadorPartes",
-          "type": "tuple"
-        },
-        {
-          "components": [
+              "components": [
+                {
+                  "internalType": "string",
+                  "name": "empaque",
+                  "type": "string"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "fechaEntregaInicio",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "fechaEntregaFin",
+                  "type": "uint256"
+                }
+              ],
+              "internalType": "struct ContratoGranosSoja.CondicionesEntrega",
+              "name": "condicionesEntrega",
+              "type": "tuple"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "enum ContratoGranosSoja.TipoContrato",
+                  "name": "tipoContrato",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "precioPorToneladaMetrica",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "precioCBOTBushel",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "int256",
+                  "name": "ajusteCBOT",
+                  "type": "int256"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "fechaPrecioChicago",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "string",
+                  "name": "incoterm",
+                  "type": "string"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "precioFinal",
+                  "type": "uint256"
+                }
+              ],
+              "internalType": "struct ContratoGranosSoja.CondicionesPrecio",
+              "name": "condicionesPrecio",
+              "type": "tuple"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "string",
+                  "name": "puertoEmbarque",
+                  "type": "string"
+                },
+                {
+                  "internalType": "string",
+                  "name": "destinoFinal",
+                  "type": "string"
+                }
+              ],
+              "internalType": "struct ContratoGranosSoja.CondicionesEmbarque",
+              "name": "condicionesEmbarque",
+              "type": "tuple"
+            },
             {
               "internalType": "string",
-              "name": "incoterm",
+              "name": "hashVersionContrato",
               "type": "string"
             },
             {
               "internalType": "string",
-              "name": "fleteACargoDe",
-              "type": "string"
-            },
-            {
-              "internalType": "string",
-              "name": "puntoControlCalidad",
+              "name": "evidenceURI",
               "type": "string"
             },
             {
               "internalType": "uint256",
-              "name": "cantidadToneladas",
+              "name": "fechaCelebracionContrato",
               "type": "uint256"
             },
             {
-              "internalType": "uint256",
-              "name": "precioPorTonelada",
-              "type": "uint256"
-            },
-            {
-              "internalType": "enum ContratoGranosSoja.TipoContrato",
-              "name": "tipoContrato",
+              "internalType": "enum ContratoGranosSoja.Estado",
+              "name": "estado",
               "type": "uint8"
-            },
-            {
-              "internalType": "uint256",
-              "name": "fechaEntrega",
-              "type": "uint256"
-            },
-            {
-              "internalType": "string",
-              "name": "lugarEntrega",
-              "type": "string"
-            },
-            {
-              "internalType": "string",
-              "name": "condicionesCalidad",
-              "type": "string"
             }
           ],
-          "internalType": "struct ContratoGranosSoja.CondicionesComerciales",
-          "name": "_condicionesComerciales",
+          "internalType": "struct ContratoGranosSoja.Contrato",
+          "name": "datos",
           "type": "tuple"
-        },
-        {
-          "internalType": "string",
-          "name": "_modalidadPago",
-          "type": "string"
-        },
-        {
-          "internalType": "enum ContratoGranosSoja.AccionIncumplimiento",
-          "name": "_accionIncumplimiento",
-          "type": "uint8"
-        },
-        {
-          "internalType": "uint256",
-          "name": "_porcentajeDescuento",
-          "type": "uint256"
-        },
-        {
-          "internalType": "address",
-          "name": "_arbitro",
-          "type": "address"
-        },
-        {
-          "internalType": "string",
-          "name": "_hashVersionContrato",
-          "type": "string"
         }
       ],
       "name": "crearContrato",
@@ -732,7 +901,215 @@ export const CONTRACT_ABI = [
       "inputs": [
         {
           "internalType": "uint256",
-          "name": "_idContrato",
+          "name": "id",
+          "type": "uint256"
+        },
+        {
+          "components": [
+            {
+              "components": [
+                {
+                  "internalType": "address",
+                  "name": "comprador",
+                  "type": "address"
+                },
+                {
+                  "internalType": "string",
+                  "name": "nroIdentidadComprador",
+                  "type": "string"
+                },
+                {
+                  "internalType": "string",
+                  "name": "nombreComprador",
+                  "type": "string"
+                },
+                {
+                  "internalType": "address",
+                  "name": "vendedor",
+                  "type": "address"
+                },
+                {
+                  "internalType": "string",
+                  "name": "nroIdentidadVendedor",
+                  "type": "string"
+                },
+                {
+                  "internalType": "string",
+                  "name": "nombreVendedor",
+                  "type": "string"
+                },
+                {
+                  "internalType": "address",
+                  "name": "broker",
+                  "type": "address"
+                },
+                {
+                  "internalType": "string",
+                  "name": "nroIdentidadBroker",
+                  "type": "string"
+                },
+                {
+                  "internalType": "string",
+                  "name": "nombreBroker",
+                  "type": "string"
+                }
+              ],
+              "internalType": "struct ContratoGranosSoja.Partes",
+              "name": "partes",
+              "type": "tuple"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "uint256",
+                  "name": "cantidadToneladasMetricas",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "string",
+                  "name": "tipoGrano",
+                  "type": "string"
+                },
+                {
+                  "internalType": "string",
+                  "name": "cosecha",
+                  "type": "string"
+                }
+              ],
+              "internalType": "struct ContratoGranosSoja.CondicionesGrano",
+              "name": "condicionesGrano",
+              "type": "tuple"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "string",
+                  "name": "empaque",
+                  "type": "string"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "fechaEntregaInicio",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "fechaEntregaFin",
+                  "type": "uint256"
+                }
+              ],
+              "internalType": "struct ContratoGranosSoja.CondicionesEntrega",
+              "name": "condicionesEntrega",
+              "type": "tuple"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "enum ContratoGranosSoja.TipoContrato",
+                  "name": "tipoContrato",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "precioPorToneladaMetrica",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "precioCBOTBushel",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "int256",
+                  "name": "ajusteCBOT",
+                  "type": "int256"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "fechaPrecioChicago",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "string",
+                  "name": "incoterm",
+                  "type": "string"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "precioFinal",
+                  "type": "uint256"
+                }
+              ],
+              "internalType": "struct ContratoGranosSoja.CondicionesPrecio",
+              "name": "condicionesPrecio",
+              "type": "tuple"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "string",
+                  "name": "puertoEmbarque",
+                  "type": "string"
+                },
+                {
+                  "internalType": "string",
+                  "name": "destinoFinal",
+                  "type": "string"
+                }
+              ],
+              "internalType": "struct ContratoGranosSoja.CondicionesEmbarque",
+              "name": "condicionesEmbarque",
+              "type": "tuple"
+            },
+            {
+              "internalType": "string",
+              "name": "hashVersionContrato",
+              "type": "string"
+            },
+            {
+              "internalType": "string",
+              "name": "evidenceURI",
+              "type": "string"
+            },
+            {
+              "internalType": "uint256",
+              "name": "fechaCelebracionContrato",
+              "type": "uint256"
+            },
+            {
+              "internalType": "enum ContratoGranosSoja.Estado",
+              "name": "estado",
+              "type": "uint8"
+            }
+          ],
+          "internalType": "struct ContratoGranosSoja.Contrato",
+          "name": "nuevosDatos",
+          "type": "tuple"
+        }
+      ],
+      "name": "editarContrato",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "id",
+          "type": "uint256"
+        }
+      ],
+      "name": "enviarContrato",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "id",
           "type": "uint256"
         },
         {
@@ -840,52 +1217,96 @@ export const CONTRACT_ABI = [
                   "type": "address"
                 },
                 {
+                  "internalType": "string",
+                  "name": "nroIdentidadComprador",
+                  "type": "string"
+                },
+                {
+                  "internalType": "string",
+                  "name": "nombreComprador",
+                  "type": "string"
+                },
+                {
                   "internalType": "address",
                   "name": "vendedor",
                   "type": "address"
                 },
                 {
+                  "internalType": "string",
+                  "name": "nroIdentidadVendedor",
+                  "type": "string"
+                },
+                {
+                  "internalType": "string",
+                  "name": "nombreVendedor",
+                  "type": "string"
+                },
+                {
                   "internalType": "address",
-                  "name": "intermediario",
+                  "name": "broker",
                   "type": "address"
+                },
+                {
+                  "internalType": "string",
+                  "name": "nroIdentidadBroker",
+                  "type": "string"
+                },
+                {
+                  "internalType": "string",
+                  "name": "nombreBroker",
+                  "type": "string"
                 }
               ],
-              "internalType": "struct ContratoGranosSoja.IdentificadorPartes",
-              "name": "identificadorPartes",
+              "internalType": "struct ContratoGranosSoja.Partes",
+              "name": "partes",
               "type": "tuple"
             },
             {
-              "internalType": "string",
-              "name": "tipoProducto",
-              "type": "string"
+              "components": [
+                {
+                  "internalType": "uint256",
+                  "name": "cantidadToneladasMetricas",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "string",
+                  "name": "tipoGrano",
+                  "type": "string"
+                },
+                {
+                  "internalType": "string",
+                  "name": "cosecha",
+                  "type": "string"
+                }
+              ],
+              "internalType": "struct ContratoGranosSoja.CondicionesGrano",
+              "name": "condicionesGrano",
+              "type": "tuple"
             },
             {
               "components": [
                 {
                   "internalType": "string",
-                  "name": "incoterm",
-                  "type": "string"
-                },
-                {
-                  "internalType": "string",
-                  "name": "fleteACargoDe",
-                  "type": "string"
-                },
-                {
-                  "internalType": "string",
-                  "name": "puntoControlCalidad",
+                  "name": "empaque",
                   "type": "string"
                 },
                 {
                   "internalType": "uint256",
-                  "name": "cantidadToneladas",
+                  "name": "fechaEntregaInicio",
                   "type": "uint256"
                 },
                 {
                   "internalType": "uint256",
-                  "name": "precioPorTonelada",
+                  "name": "fechaEntregaFin",
                   "type": "uint256"
-                },
+                }
+              ],
+              "internalType": "struct ContratoGranosSoja.CondicionesEntrega",
+              "name": "condicionesEntrega",
+              "type": "tuple"
+            },
+            {
+              "components": [
                 {
                   "internalType": "enum ContratoGranosSoja.TipoContrato",
                   "name": "tipoContrato",
@@ -893,61 +1314,54 @@ export const CONTRACT_ABI = [
                 },
                 {
                   "internalType": "uint256",
-                  "name": "fechaEntrega",
+                  "name": "precioPorToneladaMetrica",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "precioCBOTBushel",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "int256",
+                  "name": "ajusteCBOT",
+                  "type": "int256"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "fechaPrecioChicago",
                   "type": "uint256"
                 },
                 {
                   "internalType": "string",
-                  "name": "lugarEntrega",
+                  "name": "incoterm",
                   "type": "string"
                 },
                 {
-                  "internalType": "string",
-                  "name": "condicionesCalidad",
-                  "type": "string"
+                  "internalType": "uint256",
+                  "name": "precioFinal",
+                  "type": "uint256"
                 }
               ],
-              "internalType": "struct ContratoGranosSoja.CondicionesComerciales",
-              "name": "condicionesComerciales",
+              "internalType": "struct ContratoGranosSoja.CondicionesPrecio",
+              "name": "condicionesPrecio",
               "type": "tuple"
             },
             {
               "components": [
                 {
                   "internalType": "string",
-                  "name": "modalidadPago",
+                  "name": "puertoEmbarque",
                   "type": "string"
                 },
                 {
-                  "internalType": "uint256",
-                  "name": "montoTotal",
-                  "type": "uint256"
+                  "internalType": "string",
+                  "name": "destinoFinal",
+                  "type": "string"
                 }
               ],
-              "internalType": "struct ContratoGranosSoja.CondicionesEconomicas",
-              "name": "condicionesEconomicas",
-              "type": "tuple"
-            },
-            {
-              "components": [
-                {
-                  "internalType": "enum ContratoGranosSoja.AccionIncumplimiento",
-                  "name": "accionIncumplimiento",
-                  "type": "uint8"
-                },
-                {
-                  "internalType": "uint256",
-                  "name": "porcentajeDescuento",
-                  "type": "uint256"
-                },
-                {
-                  "internalType": "address",
-                  "name": "arbitro",
-                  "type": "address"
-                }
-              ],
-              "internalType": "struct ContratoGranosSoja.PenalizacionIncumplimiento",
-              "name": "penalizacionIncumplimiento",
+              "internalType": "struct ContratoGranosSoja.CondicionesEmbarque",
+              "name": "condicionesEmbarque",
               "type": "tuple"
             },
             {
@@ -959,6 +1373,11 @@ export const CONTRACT_ABI = [
               "internalType": "string",
               "name": "evidenceURI",
               "type": "string"
+            },
+            {
+              "internalType": "uint256",
+              "name": "fechaCelebracionContrato",
+              "type": "uint256"
             },
             {
               "internalType": "enum ContratoGranosSoja.Estado",
@@ -1004,19 +1423,6 @@ export const CONTRACT_ABI = [
         }
       ],
       "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "_idContrato",
-          "type": "uint256"
-        }
-      ],
-      "name": "pagar",
-      "outputs": [],
-      "stateMutability": "payable",
       "type": "function"
     },
     {

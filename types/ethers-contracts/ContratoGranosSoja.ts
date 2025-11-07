@@ -6,44 +6,51 @@ import type { TypedContractEvent, TypedDeferredTopicFilter, TypedEventLog, Typed
   
 export declare namespace ContratoGranosSoja {
       
-    export type IdentificadorPartesStruct = {comprador: AddressLike, vendedor: AddressLike, intermediario: AddressLike}
+    export type PartesStruct = {comprador: AddressLike, nroIdentidadComprador: string, nombreComprador: string, vendedor: AddressLike, nroIdentidadVendedor: string, nombreVendedor: string, broker: AddressLike, nroIdentidadBroker: string, nombreBroker: string}
 
-    export type IdentificadorPartesStructOutput = [comprador: string, vendedor: string, intermediario: string] & {comprador: string, vendedor: string, intermediario: string }
+    export type PartesStructOutput = [comprador: string, nroIdentidadComprador: string, nombreComprador: string, vendedor: string, nroIdentidadVendedor: string, nombreVendedor: string, broker: string, nroIdentidadBroker: string, nombreBroker: string] & {comprador: string, nroIdentidadComprador: string, nombreComprador: string, vendedor: string, nroIdentidadVendedor: string, nombreVendedor: string, broker: string, nroIdentidadBroker: string, nombreBroker: string }
   
 
-    export type CondicionesComercialesStruct = {incoterm: string, fleteACargoDe: string, puntoControlCalidad: string, cantidadToneladas: BigNumberish, precioPorTonelada: BigNumberish, tipoContrato: BigNumberish, fechaEntrega: BigNumberish, lugarEntrega: string, condicionesCalidad: string}
+    export type CondicionesGranoStruct = {cantidadToneladasMetricas: BigNumberish, tipoGrano: string, cosecha: string}
 
-    export type CondicionesComercialesStructOutput = [incoterm: string, fleteACargoDe: string, puntoControlCalidad: string, cantidadToneladas: bigint, precioPorTonelada: bigint, tipoContrato: bigint, fechaEntrega: bigint, lugarEntrega: string, condicionesCalidad: string] & {incoterm: string, fleteACargoDe: string, puntoControlCalidad: string, cantidadToneladas: bigint, precioPorTonelada: bigint, tipoContrato: bigint, fechaEntrega: bigint, lugarEntrega: string, condicionesCalidad: string }
+    export type CondicionesGranoStructOutput = [cantidadToneladasMetricas: bigint, tipoGrano: string, cosecha: string] & {cantidadToneladasMetricas: bigint, tipoGrano: string, cosecha: string }
   
 
-    export type CondicionesEconomicasStruct = {modalidadPago: string, montoTotal: BigNumberish}
+    export type CondicionesEntregaStruct = {empaque: string, fechaEntregaInicio: BigNumberish, fechaEntregaFin: BigNumberish}
 
-    export type CondicionesEconomicasStructOutput = [modalidadPago: string, montoTotal: bigint] & {modalidadPago: string, montoTotal: bigint }
+    export type CondicionesEntregaStructOutput = [empaque: string, fechaEntregaInicio: bigint, fechaEntregaFin: bigint] & {empaque: string, fechaEntregaInicio: bigint, fechaEntregaFin: bigint }
   
 
-    export type PenalizacionIncumplimientoStruct = {accionIncumplimiento: BigNumberish, porcentajeDescuento: BigNumberish, arbitro: AddressLike}
+    export type CondicionesPrecioStruct = {tipoContrato: BigNumberish, precioPorToneladaMetrica: BigNumberish, precioCBOTBushel: BigNumberish, ajusteCBOT: BigNumberish, fechaPrecioChicago: BigNumberish, incoterm: string, precioFinal: BigNumberish}
 
-    export type PenalizacionIncumplimientoStructOutput = [accionIncumplimiento: bigint, porcentajeDescuento: bigint, arbitro: string] & {accionIncumplimiento: bigint, porcentajeDescuento: bigint, arbitro: string }
+    export type CondicionesPrecioStructOutput = [tipoContrato: bigint, precioPorToneladaMetrica: bigint, precioCBOTBushel: bigint, ajusteCBOT: bigint, fechaPrecioChicago: bigint, incoterm: string, precioFinal: bigint] & {tipoContrato: bigint, precioPorToneladaMetrica: bigint, precioCBOTBushel: bigint, ajusteCBOT: bigint, fechaPrecioChicago: bigint, incoterm: string, precioFinal: bigint }
   
 
-    export type ContratoStruct = {identificadorPartes: ContratoGranosSoja.IdentificadorPartesStruct, tipoProducto: string, condicionesComerciales: ContratoGranosSoja.CondicionesComercialesStruct, condicionesEconomicas: ContratoGranosSoja.CondicionesEconomicasStruct, penalizacionIncumplimiento: ContratoGranosSoja.PenalizacionIncumplimientoStruct, hashVersionContrato: string, evidenceURI: string, estado: BigNumberish}
+    export type CondicionesEmbarqueStruct = {puertoEmbarque: string, destinoFinal: string}
 
-    export type ContratoStructOutput = [identificadorPartes: ContratoGranosSoja.IdentificadorPartesStructOutput, tipoProducto: string, condicionesComerciales: ContratoGranosSoja.CondicionesComercialesStructOutput, condicionesEconomicas: ContratoGranosSoja.CondicionesEconomicasStructOutput, penalizacionIncumplimiento: ContratoGranosSoja.PenalizacionIncumplimientoStructOutput, hashVersionContrato: string, evidenceURI: string, estado: bigint] & {identificadorPartes: ContratoGranosSoja.IdentificadorPartesStructOutput, tipoProducto: string, condicionesComerciales: ContratoGranosSoja.CondicionesComercialesStructOutput, condicionesEconomicas: ContratoGranosSoja.CondicionesEconomicasStructOutput, penalizacionIncumplimiento: ContratoGranosSoja.PenalizacionIncumplimientoStructOutput, hashVersionContrato: string, evidenceURI: string, estado: bigint }
+    export type CondicionesEmbarqueStructOutput = [puertoEmbarque: string, destinoFinal: string] & {puertoEmbarque: string, destinoFinal: string }
+  
+
+    export type ContratoStruct = {partes: ContratoGranosSoja.PartesStruct, condicionesGrano: ContratoGranosSoja.CondicionesGranoStruct, condicionesEntrega: ContratoGranosSoja.CondicionesEntregaStruct, condicionesPrecio: ContratoGranosSoja.CondicionesPrecioStruct, condicionesEmbarque: ContratoGranosSoja.CondicionesEmbarqueStruct, hashVersionContrato: string, evidenceURI: string, fechaCelebracionContrato: BigNumberish, estado: BigNumberish}
+
+    export type ContratoStructOutput = [partes: ContratoGranosSoja.PartesStructOutput, condicionesGrano: ContratoGranosSoja.CondicionesGranoStructOutput, condicionesEntrega: ContratoGranosSoja.CondicionesEntregaStructOutput, condicionesPrecio: ContratoGranosSoja.CondicionesPrecioStructOutput, condicionesEmbarque: ContratoGranosSoja.CondicionesEmbarqueStructOutput, hashVersionContrato: string, evidenceURI: string, fechaCelebracionContrato: bigint, estado: bigint] & {partes: ContratoGranosSoja.PartesStructOutput, condicionesGrano: ContratoGranosSoja.CondicionesGranoStructOutput, condicionesEntrega: ContratoGranosSoja.CondicionesEntregaStructOutput, condicionesPrecio: ContratoGranosSoja.CondicionesPrecioStructOutput, condicionesEmbarque: ContratoGranosSoja.CondicionesEmbarqueStructOutput, hashVersionContrato: string, evidenceURI: string, fechaCelebracionContrato: bigint, estado: bigint }
   
     }
 
   export interface ContratoGranosSojaInterface extends Interface {
-    getFunction(nameOrSignature: "aplicarPenalizacion" | "approve" | "balanceOf" | "confirmarEntregaMetaTx" | "contadorContratos" | "contratos" | "crearContrato" | "firmarContratoMetaTx" | "getApproved" | "isApprovedForAll" | "isTrustedForwarder" | "name" | "obtenerContratos" | "owner" | "ownerOf" | "pagar" | "relayer" | "renounceOwnership" | "safeTransferFrom(address,address,uint256)" | "safeTransferFrom(address,address,uint256,bytes)" | "setApprovalForAll" | "setRelayer" | "supportsInterface" | "symbol" | "tokenURI" | "transferFrom" | "transferOwnership" | "trustedForwarder"): FunctionFragment;
+    getFunction(nameOrSignature: "approve" | "balanceOf" | "cancelarContrato" | "confirmarEntregaMetaTx" | "contadorContratos" | "contratos" | "crearContrato" | "editarContrato" | "enviarContrato" | "firmarContratoMetaTx" | "getApproved" | "isApprovedForAll" | "isTrustedForwarder" | "name" | "obtenerContratos" | "owner" | "ownerOf" | "relayer" | "renounceOwnership" | "safeTransferFrom(address,address,uint256)" | "safeTransferFrom(address,address,uint256,bytes)" | "setApprovalForAll" | "setRelayer" | "supportsInterface" | "symbol" | "tokenURI" | "transferFrom" | "transferOwnership" | "trustedForwarder"): FunctionFragment;
 
-    getEvent(nameOrSignatureOrTopic: "Approval" | "ApprovalForAll" | "ContratoCerrado" | "ContratoCreado" | "ContratoFirmado" | "EntregaConfirmada" | "OwnershipTransferred" | "PagoEjecutado" | "PenalizacionAplicada" | "RelayerActualizado" | "Transfer"): EventFragment;
+    getEvent(nameOrSignatureOrTopic: "Approval" | "ApprovalForAll" | "ContratoCancelado" | "ContratoCelebrado" | "ContratoCerrado" | "ContratoCreado" | "ContratoEditado" | "ContratoFirmado" | "EntregaConfirmada" | "OwnershipTransferred" | "PrecioFijado" | "RelayerActualizado" | "Transfer"): EventFragment;
 
-    encodeFunctionData(functionFragment: 'aplicarPenalizacion', values: [BigNumberish, string]): string;
-encodeFunctionData(functionFragment: 'approve', values: [AddressLike, BigNumberish]): string;
+    encodeFunctionData(functionFragment: 'approve', values: [AddressLike, BigNumberish]): string;
 encodeFunctionData(functionFragment: 'balanceOf', values: [AddressLike]): string;
+encodeFunctionData(functionFragment: 'cancelarContrato', values: [BigNumberish, string]): string;
 encodeFunctionData(functionFragment: 'confirmarEntregaMetaTx', values: [BigNumberish]): string;
 encodeFunctionData(functionFragment: 'contadorContratos', values?: undefined): string;
 encodeFunctionData(functionFragment: 'contratos', values: [BigNumberish]): string;
-encodeFunctionData(functionFragment: 'crearContrato', values: [ContratoGranosSoja.IdentificadorPartesStruct, ContratoGranosSoja.CondicionesComercialesStruct, string, BigNumberish, BigNumberish, AddressLike, string]): string;
+encodeFunctionData(functionFragment: 'crearContrato', values: [ContratoGranosSoja.ContratoStruct]): string;
+encodeFunctionData(functionFragment: 'editarContrato', values: [BigNumberish, ContratoGranosSoja.ContratoStruct]): string;
+encodeFunctionData(functionFragment: 'enviarContrato', values: [BigNumberish]): string;
 encodeFunctionData(functionFragment: 'firmarContratoMetaTx', values: [BigNumberish, string, string]): string;
 encodeFunctionData(functionFragment: 'getApproved', values: [BigNumberish]): string;
 encodeFunctionData(functionFragment: 'isApprovedForAll', values: [AddressLike, AddressLike]): string;
@@ -52,7 +59,6 @@ encodeFunctionData(functionFragment: 'name', values?: undefined): string;
 encodeFunctionData(functionFragment: 'obtenerContratos', values?: undefined): string;
 encodeFunctionData(functionFragment: 'owner', values?: undefined): string;
 encodeFunctionData(functionFragment: 'ownerOf', values: [BigNumberish]): string;
-encodeFunctionData(functionFragment: 'pagar', values: [BigNumberish]): string;
 encodeFunctionData(functionFragment: 'relayer', values?: undefined): string;
 encodeFunctionData(functionFragment: 'renounceOwnership', values?: undefined): string;
 encodeFunctionData(functionFragment: 'safeTransferFrom(address,address,uint256)', values: [AddressLike, AddressLike, BigNumberish]): string;
@@ -66,13 +72,15 @@ encodeFunctionData(functionFragment: 'transferFrom', values: [AddressLike, Addre
 encodeFunctionData(functionFragment: 'transferOwnership', values: [AddressLike]): string;
 encodeFunctionData(functionFragment: 'trustedForwarder', values?: undefined): string;
 
-    decodeFunctionResult(functionFragment: 'aplicarPenalizacion', data: BytesLike): Result;
-decodeFunctionResult(functionFragment: 'approve', data: BytesLike): Result;
+    decodeFunctionResult(functionFragment: 'approve', data: BytesLike): Result;
 decodeFunctionResult(functionFragment: 'balanceOf', data: BytesLike): Result;
+decodeFunctionResult(functionFragment: 'cancelarContrato', data: BytesLike): Result;
 decodeFunctionResult(functionFragment: 'confirmarEntregaMetaTx', data: BytesLike): Result;
 decodeFunctionResult(functionFragment: 'contadorContratos', data: BytesLike): Result;
 decodeFunctionResult(functionFragment: 'contratos', data: BytesLike): Result;
 decodeFunctionResult(functionFragment: 'crearContrato', data: BytesLike): Result;
+decodeFunctionResult(functionFragment: 'editarContrato', data: BytesLike): Result;
+decodeFunctionResult(functionFragment: 'enviarContrato', data: BytesLike): Result;
 decodeFunctionResult(functionFragment: 'firmarContratoMetaTx', data: BytesLike): Result;
 decodeFunctionResult(functionFragment: 'getApproved', data: BytesLike): Result;
 decodeFunctionResult(functionFragment: 'isApprovedForAll', data: BytesLike): Result;
@@ -81,7 +89,6 @@ decodeFunctionResult(functionFragment: 'name', data: BytesLike): Result;
 decodeFunctionResult(functionFragment: 'obtenerContratos', data: BytesLike): Result;
 decodeFunctionResult(functionFragment: 'owner', data: BytesLike): Result;
 decodeFunctionResult(functionFragment: 'ownerOf', data: BytesLike): Result;
-decodeFunctionResult(functionFragment: 'pagar', data: BytesLike): Result;
 decodeFunctionResult(functionFragment: 'relayer', data: BytesLike): Result;
 decodeFunctionResult(functionFragment: 'renounceOwnership', data: BytesLike): Result;
 decodeFunctionResult(functionFragment: 'safeTransferFrom(address,address,uint256)', data: BytesLike): Result;
@@ -121,6 +128,30 @@ decodeFunctionResult(functionFragment: 'trustedForwarder', data: BytesLike): Res
 
   
 
+    export namespace ContratoCanceladoEvent {
+      export type InputTuple = [idContrato: BigNumberish, ejecutor: AddressLike, motivo: string, fechaCancelacion: BigNumberish];
+      export type OutputTuple = [idContrato: bigint, ejecutor: string, motivo: string, fechaCancelacion: bigint];
+      export interface OutputObject {idContrato: bigint, ejecutor: string, motivo: string, fechaCancelacion: bigint };
+      export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>
+      export type Filter = TypedDeferredTopicFilter<Event>
+      export type Log = TypedEventLog<Event>
+      export type LogDescription = TypedLogDescription<Event>
+    }
+
+  
+
+    export namespace ContratoCelebradoEvent {
+      export type InputTuple = [idContrato: BigNumberish, fechaCelebracion: BigNumberish];
+      export type OutputTuple = [idContrato: bigint, fechaCelebracion: bigint];
+      export interface OutputObject {idContrato: bigint, fechaCelebracion: bigint };
+      export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>
+      export type Filter = TypedDeferredTopicFilter<Event>
+      export type Log = TypedEventLog<Event>
+      export type LogDescription = TypedLogDescription<Event>
+    }
+
+  
+
     export namespace ContratoCerradoEvent {
       export type InputTuple = [idContrato: BigNumberish, nuevoEstado: BigNumberish];
       export type OutputTuple = [idContrato: bigint, nuevoEstado: bigint];
@@ -137,6 +168,18 @@ decodeFunctionResult(functionFragment: 'trustedForwarder', data: BytesLike): Res
       export type InputTuple = [idContrato: BigNumberish, comprador: AddressLike, vendedor: AddressLike];
       export type OutputTuple = [idContrato: bigint, comprador: string, vendedor: string];
       export interface OutputObject {idContrato: bigint, comprador: string, vendedor: string };
+      export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>
+      export type Filter = TypedDeferredTopicFilter<Event>
+      export type Log = TypedEventLog<Event>
+      export type LogDescription = TypedLogDescription<Event>
+    }
+
+  
+
+    export namespace ContratoEditadoEvent {
+      export type InputTuple = [idContrato: BigNumberish, comprador: AddressLike];
+      export type OutputTuple = [idContrato: bigint, comprador: string];
+      export interface OutputObject {idContrato: bigint, comprador: string };
       export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>
       export type Filter = TypedDeferredTopicFilter<Event>
       export type Log = TypedEventLog<Event>
@@ -181,22 +224,10 @@ decodeFunctionResult(functionFragment: 'trustedForwarder', data: BytesLike): Res
 
   
 
-    export namespace PagoEjecutadoEvent {
-      export type InputTuple = [idContrato: BigNumberish, monto: BigNumberish];
-      export type OutputTuple = [idContrato: bigint, monto: bigint];
-      export interface OutputObject {idContrato: bigint, monto: bigint };
-      export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>
-      export type Filter = TypedDeferredTopicFilter<Event>
-      export type Log = TypedEventLog<Event>
-      export type LogDescription = TypedLogDescription<Event>
-    }
-
-  
-
-    export namespace PenalizacionAplicadaEvent {
-      export type InputTuple = [idContrato: BigNumberish, monto: BigNumberish, motivo: string];
-      export type OutputTuple = [idContrato: bigint, monto: bigint, motivo: string];
-      export interface OutputObject {idContrato: bigint, monto: bigint, motivo: string };
+    export namespace PrecioFijadoEvent {
+      export type InputTuple = [idContrato: BigNumberish, precioFinal: BigNumberish];
+      export type OutputTuple = [idContrato: bigint, precioFinal: bigint];
+      export interface OutputObject {idContrato: bigint, precioFinal: bigint };
       export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>
       export type Filter = TypedDeferredTopicFilter<Event>
       export type Log = TypedEventLog<Event>
@@ -263,14 +294,6 @@ decodeFunctionResult(functionFragment: 'trustedForwarder', data: BytesLike): Res
 
     
     
-    aplicarPenalizacion: TypedContractMethod<
-      [_idContrato: BigNumberish, _motivo: string, ],
-      [void],
-      'nonpayable'
-    >
-    
-
-    
     approve: TypedContractMethod<
       [to: AddressLike, tokenId: BigNumberish, ],
       [void],
@@ -287,8 +310,16 @@ decodeFunctionResult(functionFragment: 'trustedForwarder', data: BytesLike): Res
     
 
     
+    cancelarContrato: TypedContractMethod<
+      [id: BigNumberish, motivo: string, ],
+      [void],
+      'nonpayable'
+    >
+    
+
+    
     confirmarEntregaMetaTx: TypedContractMethod<
-      [_idContrato: BigNumberish, ],
+      [id: BigNumberish, ],
       [void],
       'nonpayable'
     >
@@ -305,14 +336,30 @@ decodeFunctionResult(functionFragment: 'trustedForwarder', data: BytesLike): Res
     
     contratos: TypedContractMethod<
       [arg0: BigNumberish, ],
-      [[ContratoGranosSoja.IdentificadorPartesStructOutput, string, ContratoGranosSoja.CondicionesComercialesStructOutput, ContratoGranosSoja.CondicionesEconomicasStructOutput, ContratoGranosSoja.PenalizacionIncumplimientoStructOutput, string, string, bigint] & {identificadorPartes: ContratoGranosSoja.IdentificadorPartesStructOutput, tipoProducto: string, condicionesComerciales: ContratoGranosSoja.CondicionesComercialesStructOutput, condicionesEconomicas: ContratoGranosSoja.CondicionesEconomicasStructOutput, penalizacionIncumplimiento: ContratoGranosSoja.PenalizacionIncumplimientoStructOutput, hashVersionContrato: string, evidenceURI: string, estado: bigint }],
+      [[ContratoGranosSoja.PartesStructOutput, ContratoGranosSoja.CondicionesGranoStructOutput, ContratoGranosSoja.CondicionesEntregaStructOutput, ContratoGranosSoja.CondicionesPrecioStructOutput, ContratoGranosSoja.CondicionesEmbarqueStructOutput, string, string, bigint, bigint] & {partes: ContratoGranosSoja.PartesStructOutput, condicionesGrano: ContratoGranosSoja.CondicionesGranoStructOutput, condicionesEntrega: ContratoGranosSoja.CondicionesEntregaStructOutput, condicionesPrecio: ContratoGranosSoja.CondicionesPrecioStructOutput, condicionesEmbarque: ContratoGranosSoja.CondicionesEmbarqueStructOutput, hashVersionContrato: string, evidenceURI: string, fechaCelebracionContrato: bigint, estado: bigint }],
       'view'
     >
     
 
     
     crearContrato: TypedContractMethod<
-      [_identificadorPartes: ContratoGranosSoja.IdentificadorPartesStruct, _condicionesComerciales: ContratoGranosSoja.CondicionesComercialesStruct, _modalidadPago: string, _accionIncumplimiento: BigNumberish, _porcentajeDescuento: BigNumberish, _arbitro: AddressLike, _hashVersionContrato: string, ],
+      [datos: ContratoGranosSoja.ContratoStruct, ],
+      [void],
+      'nonpayable'
+    >
+    
+
+    
+    editarContrato: TypedContractMethod<
+      [id: BigNumberish, nuevosDatos: ContratoGranosSoja.ContratoStruct, ],
+      [void],
+      'nonpayable'
+    >
+    
+
+    
+    enviarContrato: TypedContractMethod<
+      [id: BigNumberish, ],
       [void],
       'nonpayable'
     >
@@ -320,7 +367,7 @@ decodeFunctionResult(functionFragment: 'trustedForwarder', data: BytesLike): Res
 
     
     firmarContratoMetaTx: TypedContractMethod<
-      [_idContrato: BigNumberish, consentHash: string, evidenceURI: string, ],
+      [id: BigNumberish, consentHash: string, evidenceURI: string, ],
       [void],
       'nonpayable'
     >
@@ -379,14 +426,6 @@ decodeFunctionResult(functionFragment: 'trustedForwarder', data: BytesLike): Res
       [tokenId: BigNumberish, ],
       [string],
       'view'
-    >
-    
-
-    
-    pagar: TypedContractMethod<
-      [_idContrato: BigNumberish, ],
-      [void],
-      'payable'
     >
     
 
@@ -489,12 +528,7 @@ decodeFunctionResult(functionFragment: 'trustedForwarder', data: BytesLike): Res
 
     getFunction<T extends ContractMethod = ContractMethod>(key: string | FunctionFragment): T;
 
-    getFunction(nameOrSignature: 'aplicarPenalizacion'): TypedContractMethod<
-      [_idContrato: BigNumberish, _motivo: string, ],
-      [void],
-      'nonpayable'
-    >;
-getFunction(nameOrSignature: 'approve'): TypedContractMethod<
+    getFunction(nameOrSignature: 'approve'): TypedContractMethod<
       [to: AddressLike, tokenId: BigNumberish, ],
       [void],
       'nonpayable'
@@ -504,8 +538,13 @@ getFunction(nameOrSignature: 'balanceOf'): TypedContractMethod<
       [bigint],
       'view'
     >;
+getFunction(nameOrSignature: 'cancelarContrato'): TypedContractMethod<
+      [id: BigNumberish, motivo: string, ],
+      [void],
+      'nonpayable'
+    >;
 getFunction(nameOrSignature: 'confirmarEntregaMetaTx'): TypedContractMethod<
-      [_idContrato: BigNumberish, ],
+      [id: BigNumberish, ],
       [void],
       'nonpayable'
     >;
@@ -516,16 +555,26 @@ getFunction(nameOrSignature: 'contadorContratos'): TypedContractMethod<
     >;
 getFunction(nameOrSignature: 'contratos'): TypedContractMethod<
       [arg0: BigNumberish, ],
-      [[ContratoGranosSoja.IdentificadorPartesStructOutput, string, ContratoGranosSoja.CondicionesComercialesStructOutput, ContratoGranosSoja.CondicionesEconomicasStructOutput, ContratoGranosSoja.PenalizacionIncumplimientoStructOutput, string, string, bigint] & {identificadorPartes: ContratoGranosSoja.IdentificadorPartesStructOutput, tipoProducto: string, condicionesComerciales: ContratoGranosSoja.CondicionesComercialesStructOutput, condicionesEconomicas: ContratoGranosSoja.CondicionesEconomicasStructOutput, penalizacionIncumplimiento: ContratoGranosSoja.PenalizacionIncumplimientoStructOutput, hashVersionContrato: string, evidenceURI: string, estado: bigint }],
+      [[ContratoGranosSoja.PartesStructOutput, ContratoGranosSoja.CondicionesGranoStructOutput, ContratoGranosSoja.CondicionesEntregaStructOutput, ContratoGranosSoja.CondicionesPrecioStructOutput, ContratoGranosSoja.CondicionesEmbarqueStructOutput, string, string, bigint, bigint] & {partes: ContratoGranosSoja.PartesStructOutput, condicionesGrano: ContratoGranosSoja.CondicionesGranoStructOutput, condicionesEntrega: ContratoGranosSoja.CondicionesEntregaStructOutput, condicionesPrecio: ContratoGranosSoja.CondicionesPrecioStructOutput, condicionesEmbarque: ContratoGranosSoja.CondicionesEmbarqueStructOutput, hashVersionContrato: string, evidenceURI: string, fechaCelebracionContrato: bigint, estado: bigint }],
       'view'
     >;
 getFunction(nameOrSignature: 'crearContrato'): TypedContractMethod<
-      [_identificadorPartes: ContratoGranosSoja.IdentificadorPartesStruct, _condicionesComerciales: ContratoGranosSoja.CondicionesComercialesStruct, _modalidadPago: string, _accionIncumplimiento: BigNumberish, _porcentajeDescuento: BigNumberish, _arbitro: AddressLike, _hashVersionContrato: string, ],
+      [datos: ContratoGranosSoja.ContratoStruct, ],
+      [void],
+      'nonpayable'
+    >;
+getFunction(nameOrSignature: 'editarContrato'): TypedContractMethod<
+      [id: BigNumberish, nuevosDatos: ContratoGranosSoja.ContratoStruct, ],
+      [void],
+      'nonpayable'
+    >;
+getFunction(nameOrSignature: 'enviarContrato'): TypedContractMethod<
+      [id: BigNumberish, ],
       [void],
       'nonpayable'
     >;
 getFunction(nameOrSignature: 'firmarContratoMetaTx'): TypedContractMethod<
-      [_idContrato: BigNumberish, consentHash: string, evidenceURI: string, ],
+      [id: BigNumberish, consentHash: string, evidenceURI: string, ],
       [void],
       'nonpayable'
     >;
@@ -563,11 +612,6 @@ getFunction(nameOrSignature: 'ownerOf'): TypedContractMethod<
       [tokenId: BigNumberish, ],
       [string],
       'view'
-    >;
-getFunction(nameOrSignature: 'pagar'): TypedContractMethod<
-      [_idContrato: BigNumberish, ],
-      [void],
-      'payable'
     >;
 getFunction(nameOrSignature: 'relayer'): TypedContractMethod<
       [],
@@ -632,13 +676,15 @@ getFunction(nameOrSignature: 'trustedForwarder'): TypedContractMethod<
 
     getEvent(key: 'Approval'): TypedContractEvent<ApprovalEvent.InputTuple, ApprovalEvent.OutputTuple, ApprovalEvent.OutputObject>;
 getEvent(key: 'ApprovalForAll'): TypedContractEvent<ApprovalForAllEvent.InputTuple, ApprovalForAllEvent.OutputTuple, ApprovalForAllEvent.OutputObject>;
+getEvent(key: 'ContratoCancelado'): TypedContractEvent<ContratoCanceladoEvent.InputTuple, ContratoCanceladoEvent.OutputTuple, ContratoCanceladoEvent.OutputObject>;
+getEvent(key: 'ContratoCelebrado'): TypedContractEvent<ContratoCelebradoEvent.InputTuple, ContratoCelebradoEvent.OutputTuple, ContratoCelebradoEvent.OutputObject>;
 getEvent(key: 'ContratoCerrado'): TypedContractEvent<ContratoCerradoEvent.InputTuple, ContratoCerradoEvent.OutputTuple, ContratoCerradoEvent.OutputObject>;
 getEvent(key: 'ContratoCreado'): TypedContractEvent<ContratoCreadoEvent.InputTuple, ContratoCreadoEvent.OutputTuple, ContratoCreadoEvent.OutputObject>;
+getEvent(key: 'ContratoEditado'): TypedContractEvent<ContratoEditadoEvent.InputTuple, ContratoEditadoEvent.OutputTuple, ContratoEditadoEvent.OutputObject>;
 getEvent(key: 'ContratoFirmado'): TypedContractEvent<ContratoFirmadoEvent.InputTuple, ContratoFirmadoEvent.OutputTuple, ContratoFirmadoEvent.OutputObject>;
 getEvent(key: 'EntregaConfirmada'): TypedContractEvent<EntregaConfirmadaEvent.InputTuple, EntregaConfirmadaEvent.OutputTuple, EntregaConfirmadaEvent.OutputObject>;
 getEvent(key: 'OwnershipTransferred'): TypedContractEvent<OwnershipTransferredEvent.InputTuple, OwnershipTransferredEvent.OutputTuple, OwnershipTransferredEvent.OutputObject>;
-getEvent(key: 'PagoEjecutado'): TypedContractEvent<PagoEjecutadoEvent.InputTuple, PagoEjecutadoEvent.OutputTuple, PagoEjecutadoEvent.OutputObject>;
-getEvent(key: 'PenalizacionAplicada'): TypedContractEvent<PenalizacionAplicadaEvent.InputTuple, PenalizacionAplicadaEvent.OutputTuple, PenalizacionAplicadaEvent.OutputObject>;
+getEvent(key: 'PrecioFijado'): TypedContractEvent<PrecioFijadoEvent.InputTuple, PrecioFijadoEvent.OutputTuple, PrecioFijadoEvent.OutputObject>;
 getEvent(key: 'RelayerActualizado'): TypedContractEvent<RelayerActualizadoEvent.InputTuple, RelayerActualizadoEvent.OutputTuple, RelayerActualizadoEvent.OutputObject>;
 getEvent(key: 'Transfer'): TypedContractEvent<TransferEvent.InputTuple, TransferEvent.OutputTuple, TransferEvent.OutputObject>;
 
@@ -652,12 +698,24 @@ getEvent(key: 'Transfer'): TypedContractEvent<TransferEvent.InputTuple, Transfer
       ApprovalForAll: TypedContractEvent<ApprovalForAllEvent.InputTuple, ApprovalForAllEvent.OutputTuple, ApprovalForAllEvent.OutputObject>;
     
 
+      'ContratoCancelado(uint256,address,string,uint256)': TypedContractEvent<ContratoCanceladoEvent.InputTuple, ContratoCanceladoEvent.OutputTuple, ContratoCanceladoEvent.OutputObject>;
+      ContratoCancelado: TypedContractEvent<ContratoCanceladoEvent.InputTuple, ContratoCanceladoEvent.OutputTuple, ContratoCanceladoEvent.OutputObject>;
+    
+
+      'ContratoCelebrado(uint256,uint256)': TypedContractEvent<ContratoCelebradoEvent.InputTuple, ContratoCelebradoEvent.OutputTuple, ContratoCelebradoEvent.OutputObject>;
+      ContratoCelebrado: TypedContractEvent<ContratoCelebradoEvent.InputTuple, ContratoCelebradoEvent.OutputTuple, ContratoCelebradoEvent.OutputObject>;
+    
+
       'ContratoCerrado(uint256,uint8)': TypedContractEvent<ContratoCerradoEvent.InputTuple, ContratoCerradoEvent.OutputTuple, ContratoCerradoEvent.OutputObject>;
       ContratoCerrado: TypedContractEvent<ContratoCerradoEvent.InputTuple, ContratoCerradoEvent.OutputTuple, ContratoCerradoEvent.OutputObject>;
     
 
       'ContratoCreado(uint256,address,address)': TypedContractEvent<ContratoCreadoEvent.InputTuple, ContratoCreadoEvent.OutputTuple, ContratoCreadoEvent.OutputObject>;
       ContratoCreado: TypedContractEvent<ContratoCreadoEvent.InputTuple, ContratoCreadoEvent.OutputTuple, ContratoCreadoEvent.OutputObject>;
+    
+
+      'ContratoEditado(uint256,address)': TypedContractEvent<ContratoEditadoEvent.InputTuple, ContratoEditadoEvent.OutputTuple, ContratoEditadoEvent.OutputObject>;
+      ContratoEditado: TypedContractEvent<ContratoEditadoEvent.InputTuple, ContratoEditadoEvent.OutputTuple, ContratoEditadoEvent.OutputObject>;
     
 
       'ContratoFirmado(uint256,address,string,string)': TypedContractEvent<ContratoFirmadoEvent.InputTuple, ContratoFirmadoEvent.OutputTuple, ContratoFirmadoEvent.OutputObject>;
@@ -672,12 +730,8 @@ getEvent(key: 'Transfer'): TypedContractEvent<TransferEvent.InputTuple, Transfer
       OwnershipTransferred: TypedContractEvent<OwnershipTransferredEvent.InputTuple, OwnershipTransferredEvent.OutputTuple, OwnershipTransferredEvent.OutputObject>;
     
 
-      'PagoEjecutado(uint256,uint256)': TypedContractEvent<PagoEjecutadoEvent.InputTuple, PagoEjecutadoEvent.OutputTuple, PagoEjecutadoEvent.OutputObject>;
-      PagoEjecutado: TypedContractEvent<PagoEjecutadoEvent.InputTuple, PagoEjecutadoEvent.OutputTuple, PagoEjecutadoEvent.OutputObject>;
-    
-
-      'PenalizacionAplicada(uint256,uint256,string)': TypedContractEvent<PenalizacionAplicadaEvent.InputTuple, PenalizacionAplicadaEvent.OutputTuple, PenalizacionAplicadaEvent.OutputObject>;
-      PenalizacionAplicada: TypedContractEvent<PenalizacionAplicadaEvent.InputTuple, PenalizacionAplicadaEvent.OutputTuple, PenalizacionAplicadaEvent.OutputObject>;
+      'PrecioFijado(uint256,uint256)': TypedContractEvent<PrecioFijadoEvent.InputTuple, PrecioFijadoEvent.OutputTuple, PrecioFijadoEvent.OutputObject>;
+      PrecioFijado: TypedContractEvent<PrecioFijadoEvent.InputTuple, PrecioFijadoEvent.OutputTuple, PrecioFijadoEvent.OutputObject>;
     
 
       'RelayerActualizado(address,address)': TypedContractEvent<RelayerActualizadoEvent.InputTuple, RelayerActualizadoEvent.OutputTuple, RelayerActualizadoEvent.OutputObject>;
