@@ -440,6 +440,29 @@ export const CONTRACT_ABI = [
     {
       "inputs": [
         {
+          "internalType": "uint256",
+          "name": "id",
+          "type": "uint256"
+        },
+        {
+          "internalType": "string",
+          "name": "textoClausula",
+          "type": "string"
+        },
+        {
+          "internalType": "string",
+          "name": "CID",
+          "type": "string"
+        }
+      ],
+      "name": "agregarClausulaAdicional",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
           "internalType": "address",
           "name": "to",
           "type": "address"
@@ -885,6 +908,23 @@ export const CONTRACT_ABI = [
               "internalType": "enum ContratoGranosSoja.Estado",
               "name": "estado",
               "type": "uint8"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "string",
+                  "name": "textoClausula",
+                  "type": "string"
+                },
+                {
+                  "internalType": "string",
+                  "name": "CID",
+                  "type": "string"
+                }
+              ],
+              "internalType": "struct ContratoGranosSoja.ClausulaAdicional[]",
+              "name": "clausulasAdicionales",
+              "type": "tuple[]"
             }
           ],
           "internalType": "struct ContratoGranosSoja.Contrato",
@@ -1080,6 +1120,23 @@ export const CONTRACT_ABI = [
               "internalType": "enum ContratoGranosSoja.Estado",
               "name": "estado",
               "type": "uint8"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "string",
+                  "name": "textoClausula",
+                  "type": "string"
+                },
+                {
+                  "internalType": "string",
+                  "name": "CID",
+                  "type": "string"
+                }
+              ],
+              "internalType": "struct ContratoGranosSoja.ClausulaAdicional[]",
+              "name": "clausulasAdicionales",
+              "type": "tuple[]"
             }
           ],
           "internalType": "struct ContratoGranosSoja.Contrato",
@@ -1088,19 +1145,6 @@ export const CONTRACT_ABI = [
         }
       ],
       "name": "editarContrato",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "id",
-          "type": "uint256"
-        }
-      ],
-      "name": "enviarContrato",
       "outputs": [],
       "stateMutability": "nonpayable",
       "type": "function"
@@ -1383,6 +1427,23 @@ export const CONTRACT_ABI = [
               "internalType": "enum ContratoGranosSoja.Estado",
               "name": "estado",
               "type": "uint8"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "string",
+                  "name": "textoClausula",
+                  "type": "string"
+                },
+                {
+                  "internalType": "string",
+                  "name": "CID",
+                  "type": "string"
+                }
+              ],
+              "internalType": "struct ContratoGranosSoja.ClausulaAdicional[]",
+              "name": "clausulasAdicionales",
+              "type": "tuple[]"
             }
           ],
           "internalType": "struct ContratoGranosSoja.Contrato[]",
