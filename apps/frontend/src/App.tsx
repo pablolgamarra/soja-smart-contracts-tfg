@@ -1,11 +1,11 @@
-import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
-import { useWeb3Context } from "./hooks/useWeb3Context";
-import NavigationButtons from "./components/NavigationButtons";
-import ListarContratos from "./components/ListarContratos";
-import FormContrato from "./components/FormCrearContrato";
-import FirmarContrato from "./components/FirmarContrato";
-import Login from "./components/Login";
-import ErrorComponent from "./components/ErrorComponent";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { useWeb3Context } from "@hooks/useWeb3Context";
+import NavigationButtons from "@components/NavigationButtons";
+import ListarContratos from "@components/ListarContratos";
+import FormContrato from "@components/FormCrearContrato";
+import FirmarContrato from "@components/FirmarContrato";
+import Login from "@components/Login";
+import ErrorComponent from "@components/ErrorComponent";
 
 export default function App() {
     const web3Context = useWeb3Context();
