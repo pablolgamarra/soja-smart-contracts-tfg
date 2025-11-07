@@ -14,6 +14,8 @@ const initializeDb = async (db:Database) => {
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 contractId VARCHAR(255) NOT NULL,
                 sellerAddress TEXT NOT NULL,
+                contactNumber TEXT,
+                email TEXT,
                 otp VARCHAR(6) NOT NULL,
                 expiresAt TEXT NOT NULL,
                 used BOOLEAN NOT NULL DEFAULT 0
