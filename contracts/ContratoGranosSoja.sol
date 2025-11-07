@@ -1,13 +1,16 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.30;
+
 import {ERC721} from "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 import {ERC2771Context} from "@openzeppelin/contracts/metatx/ERC2771Context.sol";
 import {Context} from "@openzeppelin/contracts/utils/Context.sol";
+
 contract ContratoGranosSoja is ERC721, Ownable, ERC2771Context {
     // ===== ENUMS =====
     enum TipoContrato { PrecioFijo, PrecioAFijar }
     enum Estado { Borrador, Enviado, Firmado, Terminado, Cancelado }
+
     // ===== STRUCTS =====
     struct Partes {
         address comprador;
@@ -20,29 +23,40 @@ contract ContratoGranosSoja is ERC721, Ownable, ERC2771Context {
         string nroIdentidadBroker;
         string nombreBroker;        
     }
+
     struct CondicionesGrano {
         uint cantidadToneladasMetricas;
         string tipoGrano;
         string cosecha;
     }
+
     struct CondicionesEntrega {
         string empaque;
         uint fechaEntregaInicio;
         uint fechaEntregaFin;
     }
+
     struct CondicionesPrecio {
         TipoContrato tipoContrato;
         uint precioPorToneladaMetrica;
         uint precioCBOTBushel;
-        int ajusteCBOT;
+        int ajusteCBOT; // al par=0 / más=1 / menos=-1
         uint fechaPrecioChicago;
         string incoterm;
         uint precioFinal;
     }
+
     struct CondicionesEmbarque {
         string puertoEmbarque;
         string destinoFinal;
     }
+
+    // Cláusulas adicionales (texto y CID)
+    struct ClausulaAdicional {
+        string textoClausula;
+        string CID; // El CID de IPFS que contiene el texto completo
+    }
+
     struct Contrato {
         Partes partes;
         CondicionesGrano condicionesGrano;
@@ -53,11 +67,16 @@ contract ContratoGranosSoja is ERC721, Ownable, ERC2771Context {
         string evidenceURI;
         uint fechaCelebracionContrato;
         Estado estado;
+
+        // Cláusulas adicionales
+        ClausulaAdicional[] clausulasAdicionales; // Array de cláusulas adicionales con su CID
     }
+
     // ===== VARIABLES =====
     uint public contadorContratos;
     mapping(uint => Contrato) public contratos;
     address public relayer;
+
     // ===== EVENTOS =====
     event ContratoCreado(uint indexed idContrato, address indexed comprador, address vendedor);
     event ContratoFirmado(uint indexed idContrato, address vendedor, string consentHash, string evidenceURI);
@@ -68,6 +87,7 @@ contract ContratoGranosSoja is ERC721, Ownable, ERC2771Context {
     event RelayerActualizado(address indexed oldRelayer, address indexed newRelayer);
     event ContratoCelebrado(uint indexed idContrato, uint fechaCelebracion);
     event PrecioFijado(uint indexed idContrato, uint precioFinal);
+
     // ===== CONSTRUCTOR =====
     constructor(address _trustedForwarder, address _relayer)
         ERC721("ContratoGranosSoja", "CGS")
@@ -76,18 +96,22 @@ contract ContratoGranosSoja is ERC721, Ownable, ERC2771Context {
     {
         relayer = _relayer;
     }
+
     modifier onlyRelayer() {
         require(_msgSender() == relayer, "Solo relayer autorizado");
         _;
     }
+
     // ===== ADMIN =====
     function setRelayer(address _relayer) external onlyOwner {
         emit RelayerActualizado(relayer, _relayer);
         relayer = _relayer;
     }
+
     // =============================================================
     // FUNCIONES PRINCIPALES
     // =============================================================
+
     /// @notice Crea un nuevo contrato (estado Borrador)
     function crearContrato(Contrato memory datos) external {
         contadorContratos++;
@@ -113,12 +137,17 @@ contract ContratoGranosSoja is ERC721, Ownable, ERC2771Context {
         emit ContratoEditado(id, _msgSender());
     }
 
-    /// @notice Envía el contrato al vendedor (backend o comprador)
-    function enviarContrato(uint id) external {
+    /// @notice Añadir cláusula adicional con su CID
+    function agregarClausulaAdicional(uint id, string calldata textoClausula, string calldata CID) external {
         Contrato storage c = contratos[id];
-        require(_msgSender() == c.partes.comprador, "Solo comprador");
-        require(c.estado == Estado.Borrador, "Estado invalido");
-        c.estado = Estado.Enviado;
+        require(c.estado == Estado.Borrador || c.estado == Estado.Enviado, "No editable");
+
+        ClausulaAdicional memory nuevaClausula = ClausulaAdicional({
+            textoClausula: textoClausula,
+            CID: CID
+        });
+
+        c.clausulasAdicionales.push(nuevaClausula);
     }
 
     /// @notice Firma del vendedor registrada por el relayer
@@ -129,14 +158,18 @@ contract ContratoGranosSoja is ERC721, Ownable, ERC2771Context {
     ) external onlyRelayer {
         Contrato storage c = contratos[id];
         require(c.estado == Estado.Enviado, "Debe estar Enviado");
+
         // 1️⃣ Fija el precio final
         _fijarPrecioFinal(id);
+
         // 2️⃣ Marca fecha de celebración
         c.fechaCelebracionContrato = block.timestamp;
+
         // 3️⃣ Actualiza estado y evidencias
         c.estado = Estado.Firmado;
         c.hashVersionContrato = consentHash;
         c.evidenceURI = evidenceURI;
+
         emit PrecioFijado(id, c.condicionesPrecio.precioFinal);
         emit ContratoFirmado(id, c.partes.vendedor, consentHash, evidenceURI);
         emit ContratoCelebrado(id, c.fechaCelebracionContrato);
@@ -146,12 +179,14 @@ contract ContratoGranosSoja is ERC721, Ownable, ERC2771Context {
     function _fijarPrecioFinal(uint id) internal {
         Contrato storage c = contratos[id];
         CondicionesPrecio storage p = c.condicionesPrecio;
+
         if (p.tipoContrato == TipoContrato.PrecioFijo) {
             p.precioFinal = p.precioPorToneladaMetrica;
         } else if (p.tipoContrato == TipoContrato.PrecioAFijar) {
             int ajuste = p.ajusteCBOT;
             uint base = p.precioCBOTBushel;
             uint convertido;
+
             if (ajuste < 0 && uint(-ajuste) > base) {
                 convertido = 0;
             } else {
@@ -191,6 +226,7 @@ contract ContratoGranosSoja is ERC721, Ownable, ERC2771Context {
     // =============================================================
     // LECTURA / UTILIDADES
     // =============================================================
+
     function obtenerContratos() external view returns (Contrato[] memory) {
         uint total = contadorContratos;
         Contrato[] memory lista = new Contrato[](total);

@@ -31,18 +31,24 @@ export declare namespace ContratoGranosSoja {
     export type CondicionesEmbarqueStructOutput = [puertoEmbarque: string, destinoFinal: string] & {puertoEmbarque: string, destinoFinal: string }
   
 
-    export type ContratoStruct = {partes: ContratoGranosSoja.PartesStruct, condicionesGrano: ContratoGranosSoja.CondicionesGranoStruct, condicionesEntrega: ContratoGranosSoja.CondicionesEntregaStruct, condicionesPrecio: ContratoGranosSoja.CondicionesPrecioStruct, condicionesEmbarque: ContratoGranosSoja.CondicionesEmbarqueStruct, hashVersionContrato: string, evidenceURI: string, fechaCelebracionContrato: BigNumberish, estado: BigNumberish}
+    export type ClausulaAdicionalStruct = {textoClausula: string, CID: string}
 
-    export type ContratoStructOutput = [partes: ContratoGranosSoja.PartesStructOutput, condicionesGrano: ContratoGranosSoja.CondicionesGranoStructOutput, condicionesEntrega: ContratoGranosSoja.CondicionesEntregaStructOutput, condicionesPrecio: ContratoGranosSoja.CondicionesPrecioStructOutput, condicionesEmbarque: ContratoGranosSoja.CondicionesEmbarqueStructOutput, hashVersionContrato: string, evidenceURI: string, fechaCelebracionContrato: bigint, estado: bigint] & {partes: ContratoGranosSoja.PartesStructOutput, condicionesGrano: ContratoGranosSoja.CondicionesGranoStructOutput, condicionesEntrega: ContratoGranosSoja.CondicionesEntregaStructOutput, condicionesPrecio: ContratoGranosSoja.CondicionesPrecioStructOutput, condicionesEmbarque: ContratoGranosSoja.CondicionesEmbarqueStructOutput, hashVersionContrato: string, evidenceURI: string, fechaCelebracionContrato: bigint, estado: bigint }
+    export type ClausulaAdicionalStructOutput = [textoClausula: string, CID: string] & {textoClausula: string, CID: string }
+  
+
+    export type ContratoStruct = {partes: ContratoGranosSoja.PartesStruct, condicionesGrano: ContratoGranosSoja.CondicionesGranoStruct, condicionesEntrega: ContratoGranosSoja.CondicionesEntregaStruct, condicionesPrecio: ContratoGranosSoja.CondicionesPrecioStruct, condicionesEmbarque: ContratoGranosSoja.CondicionesEmbarqueStruct, hashVersionContrato: string, evidenceURI: string, fechaCelebracionContrato: BigNumberish, estado: BigNumberish, clausulasAdicionales: ContratoGranosSoja.ClausulaAdicionalStruct[]}
+
+    export type ContratoStructOutput = [partes: ContratoGranosSoja.PartesStructOutput, condicionesGrano: ContratoGranosSoja.CondicionesGranoStructOutput, condicionesEntrega: ContratoGranosSoja.CondicionesEntregaStructOutput, condicionesPrecio: ContratoGranosSoja.CondicionesPrecioStructOutput, condicionesEmbarque: ContratoGranosSoja.CondicionesEmbarqueStructOutput, hashVersionContrato: string, evidenceURI: string, fechaCelebracionContrato: bigint, estado: bigint, clausulasAdicionales: ContratoGranosSoja.ClausulaAdicionalStructOutput[]] & {partes: ContratoGranosSoja.PartesStructOutput, condicionesGrano: ContratoGranosSoja.CondicionesGranoStructOutput, condicionesEntrega: ContratoGranosSoja.CondicionesEntregaStructOutput, condicionesPrecio: ContratoGranosSoja.CondicionesPrecioStructOutput, condicionesEmbarque: ContratoGranosSoja.CondicionesEmbarqueStructOutput, hashVersionContrato: string, evidenceURI: string, fechaCelebracionContrato: bigint, estado: bigint, clausulasAdicionales: ContratoGranosSoja.ClausulaAdicionalStructOutput[] }
   
     }
 
   export interface ContratoGranosSojaInterface extends Interface {
-    getFunction(nameOrSignature: "approve" | "balanceOf" | "cancelarContrato" | "confirmarEntregaMetaTx" | "contadorContratos" | "contratos" | "crearContrato" | "editarContrato" | "enviarContrato" | "firmarContratoMetaTx" | "getApproved" | "isApprovedForAll" | "isTrustedForwarder" | "name" | "obtenerContratos" | "owner" | "ownerOf" | "relayer" | "renounceOwnership" | "safeTransferFrom(address,address,uint256)" | "safeTransferFrom(address,address,uint256,bytes)" | "setApprovalForAll" | "setRelayer" | "supportsInterface" | "symbol" | "tokenURI" | "transferFrom" | "transferOwnership" | "trustedForwarder"): FunctionFragment;
+    getFunction(nameOrSignature: "agregarClausulaAdicional" | "approve" | "balanceOf" | "cancelarContrato" | "confirmarEntregaMetaTx" | "contadorContratos" | "contratos" | "crearContrato" | "editarContrato" | "firmarContratoMetaTx" | "getApproved" | "isApprovedForAll" | "isTrustedForwarder" | "name" | "obtenerContratos" | "owner" | "ownerOf" | "relayer" | "renounceOwnership" | "safeTransferFrom(address,address,uint256)" | "safeTransferFrom(address,address,uint256,bytes)" | "setApprovalForAll" | "setRelayer" | "supportsInterface" | "symbol" | "tokenURI" | "transferFrom" | "transferOwnership" | "trustedForwarder"): FunctionFragment;
 
     getEvent(nameOrSignatureOrTopic: "Approval" | "ApprovalForAll" | "ContratoCancelado" | "ContratoCelebrado" | "ContratoCerrado" | "ContratoCreado" | "ContratoEditado" | "ContratoFirmado" | "EntregaConfirmada" | "OwnershipTransferred" | "PrecioFijado" | "RelayerActualizado" | "Transfer"): EventFragment;
 
-    encodeFunctionData(functionFragment: 'approve', values: [AddressLike, BigNumberish]): string;
+    encodeFunctionData(functionFragment: 'agregarClausulaAdicional', values: [BigNumberish, string, string]): string;
+encodeFunctionData(functionFragment: 'approve', values: [AddressLike, BigNumberish]): string;
 encodeFunctionData(functionFragment: 'balanceOf', values: [AddressLike]): string;
 encodeFunctionData(functionFragment: 'cancelarContrato', values: [BigNumberish, string]): string;
 encodeFunctionData(functionFragment: 'confirmarEntregaMetaTx', values: [BigNumberish]): string;
@@ -50,7 +56,6 @@ encodeFunctionData(functionFragment: 'contadorContratos', values?: undefined): s
 encodeFunctionData(functionFragment: 'contratos', values: [BigNumberish]): string;
 encodeFunctionData(functionFragment: 'crearContrato', values: [ContratoGranosSoja.ContratoStruct]): string;
 encodeFunctionData(functionFragment: 'editarContrato', values: [BigNumberish, ContratoGranosSoja.ContratoStruct]): string;
-encodeFunctionData(functionFragment: 'enviarContrato', values: [BigNumberish]): string;
 encodeFunctionData(functionFragment: 'firmarContratoMetaTx', values: [BigNumberish, string, string]): string;
 encodeFunctionData(functionFragment: 'getApproved', values: [BigNumberish]): string;
 encodeFunctionData(functionFragment: 'isApprovedForAll', values: [AddressLike, AddressLike]): string;
@@ -72,7 +77,8 @@ encodeFunctionData(functionFragment: 'transferFrom', values: [AddressLike, Addre
 encodeFunctionData(functionFragment: 'transferOwnership', values: [AddressLike]): string;
 encodeFunctionData(functionFragment: 'trustedForwarder', values?: undefined): string;
 
-    decodeFunctionResult(functionFragment: 'approve', data: BytesLike): Result;
+    decodeFunctionResult(functionFragment: 'agregarClausulaAdicional', data: BytesLike): Result;
+decodeFunctionResult(functionFragment: 'approve', data: BytesLike): Result;
 decodeFunctionResult(functionFragment: 'balanceOf', data: BytesLike): Result;
 decodeFunctionResult(functionFragment: 'cancelarContrato', data: BytesLike): Result;
 decodeFunctionResult(functionFragment: 'confirmarEntregaMetaTx', data: BytesLike): Result;
@@ -80,7 +86,6 @@ decodeFunctionResult(functionFragment: 'contadorContratos', data: BytesLike): Re
 decodeFunctionResult(functionFragment: 'contratos', data: BytesLike): Result;
 decodeFunctionResult(functionFragment: 'crearContrato', data: BytesLike): Result;
 decodeFunctionResult(functionFragment: 'editarContrato', data: BytesLike): Result;
-decodeFunctionResult(functionFragment: 'enviarContrato', data: BytesLike): Result;
 decodeFunctionResult(functionFragment: 'firmarContratoMetaTx', data: BytesLike): Result;
 decodeFunctionResult(functionFragment: 'getApproved', data: BytesLike): Result;
 decodeFunctionResult(functionFragment: 'isApprovedForAll', data: BytesLike): Result;
@@ -294,6 +299,14 @@ decodeFunctionResult(functionFragment: 'trustedForwarder', data: BytesLike): Res
 
     
     
+    agregarClausulaAdicional: TypedContractMethod<
+      [id: BigNumberish, textoClausula: string, CID: string, ],
+      [void],
+      'nonpayable'
+    >
+    
+
+    
     approve: TypedContractMethod<
       [to: AddressLike, tokenId: BigNumberish, ],
       [void],
@@ -352,14 +365,6 @@ decodeFunctionResult(functionFragment: 'trustedForwarder', data: BytesLike): Res
     
     editarContrato: TypedContractMethod<
       [id: BigNumberish, nuevosDatos: ContratoGranosSoja.ContratoStruct, ],
-      [void],
-      'nonpayable'
-    >
-    
-
-    
-    enviarContrato: TypedContractMethod<
-      [id: BigNumberish, ],
       [void],
       'nonpayable'
     >
@@ -528,7 +533,12 @@ decodeFunctionResult(functionFragment: 'trustedForwarder', data: BytesLike): Res
 
     getFunction<T extends ContractMethod = ContractMethod>(key: string | FunctionFragment): T;
 
-    getFunction(nameOrSignature: 'approve'): TypedContractMethod<
+    getFunction(nameOrSignature: 'agregarClausulaAdicional'): TypedContractMethod<
+      [id: BigNumberish, textoClausula: string, CID: string, ],
+      [void],
+      'nonpayable'
+    >;
+getFunction(nameOrSignature: 'approve'): TypedContractMethod<
       [to: AddressLike, tokenId: BigNumberish, ],
       [void],
       'nonpayable'
@@ -565,11 +575,6 @@ getFunction(nameOrSignature: 'crearContrato'): TypedContractMethod<
     >;
 getFunction(nameOrSignature: 'editarContrato'): TypedContractMethod<
       [id: BigNumberish, nuevosDatos: ContratoGranosSoja.ContratoStruct, ],
-      [void],
-      'nonpayable'
-    >;
-getFunction(nameOrSignature: 'enviarContrato'): TypedContractMethod<
-      [id: BigNumberish, ],
       [void],
       'nonpayable'
     >;
