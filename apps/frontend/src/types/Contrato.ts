@@ -1,5 +1,5 @@
-import { EstadoContrato } from "../constants/EstadoContrato";
-import { TipoContrato } from "../constants/TipoContrato";
+import { EstadoContrato } from "@constants/EstadoContrato";
+import { TipoContrato } from "@constants/TipoContrato";
 
 export interface Contrato {
     // IDENTIFICADORES
