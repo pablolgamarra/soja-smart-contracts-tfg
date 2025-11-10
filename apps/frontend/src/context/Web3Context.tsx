@@ -153,3 +153,5 @@ export const Web3ContextProvider = ({
         </Web3Context.Provider>
     );
 };
+
+export default Web3Context;
