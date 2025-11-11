@@ -1,11 +1,9 @@
-import { useWeb3Context } from "@hooks/useWeb3Context"
 import CrearContrato from "@pages/CrearContrato"
 import ErrorPage from "@pages/ErrorPage"
 import FirmarContrato from "@pages/FirmarContrato"
 import Home from "@pages/Home"
 import Login from "@pages/Login"
-import { useEffect } from "react"
-import { Route, Routes, useNavigate } from "react-router-dom"
+import { Route, Routes } from "react-router-dom"
 
 const AppRouter:React.FC = () => {
     return(

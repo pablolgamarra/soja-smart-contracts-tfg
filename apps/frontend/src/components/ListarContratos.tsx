@@ -1,5 +1,5 @@
-import { useWeb3Context } from "../hooks/useWeb3Context";
-import { useAddressContractList } from "../hooks/useAddressContractList";
+import { useWeb3Context } from "@hooks/useWeb3Context";
+import { useAddressContractList } from "@hooks/useAddressContractList";
 import { useState } from "react";
 
 export default function ListarContratos() {

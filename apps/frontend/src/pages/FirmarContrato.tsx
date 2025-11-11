@@ -1,8 +1,12 @@
+import PageWrapper from "@components/common/PageWrapper";
+import FormContratoFirmar from "@components/contrato/forms/firmar/FormContratoFirmar";
+
 const FirmarContrato:React.FC = () => {
     return (
-        <div>
+        <PageWrapper>
             <h1>Firmar Contrato</h1>
-        </div>
+            <FormContratoFirmar />
+        </PageWrapper>
     );
 }
 

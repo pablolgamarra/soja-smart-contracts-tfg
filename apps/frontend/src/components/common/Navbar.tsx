@@ -9,7 +9,7 @@ const Navbar:React.FC = () => {
                     <Button 
                         className={"bg-green-600 hover:bg-green-500 transform hover:-translate-y-1 transition-all rounded-xl p-6 text-center font-semibold shadow-lg shadow-green-900/50"}
                     >
-                        {<Link to="/home">Home</Link>}
+                        {<Link to="/">Home</Link>}
                     </Button>
                 </li>
                 <li>

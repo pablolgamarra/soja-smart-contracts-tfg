@@ -74,33 +74,10 @@ const FormContratoRegister:React.FC<IFormContratoRegisterProps> = ({initialState
     return (
         <>
             <Button>
-                <Link to={"/home"}>Volver Atrás</Link>
+                <Link to={"/"}>Volver Atrás</Link>
             </Button>
             <form>
-                <InputField
-                    key={""}
-                    label={"Billetera Comprador"}
-                    name={"billeteraComprador"}
-                    type={"text"}
-                    onChange={handleInputChanges}
-                    required
-                />
-                <InputField
-                    key={""}
-                    label={"Billetera Vendedor"}
-                    name={"billeteraVendedor"}
-                    type={"text"}
-                    onChange={handleInputChanges}
-                    required
-                />
-                <InputField
-                    key={""}
-                    label={"Billetera Broker"}
-                    name={"billeteraBroker"}
-                    type={"text"}
-                    onChange={handleInputChanges}
-                    required
-                />
+                <h2>Datos del Comprador</h2>
                 <InputField
                     key={""}
                     label={"Nombre del Comprador"}
@@ -111,16 +88,8 @@ const FormContratoRegister:React.FC<IFormContratoRegisterProps> = ({initialState
                 />
                 <InputField
                     key={""}
-                    label={"Nombre del Vendedor"}
-                    name={"nombreVendedor"}
-                    type={"text"}
-                    onChange={handleInputChanges}
-                    required
-                />
-                <InputField
-                    key={""}
-                    label={"Nombre del Broker"}
-                    name={"nombreBroker"}
+                    label={"Billetera Comprador"}
+                    name={"billeteraComprador"}
                     type={"text"}
                     onChange={handleInputChanges}
                     required
@@ -135,24 +104,43 @@ const FormContratoRegister:React.FC<IFormContratoRegisterProps> = ({initialState
                 />
                 <InputField
                     key={""}
-                    label={"CI / Ruc del Vendedor"}
-                    name={"nroFiscalVendedor"}
-                    type={"text"}
-                    onChange={handleInputChanges}
-                    required
-                />
-                <InputField
-                    key={""}
-                    label={"CI / Ruc del Broker"}
-                    name={"nroFiscalBroker"}
-                    type={"text"}
-                    onChange={handleInputChanges}
-                    required
-                />
-                <InputField
-                    key={""}
                     label={"Email del Comprador"}
                     name={"emailComprador"}
+                    type={"text"}
+                    onChange={handleInputChanges}
+                    required
+                />
+                <InputField
+                    key={""}
+                    label={"Teléfono del Comprador"}
+                    name={"telefonoComprador"}
+                    type={"text"}
+                    onChange={handleInputChanges}
+                    required
+                />
+                <hr />
+
+                <h2>Datos del Vendedor</h2>
+                <InputField
+                    key={""}
+                    label={"Nombre del Vendedor"}
+                    name={"nombreVendedor"}
+                    type={"text"}
+                    onChange={handleInputChanges}
+                    required
+                />
+                <InputField
+                    key={""}
+                    label={"Billetera Vendedor"}
+                    name={"billeteraVendedor"}
+                    type={"text"}
+                    onChange={handleInputChanges}
+                    required
+                />
+                <InputField
+                    key={""}
+                    label={"CI / Ruc del Vendedor"}
+                    name={"nroFiscalVendedor"}
                     type={"text"}
                     onChange={handleInputChanges}
                     required
@@ -167,20 +155,42 @@ const FormContratoRegister:React.FC<IFormContratoRegisterProps> = ({initialState
                 />
                 <InputField
                     key={""}
-                    label={"Teléfono del Comprador"}
-                    name={"telefonoComprador"}
-                    type={"text"}
-                    onChange={handleInputChanges}
-                    required
-                />
-                <InputField
-                    key={""}
                     label={"Teléfono del Vendedor"}
                     name={"telefonoVendedor"}
                     type={"text"}
                     onChange={handleInputChanges}
                     required
                 />
+                <hr />
+
+                <h2>Datos del Broker</h2>
+                <InputField
+                    key={""}
+                    label={"Nombre del Broker"}
+                    name={"nombreBroker"}
+                    type={"text"}
+                    onChange={handleInputChanges}
+                    required
+                />
+                <InputField
+                    key={""}
+                    label={"Billetera Broker"}
+                    name={"billeteraBroker"}
+                    type={"text"}
+                    onChange={handleInputChanges}
+                    required
+                />               
+                <InputField
+                    key={""}
+                    label={"CI / Ruc del Broker"}
+                    name={"nroFiscalBroker"}
+                    type={"text"}
+                    onChange={handleInputChanges}
+                    required
+                />
+                <hr />
+                
+                <h2>Condiciones del Grano</h2>
                 <InputField
                     key={""}
                     label={"Cantidad de Toneladas"}
@@ -205,6 +215,9 @@ const FormContratoRegister:React.FC<IFormContratoRegisterProps> = ({initialState
                     onChange={handleInputChanges}
                     required
                 />
+                <hr />
+
+                <h2>Condiciones de Entrega</h2>
                 <InputField
                     key={""}
                     label={"Entrega Desde"}
@@ -221,6 +234,25 @@ const FormContratoRegister:React.FC<IFormContratoRegisterProps> = ({initialState
                     onChange={handleInputChanges}
                     required
                 />
+                <InputField
+                    key={""}
+                    label={"Puerto de Embarque"}
+                    name={"puertoEmbarque"}
+                    type={"text"}
+                    onChange={handleInputChanges}
+                    required
+                />
+                <InputField
+                    key={""}
+                    label={"Destino Final"}
+                    name={"destinoFinal"}
+                    type={"text"}
+                    onChange={handleInputChanges}
+                    required
+                />
+                <hr />
+
+                <h2>Condiciones Comerciales</h2>
                 <InputField
                     key={""}
                     label={"Tipo de Contrato"}
@@ -263,32 +295,8 @@ const FormContratoRegister:React.FC<IFormContratoRegisterProps> = ({initialState
                 />
                 <InputField
                     key={""}
-                    label={"Incoterm"}
-                    name={"incoterm"}
-                    type={"text"}
-                    onChange={handleInputChanges}
-                    required
-                />
-                <InputField
-                    key={""}
                     label={"Precio Final"}
                     name={"precioFinal"}
-                    type={"text"}
-                    onChange={handleInputChanges}
-                    required
-                />
-                <InputField
-                    key={""}
-                    label={"Puerto de Embarque"}
-                    name={"puertoEmbarque"}
-                    type={"text"}
-                    onChange={handleInputChanges}
-                    required
-                />
-                <InputField
-                    key={""}
-                    label={"Destino Final"}
-                    name={"destinoFinal"}
                     type={"text"}
                     onChange={handleInputChanges}
                     required
