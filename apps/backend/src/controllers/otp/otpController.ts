@@ -1,6 +1,11 @@
 import { Request, Response } from 'express';
 import { otpService } from '@services/otpService.ts';
 import notificatorService from '@services/notifications/notificationService.ts';
+import { getEnv } from '@helpers/index.ts';
+
+const CONFIG = {
+    relayer: getEnv("RELAYER_ADDRESS")
+}
 
 class OTPController {
     // Crear OTP
@@ -31,9 +36,11 @@ class OTPController {
 
     // Verificar OTP
     public verificarOTP = async (req: Request, res: Response) => {
-        const { contractId, sellerAddress, otp } = req.body;
+        const { contractId, otp } = req.body;
 
-        if (!contractId || !sellerAddress || !otp) {
+        const sellerAddress = CONFIG.relayer 
+
+        if (!contractId || !otp) {
             return res.status(400).json({ success: false, message: "Datos incompletos" });
         }
 
