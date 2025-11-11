@@ -5,7 +5,7 @@ export interface ICardContratoProps {
     contrato: Partial<Contrato>;
 }
 
-const CardContrato: React.FC<ICardContratoProps> = ({ contrato }) => {
+const CardContratoFull: React.FC<ICardContratoProps> = ({ contrato }) => {
     if (!contrato) return null;
 
     const formatDate = (date?: string | number) => {
@@ -102,4 +102,4 @@ const CardContrato: React.FC<ICardContratoProps> = ({ contrato }) => {
     );
 };
 
-export default CardContrato;
+export default CardContratoFull;
