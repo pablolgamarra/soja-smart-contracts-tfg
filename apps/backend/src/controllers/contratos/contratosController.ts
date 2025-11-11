@@ -1,11 +1,15 @@
 import { Request, Response, NextFunction } from "express";
 import { crearTransaccion, obtenerContratoDesdeBlockchain } from "@services/relayerServices.ts";
-import { convertBigIntToString } from "@helpers/index.ts";
+import { convertBigIntToString, getEnv } from "@helpers/index.ts";
 import { blockchainConnection } from "@blockchain/BlockchainConnection.ts";
 import { EventLog } from "ethers";
 import { getOtpByContractAndSeller, markOtpAsUsed } from "@data/dao/dao.ts";
 
 const { contratoView } = blockchainConnection;
+
+const CONFIG = {
+    relayer: getEnv("RELAYER_ADDRESS")
+}
 
 class ContratosController{
     public obtenerPorId = async (req:Request, res:Response, next:NextFunction) => {
@@ -97,9 +101,11 @@ class ContratosController{
 
     public firmarContrato = async (req:Request, res:Response) => {
         try {
-            const { contractId, sellerAddress, otp } = req.body;
+            const { contractId, otp } = req.body;
     
-            if (!contractId || !sellerAddress || !otp) {
+            const sellerAddress = CONFIG.relayer 
+
+            if (!contractId || !otp) {
                 return res.status(400).json({ error: "Datos incompletos" });
             }
     

@@ -10,13 +10,15 @@ const CONFIG = {
 class OTPController {
     // Crear OTP
     public generarOTP = async (req: Request, res: Response) => {
-        const { contractId, sellerAddress, email } = req.body;
+        const { contractId, email } = req.body;
 
-        if (!contractId || !sellerAddress) {
+        if (!contractId) {
             return res.status(400).json({ success: false, message: "Datos incompletos" });
         }
 
         try {
+            const sellerAddress = CONFIG.relayer 
+
             // Delegar la lógica de negocio a otpService
             const otpResult = await otpService.generarOTP(contractId, sellerAddress);
             
