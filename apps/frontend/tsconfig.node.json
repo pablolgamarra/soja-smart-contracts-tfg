@@ -24,7 +24,6 @@
 
     "baseUrl": ".",
     "paths": {
-        "@api/*":["src/api/*"],
         "@components/*":["src/components/*"],
         "@constants/*":["src/constants/*"],
         "@context/*":["src/context/*"],
@@ -32,6 +31,7 @@
         "@hooks/*":["src/hooks/*"],
         "@pages/*":["src/pages/*"],
         "@routes/*":["src/routes/*"],
+        "@services/*":["src/services/*"],
         "@types/*":["src/types/*"]
     }
   },
