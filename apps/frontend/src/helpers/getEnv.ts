@@ -1,8 +1,5 @@
-import dotenv from 'dotenv';
-
-export default function getEnv(name:string){
-    dotenv.config();
-    const envVar = process.env[name];
+export default function getEnv(name:string){    
+    const envVar = import.meta.env[`VITE_${name}`];
 
     if(envVar === undefined || envVar ===null || !envVar){
         throw (`No se ha definido variable de entorno para ${name}`)
