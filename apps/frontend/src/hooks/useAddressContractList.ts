@@ -1,38 +1,3 @@
-// import type { ethers } from "ethers";
-// import { useEffect, useState } from "react"
-
-// export const useAddressContractList = (deployedContract: ethers.Contract | null, userAddress: string | null) => {
-//     const [ contracts, setcontracts ] = useState<ethers.Contract[]>([]);
-//     const [ loading, setLoading ] = useState(false);
-//     const [ error, setError ] = useState<string | null>(null);
-
-//     useEffect(()=> {
-//         const obtenercontracts = async () => {
-//             try {
-//                 if (!deployedContract || deployedContract == null) {
-//                     throw new Error("Contrato Desplegadono encontrado");
-//                 }
-//                 console.log("Direccion de contrato desplegado:", await deployedContract.getAddress());
-//                 // Obtener todos los contracts
-//                 const contractsData = await deployedContract.obtenerContratos();
-
-//                 // Filtrar contracts creados por el comprador (userAddress)
-//                 const contractsFiltrados = contractsData.filter((contract: any) => contract.identificadorPartes.comprador === userAddress);
-//                 setcontracts(contractsFiltrados);
-//             } catch (err: any) {
-//                 console.error(err);
-//                 setError("Error al obtener contractos");
-//             } finally {
-//                 setLoading(false);
-//             }
-//         };
-
-//         obtenercontracts();
-//     }, [deployedContract, userAddress]);
-
-//     return {contracts, loading, error};
-// }
-
 import type { ethers } from "ethers";
 import { useEffect, useState } from "react";
 
