@@ -1,9 +1,7 @@
 import type { Web3ContextType } from "@context/Web3Context";
 import getEnv from "@helpers/getEnv.ts";
 import type { Contrato } from "@types/Contrato"; // Asegúrate de que este tipo esté bien definido
-import type { OTP } from "@types/OTP";
 import { ethers } from "ethers";
-import OTPService from "@services/OTPService";
 
 const CONFIG = {
     BACKEND_HOST: getEnv("BACKEND_HOSTNAME"),
@@ -141,10 +139,9 @@ class ContratoService {
         }
     } 
     
-    public async firmar(contrato:Contrato, otp: OTP) {
+    public async firmar(contrato:Contrato, codigo: string) {
         try {
             const {id} = contrato;
-            const {codigo} = otp;
 
             const response = await fetch(`http://${CONFIG.BACKEND_HOST}:${CONFIG.BACKEND_PORT}/contratos/firmar`, {
                 method: "POST",
@@ -158,12 +155,13 @@ class ContratoService {
             const data = await response.json();
 
             if (data.success) {
-                return {message: data.message, txHash: data.txHash};
+                return {success: data.success, message: data.message, txHash: data.txHash};
             } else {
                 throw Error(data.message);
             }
         } catch (e) {
             console.error('Error firmando contrato:', e);
+            throw Error(`Error firmando contrato -> , ${e}`);
         }
     } 
 }

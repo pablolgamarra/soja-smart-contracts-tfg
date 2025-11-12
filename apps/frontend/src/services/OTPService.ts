@@ -9,7 +9,7 @@ const CONFIG = {
 class OTPService {
     public async generarOtpContrato(contrato: Contrato) {
         try{
-            const {id,emailVendedor} = contrato;
+            const {id,emailVendedor, telefonoVendedor} = contrato;
             const response = await fetch(`${CONFIG.BACKEND_HOST}:${CONFIG.BACKEND_PORT}/otp/generate`, {
                 method: 'POST',
                 headers: {
@@ -17,7 +17,8 @@ class OTPService {
                 },
                 body: JSON.stringify({
                     id,
-                    emailVendedor
+                    emailVendedor,
+                    telefonoVendedor
                 }),
             });
 
