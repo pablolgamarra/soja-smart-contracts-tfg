@@ -1,30 +1,42 @@
 import { Link } from "react-router-dom"
 import Button from "@components/common/Button";
+import { Home, Pen, Plus } from "lucide-react";
 
 const Navbar:React.FC = () => {
     return (
         <nav>
             <ul className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full mt-6">
                 <li>
-                    <Button 
-                        className={"bg-green-600 hover:bg-green-500 transform hover:-translate-y-1 transition-all rounded-xl p-6 text-center font-semibold shadow-lg shadow-green-900/50"}
-                    >
-                        {<Link to="/">Home</Link>}
-                    </Button>
+                    <Link to="/">
+                        <Button 
+                            variant="primary"
+                        >
+                            <>
+                                <Home />
+                                Inicio
+                            </>
+                        </Button>
+                    </Link>
                 </li>
                 <li>
+                    <Link to="/crear">
                     <Button 
-                        className="bg-blue-600 hover:bg-green-500 transform hover:-translate-y-1 transition-all rounded-xl p-6 text-center font-semibold shadow-lg shadow-green-900/50" 
+                        variant="secondary"
                     >
-                        {<Link to="/crear">Crear nuevo contrato</Link>}
+                        <Plus />
+                        Crear Contrato Nuevo
                     </Button>
+                    </Link>
                 </li>
                 <li>
+                    <Link to="/firmar" >
                     <Button 
-                        className="bg-purple-600 hover:bg-green-500 transform hover:-translate-y-1 transition-all rounded-xl p-6 text-center font-semibold shadow-lg shadow-green-900/50" 
+                        variant="success"
                     >
-                        <Link to="/firmar" >Firmar un contrato</Link>
+                        <Pen />
+                        Firmar Contrato
                     </Button>
+                    </Link>
                 </li>
             </ul>            
         </nav>

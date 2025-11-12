@@ -4,8 +4,9 @@ import FormContratoFirmar from "@components/contrato/forms/firmar/FormContratoFi
 const FirmarContrato:React.FC = () => {
     return (
         <PageWrapper>
-            <h1>Firmar Contrato</h1>
-            <FormContratoFirmar />
+            <article className="w-6/12 mt-6">
+                <FormContratoFirmar />
+            </article>
         </PageWrapper>
     );
 }

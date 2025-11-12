@@ -7,7 +7,7 @@ export default function Login() {
     return (
         <div className="d-flex mx-auto rp-6 border rounded-lg shadow-md">
             <h2 className="text-xl font-semibold mb-2">Se debe conectar con Metamask</h2>
-            <Button onClick={connectWallet} >Conectar a Metamask</Button>
+            <Button variant="primary" onClick={connectWallet} >Conectar a Metamask</Button>
         </div>
     );
 }

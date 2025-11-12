@@ -4,8 +4,7 @@ import FormContratoRegister from "@components/contrato/forms/crear/FormContratoR
 const CrearContrato: React.FC = () => {
     return (
         <PageWrapper>
-            <article>
-                <h1>Crear nuevo Contrato</h1>
+            <article className="w-6/12 mt-6">
                 <FormContratoRegister />
             </article>
         </PageWrapper>

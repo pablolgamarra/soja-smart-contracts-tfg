@@ -21,7 +21,7 @@ export interface IInputProps {
 		| undefined;
 	value?: string | number | undefined;
     onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
-    required:boolean;
+    required?:boolean;
 }
 
 export const InputField: React.FC<IInputProps> = ({
@@ -35,9 +35,9 @@ export const InputField: React.FC<IInputProps> = ({
     required
 }) => {
     return (
-        <div className="input-wrapper">
-            <label htmlFor={id} className="block text-sm font-medium text-gray-700">
-                {label}
+        <div className="input-mb-4">
+            <label htmlFor={id} className="block text-sm font-medium text-gray-300 mb-1.5">
+                {label} {required && <span className="text-red-400">*</span>}
             </label>
             <input
                 id={id}
@@ -46,7 +46,7 @@ export const InputField: React.FC<IInputProps> = ({
                 type={type}
                 onChange={onChange}
                 placeholder={placeholder}
-                className="mt-1 p-2 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+                className="w-full px-3 py-2.5 bg-gray-800 border border-gray-700 text-gray-100 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all outline-none placeholder-gray-500"
                 required={required}
             />
         </div>
