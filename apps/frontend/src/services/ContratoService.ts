@@ -1,10 +1,9 @@
 import type { Web3ContextType } from "@context/Web3Context";
 import getEnv from "@helpers/getEnv.ts";
-import { useWeb3Context } from "@hooks/useWeb3Context";
 import type { Contrato } from "@types/Contrato"; // Asegúrate de que este tipo esté bien definido
 import type { OTP } from "@types/OTP";
 import { ethers } from "ethers";
-import OTPService from "src/services/OTPService";
+import OTPService from "@services/OTPService";
 
 const CONFIG = {
     BACKEND_HOST: getEnv("BACKEND_HOSTNAME"),
@@ -93,23 +92,15 @@ class ContratoService {
 
             console.log(`✅ Contrato creado con ID: ${contractId}`);
             console.log(`✅ TX Hash: ${receipt.transactionHash}`);
-
-            // Ahora, genera el OTP con el contractId utilizando OTPService
-            const otpRes = await OTPService.generarOtpContrato({
-                id: contractId.toString(),
-                emailVendedor: contrato.emailVendedor || "", // O usa la dirección de correo del vendedor si lo prefieres
-            } as Contrato);
-
-            if (otpRes) {
-                alert("✅ Contrato creado con éxito. Enviando OTP al vendedor");
-            } else {
-                alert("❌ Error al generar OTP");
-            }
-
             console.log("📦 TX confirmada:", receipt.transactionHash);
+
+            alert("✅ Contrato creado con éxito. Enviando OTP al vendedor");
+
+            return {
+                success: true, contractId: contractId, message: "Contrato creado con éxito."
+            };
         } catch (err) {
-            console.error("❌ Error al crear contrato:", err);
-            alert(`Error: ${err.message || "Error desconocido"}`);
+            throw Error(`Error al crear contrato -> ${err}`);
         }
     }
 
