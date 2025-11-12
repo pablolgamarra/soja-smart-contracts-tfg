@@ -12,10 +12,10 @@ export class NotificationService {
         this.whatsappSender = whatsappSender;
     }
     
-    sendOTPNotification = async (to:string, otp:string, messageContent?:string) => {
+    sendOTPNotification = async (to:{email: string, number: string}, otp:string, messageContent?:string) => {
         try{
-            this.emailSender.sendOTPEmail(to, otp, messageContent);
-            this.whatsappSender?.sendOTPMessage(to, otp);       
+            this.emailSender.sendOTPEmail(to.email, otp, messageContent);
+            this.whatsappSender?.sendOTPMessage(to.number, otp);       
         }catch(e){
             console.error(`Error enviando otp`);
             throw (`Error enviando otp -> ${e}`);

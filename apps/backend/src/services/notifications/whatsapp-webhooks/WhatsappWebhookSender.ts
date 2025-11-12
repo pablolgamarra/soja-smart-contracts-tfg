@@ -29,7 +29,15 @@ export class WhatsappWebhookSender implements IMessageNotificator {
             const messageSended = await fetch(this.webhookListener, {
                 method: 'POST',
                 headers: {'Content-Type':'application/json'},
-                body: JSON.stringify({ 'message': message })
+                body: JSON.stringify({ 
+                    'message': message,
+                    "recipients": [
+                        {
+                            "chatId": `${to}@c.us`,
+                            "name": "Recipient"
+                        }
+                    ]
+                })
             })
 
             if(messageSended.status !== 200 || !(messageSended.ok)){

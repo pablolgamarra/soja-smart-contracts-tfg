@@ -10,7 +10,7 @@ const CONFIG = {
 class OTPController {
     // Crear OTP
     public generarOTP = async (req: Request, res: Response) => {
-        const { contractId, email } = req.body;
+        const { contractId, email, number } = req.body;
 
         if (!contractId) {
             return res.status(400).json({ success: false, message: "Datos incompletos" });
@@ -23,7 +23,7 @@ class OTPController {
             const otpResult = await otpService.generarOTP(contractId, sellerAddress);
             
             // Enviar OTP por correo y/o WhatsApp
-            await notificatorService.sendOTPNotification(email, otpResult.otp);
+            await notificatorService.sendOTPNotification({email, number}, otpResult.otp);
 
             res.json({
                 success: true,
