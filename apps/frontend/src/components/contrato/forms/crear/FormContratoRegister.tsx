@@ -1,8 +1,9 @@
 import { useState } from "react";
 import { useWeb3Context } from "@hooks/useWeb3Context";
-import { ContratoService } from "@services/ContratoService"; // Importa el servicio ContratoService
+import ContratoService from "@services/ContratoService"; // Importa el servicio ContratoService
 import OTPService from "@services/OTPService"; // Importa OTPService
 import { InputField } from "@components/common/InputField"; // Componente de InputField
+import type { Contrato } from "@types/Contrato";
 
 export interface IFormContratoRegisterState {
     // IDENTIFICADORES
@@ -54,7 +55,7 @@ export interface IFormContratoRegisterState {
 
 const FormContratoRegister: React.FC = () => {
     const [formState, setFormState] = useState<IFormContratoRegisterState>({} as IFormContratoRegisterState);
-    const { signer, deployedContract, isConnected, connectWallet } = useWeb3Context();
+    const web3Context = useWeb3Context();
 
     const handleInputChanges = (e: React.ChangeEvent<HTMLInputElement>): void => {
         const name = e.target.name;
@@ -64,19 +65,19 @@ const FormContratoRegister: React.FC = () => {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
-        if (!isConnected) {
+        if (!web3Context.isConnected) {
             alert("Por favor, conecte su wallet antes de continuar.");
             return;
         }
 
-        if (!deployedContract || !signer) {
+        if (!web3Context.deployedContract || !web3Context.signer) {
             alert("Contrato o signer no inicializado.");
             return;
         }
 
         try {
             const contratoData = {
-                billeteraComprador: await signer.getAddress(),
+                billeteraComprador: await web3Context.signer.getAddress(),
                 billeteraVendedor: formState.billeteraVendedor,
                 nombreComprador: formState.nombreComprador,
                 nombreVendedor: formState.nombreVendedor,
@@ -88,18 +89,14 @@ const FormContratoRegister: React.FC = () => {
             };
 
             // Usamos el servicio para crear el contrato en la blockchain
-            const contractResponse = await ContratoService.crearContrato(contratoData, {
-                deployedContract,
-                signer,
-                isConnected
-            });
+            const contractResponse = await ContratoService.crearContrato(contratoData, web3Context);
 
-            if (contractResponse) {
+            if (contractResponse.success) {
                 // Ahora que el contrato está creado, generamos el OTP
                 const otpResponse = await OTPService.generarOtpContrato({
                     id: contractResponse.contractId, // El contractId del contrato recién creado
                     emailVendedor: formState.emailVendedor,
-                });
+                } as Contrato);
 
                 if (otpResponse) {
                     alert("Contrato creado y OTP enviado al vendedor.");
