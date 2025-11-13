@@ -33,8 +33,9 @@ const config: HardhatUserConfig = {
     hardhatMainnet: {
         type: "http",
         url: "http://127.0.0.1:8545",
-        accounts: "remote",
-        chainType: "op",
+        // accounts: "remote",
+        chainType: "l1",
+        chainId: 1337,
     },
     // // hardhatMainnet: {
     // //   type: "edr-simulated",
