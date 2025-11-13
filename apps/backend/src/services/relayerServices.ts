@@ -7,32 +7,51 @@ export async function obtenerContratoDesdeBlockchain(idContrato: string) {
 
         // Adaptamos el resultado del struct a un formato más legible
         return {
-            comprador: data.identificadorPartes.comprador,
-            vendedor: data.identificadorPartes.vendedor,
-            intermediario: data.identificadorPartes.intermediario,
-            tipoProducto: data.tipoProducto,
-            condicionesComerciales: {
-                incoterm: data.condicionesComerciales.incoterm,
-                fleteACargoDe: data.condicionesComerciales.fleteACargoDe,
-                puntoControlCalidad: data.condicionesComerciales.puntoControlCalidad,
-                cantidadToneladas: data.condicionesComerciales.cantidadToneladas.toString(),
-                precioPorTonelada: data.condicionesComerciales.precioPorTonelada.toString(),
-                fechaEntrega: data.condicionesComerciales.fechaEntrega.toString(),
-                lugarEntrega: data.condicionesComerciales.lugarEntrega,
-                condicionesCalidad: data.condicionesComerciales.condicionesCalidad,
-            },
-            condicionesEconomicas: {
-                modalidadPago: data.condicionesEconomicas.modalidadPago,
-                montoTotal: data.condicionesEconomicas.montoTotal.toString(),
-            },
-            penalizacionIncumplimiento: {
-                accionIncumplimiento: data.penalizacionIncumplimiento.accionIncumplimiento,
-                porcentajeDescuento: data.penalizacionIncumplimiento.porcentajeDescuento.toString(),
-                arbitro: data.penalizacionIncumplimiento.arbitro,
-            },
-            estado: Number(data.estado),
+            id: idContrato,
+            billeteraComprador: data.partes.comprador,
+            billeteraVendedor: data.partes.vendedor,
+            billeteraBroker: data.partes.broker,
+            nombreComprador: data.partes.nombreComprador,
+            nombreVendedor: data.partes.nombreVendedor,
+            nombreBroker: data.partes.nombreBroker,
+            nroFiscalComprador: data.partes.nroIdentidadComprador,
+            nroFiscalVendedor: data.partes.nroIdentidadVendedor,
+            nroFiscalBroker: data.partes.nroIdentidadBroker,
+            // TODO: ESTAS PARTES NO TENGO EN EL CONTRATO BC, PERO DEJO PORSI
+            // emailComprador: string;
+            // telefonoComprador: string;
+            // emailVendedor: string;
+            // telefonoVendedor: string;
+
+            // CONDICIONES DEL GRANO
+            cantidadToneladas: data.condicionesGrano.cantidadToneladasMetricas,
+            tipoGrano: data.condicionesGrano.tipoGrano,
+            cosecha: data.condicionesGrano.cosecha,
+
+            // CONDICIONES DE ENTREGA
+            empaque: data.condicionesEntrega.empaque,
+            fechaEntregaInicio: data.condicionesEntrega.fechaEntregaInicio,
+            fechaEntregaFin: data.condicionesEntrega.fechaEntregaFin,
+
+            // CONDICIONES DE PRECIO
+            tipoContrato: data.condicionesPrecio.tipoContrato,
+            precioPorToneladaMetrica: data.condicionesPrecio.precioPorTonelada,
+            precioCBOTBushel: data.condicionesPrecio.precioCBOTBushel,
+            ajusteCBOT: data.condicionesPrecio.ajusteCBOT, // al par=0 / más=1 / menos=-1
+            fechaPrecioChicago: data.condicionesPrecio.fechaPrecioChicago,
+            incoterm: data.condicionesPrecio.incoterm,
+            precioFinal: data.condicionesPrecio.precioFinal,
+
+            // CONDICIONES EMBARQUE
+            puertoEmbarque: data.condicionesEmbarque.puertoEmbarque,
+            destinoFinal: data.condicionesEmbarque.destinoFinal,
+
+            // CONDICIONES CONTRATO
             hashVersionContrato: data.hashVersionContrato,
             evidenceURI: data.evidenceURI,
+            fechaCelebracionContrato: data.fechaCelebracionContrato,
+            estado: data.estado,
+            clausulasAdicionales: data.clausulasAdicionales,
         };
     } catch (err) {
         console.error("❌ Error obteniendo contrato desde blockchain:", err);
