@@ -46,16 +46,16 @@ class ContratoService {
 
             const condicionesEntrega = {
                 empaque: contrato.empaque || "A Granel", // Ajustado por si está vacío
-                fechaEntregaInicio: contrato.fechaEntregaInicio || Date.now(),
-                fechaEntregaFin: contrato.fechaEntregaFin || Date.now() + 60 * 60 * 24 * 30 * 1000, // Fecha de 30 días por defecto
+                fechaEntregaInicio: Math.floor(new Date(contrato.fechaEntregaInicio || Date.now()).getTime() / 1000),
+                fechaEntregaFin: Math.floor(new Date(contrato.fechaEntregaFin || Date.now() + 60 * 60 * 24 * 30 * 1000).getTime() / 1000), // Fecha de 30 días por defecto
             };
 
             const condicionesPrecio = {
-                tipoContrato: contrato.tipoContrato,
+                tipoContrato: contrato.tipoContrato?.toString().split(' ').reduce((string1, string2) => string1.concat(string2)) === "PrecioFijo" ? 0 : 1,
                 precioPorToneladaMetrica: contrato.precioPorToneladaMetrica || 0,
                 precioCBOTBushel: contrato.precioCBOTBushel || 0,
                 ajusteCBOT: contrato.ajusteCBOT || 0, // Al par=0 / más=1 / menos=-1
-                fechaPrecioChicago: contrato.fechaPrecioChicago || Date.now(),
+                fechaPrecioChicago: Math.floor(new Date(contrato.fechaPrecioChicago?.toString() || Date.now()).getTime() / 1000),
                 incoterm: contrato.incoterm || "FOB",
                 precioFinal: contrato.precioFinal || 0,
             };
@@ -73,9 +73,17 @@ class ContratoService {
                 condicionesPrecio,
                 condicionesEmbarque,
                 hashVersionContrato: "hashVersionContrato_v1", // Puede ser dinámico si lo necesitas
+                evidenceURI: contrato.evidenceURI || "localhost",
+                fechaCelebracionContrato: Math.floor(new Date(Date.now()).getTime() / 1000),
+                estado: 1, 
+                clausulasAdicionales: contrato.clausulasAdicionales || [{
+                    textoClausula: "",
+                    CID:""}]
             };
 
             console.log("🧾 Enviando transacción para crear contrato...");
+
+            console.log(contratoSend);
 
             // Llamada al contrato para crear
             const tx = await deployedContract
@@ -88,14 +96,14 @@ class ContratoService {
             // Obtener el ID del contrato creado (usualmente es el contador de contratos en el mapping)
             const contractId = await deployedContract.contadorContratos();
 
-            console.log(`✅ Contrato creado con ID: ${contractId}`);
+            console.log(`✅ Contrato creado con ID: ${contractId.toString()}`);
             console.log(`✅ TX Hash: ${receipt.transactionHash}`);
             console.log("📦 TX confirmada:", receipt.transactionHash);
 
             alert("✅ Contrato creado con éxito. Enviando OTP al vendedor");
 
             return {
-                success: true, contractId: contractId, message: "Contrato creado con éxito."
+                success: true, contractId: contractId.toString(), message: "Contrato creado con éxito."
             };
         } catch (err) {
             throw Error(`Error al crear contrato -> ${err}`);
@@ -147,8 +155,8 @@ class ContratoService {
                 method: "POST",
                 headers: {'Content-type': 'application/json'},
                 body: JSON.stringify({
-                    contractId: id,
-                    otp: codigo
+                    "contractId": id,
+                    "otp": codigo
                 })
             });
 

@@ -10,15 +10,15 @@ class OTPService {
     public async generarOtpContrato(contrato: Contrato) {
         try{
             const {id,emailVendedor, telefonoVendedor} = contrato;
-            const response = await fetch(`${CONFIG.BACKEND_HOST}:${CONFIG.BACKEND_PORT}/otp/generate`, {
+            const response = await fetch(`http://${CONFIG.BACKEND_HOST}:${CONFIG.BACKEND_PORT}/otp/generate`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    id,
-                    emailVendedor,
-                    telefonoVendedor
+                    "contractId": id,
+                    "email": emailVendedor,
+                    "number": telefonoVendedor
                 }),
             });
 
@@ -38,14 +38,14 @@ class OTPService {
         try {
             const {id} = contrato;
 
-            const response = await fetch(`${CONFIG.BACKEND_HOST}:${CONFIG.BACKEND_PORT}/otp/verify`, {
+            const response = await fetch(`http://${CONFIG.BACKEND_HOST}:${CONFIG.BACKEND_PORT}/otp/verify`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    id, 
-                    otp 
+                    "contractId": id, 
+                    "otp": otp 
                 }),
             });
 
