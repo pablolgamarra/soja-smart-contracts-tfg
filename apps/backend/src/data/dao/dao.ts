@@ -39,7 +39,7 @@ export async function getOtp({
     LIMIT 1
   `;
     const rows = await makePromiseQuery<OtpRecord[]>(sql, [ contractId, sellerAddress ]);
-    return rows?.[ 0 ][0] as OtpRecord || null;
+    return rows?.[ 0 ] as OtpRecord || null;
 }
 
 // Marcar OTP como usado
@@ -56,7 +56,7 @@ export async function getOtpByContractAndSeller(
 ): Promise<OtpRecord | null> {
     const sql = `SELECT * FROM ${t} WHERE contractId = ? AND sellerAddress = ? ORDER BY id DESC LIMIT 1`;
     const rows = await makePromiseQuery<OtpRecord[]>(sql, [ contractId, sellerAddress ]);
-    return rows?.[ 0 ][ 0 ] as OtpRecord || null;
+    return rows?.[ 0 ] as OtpRecord || null;
 }
 
 // Eliminar OTPs expirados (opcional)
