@@ -26,6 +26,7 @@ export class WhatsappWebhookSender implements IMessageNotificator {
                 throw Error(`URL del Webhook para whatsapp no encontrada`);
             }
 
+            const chatId = `${to}@c.us`
             const messageSended = await fetch(this.webhookListener, {
                 method: 'POST',
                 headers: {'Content-Type':'application/json'},
@@ -33,7 +34,7 @@ export class WhatsappWebhookSender implements IMessageNotificator {
                     'message': message,
                     "recipients": [
                         {
-                            "chatId": `${to}@c.us`,
+                            "chatId": chatId,
                             "name": "Recipient"
                         }
                     ]
