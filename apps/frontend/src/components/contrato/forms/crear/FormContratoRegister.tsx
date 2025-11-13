@@ -102,16 +102,62 @@ const FormContratoRegister: React.FC = () => {
             return;
         }
 
+        // ESTADO DE PRUEBA PARA TESTEOS
+        // const testState = {
+        //         "billeteraComprador": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+        //         "nroFiscalComprador": "123456789-0",
+        //         "nombreComprador": "Glymax",
+        //         "billeteraVendedor": "0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266",
+        //         "nroFiscalVendedor": "6090356-0",
+        //         "nombreVendedor": "Lorenzo Escobar",
+        //         "billeterabroker": "0x90f79bf6eb2c4f870365e785982e1f101e93b906",
+        //         "nroFiscalBroker": "1597538426-0",
+        //         "nombreBroker": "Lorenzeti",
+        //         "emailComprador": "pablogamarra@glymax.com",
+        //         "telefonoComprador": "595993373436",
+        //         "emailVendedor": "pablogamarra@glymax.com",
+        //         "telefonoVendedor": "595993373436",
+
+        //         "cantidadToneladasMetricas": 0,
+        //         "tipoGrano": "Soja",
+        //         "cosecha": "2025",
+        //         "empaque": "Granel",
+        //         "fechaEntregaInicio": "2025-11-13",
+        //         "fechaEntregaFin": "2025-11-13",
+        //         "tipoContrato": TipoContrato.PrecioFijo,
+        //         "precioPorToneladaMetrica": 159753,
+        //         "precioCBOTBushel": 0,
+        //         "ajusteCBOT": 0,
+        //         "fechaPrecioChicago": "2025-11-13",
+        //         "incoterm": "FOB",
+        //         "precioFinal": 159753,
+        //         "puertoEmbarque": "Puerto Rosario",
+        //         "destinoFinal": "Copenhagen",
+        //     "hashVersionContrato": "hashVersionContrato_v1",
+        //     "evidenceURI": "http://localhost:1234/evidencia",
+        // }
+
         try {
             // Usamos el servicio para crear el contrato en la blockchain
             const contractResponse = await ContratoService.crearContrato(formState, web3Context);
+            
+            // TODO: DEJAR ACA POR SI NECESITAMOS PARA PROBAR
+            // const contractResponse = await ContratoService.crearContrato(testState, web3Context);
 
             if (contractResponse.success) {
                 // Ahora que el contrato está creado, generamos el OTP
                 const otpResponse = await OTPService.generarOtpContrato({
                     id: contractResponse.contractId, // El contractId del contrato recién creado
                     emailVendedor: formState.emailVendedor,
+                    telefonoVendedor: formState.telefonoVendedor
                 } as Contrato);
+                
+                // TODO: VERIFICAR EL CIRCUITO COMPLETO
+                // const otpResponse = await OTPService.generarOtpContrato({
+                //     id: contractResponse.contractId, // El contractId del contrato recién creado
+                //     emailVendedor: testState.emailVendedor,
+                //     telefonoVendedor: testState.telefonoVendedor
+                // } as Contrato);
 
                 if (otpResponse) {
                     alert("Contrato creado y OTP enviado al vendedor.");
@@ -141,7 +187,7 @@ const FormContratoRegister: React.FC = () => {
                 <Section icon={User} title="Datos del Comprador" variant="info">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <InputField label="Nombre del Comprador" name="nombreComprador" type="text" onChange={handleInputChanges} required />
-                        <InputField label="Nro. Identidad Comprador" name="nroIdentidadComprador" type="text" onChange={handleInputChanges} required />
+                        <InputField label="Nro. Identidad Comprador" name="nroFiscalComprador" type="text" onChange={handleInputChanges} required />
                     </div>
                     <InputField label="Dirección Wallet Comprador" name="billeteraComprador" type="text" onChange={handleInputChanges} required />
                     <InputField label="Dirección de Correo del Comprador" name="emailComprador" type="text" onChange={handleInputChanges} required />
@@ -152,9 +198,9 @@ const FormContratoRegister: React.FC = () => {
                 <Section icon={User} title="Datos del Vendedor" variant="success">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <InputField label="Nombre del Vendedor" name="nombreVendedor" type="text" onChange={handleInputChanges} required />
-                        <InputField label="Dirección Wallet Vendedor" name="billeteraVendedor" type="text" onChange={handleInputChanges} required />
+                        <InputField label="Nro. Identidad Vendedor" name="nroFiscalVendedor" type="text" onChange={handleInputChanges} required />
                     </div>
-                    <InputField label="Nro. Identidad Vendedor" name="nroIdentidadVendedor" type="text" onChange={handleInputChanges} required />
+                    <InputField label="Dirección Wallet Vendedor" name="billeteraVendedor" type="text" onChange={handleInputChanges} required />
                     <InputField label="Dirección de Correo del Vendedor" name="emailVendedor" type="text" onChange={handleInputChanges} required />
                     <InputField label="Numero de Telefono del Vendedor" name="telefonoVendedor" type="text" onChange={handleInputChanges} required />
                 </Section>
@@ -165,7 +211,7 @@ const FormContratoRegister: React.FC = () => {
                         <InputField label="Nombre del Broker" name="nombreBroker" type="text" onChange={handleInputChanges} />
                         <InputField label="Dirección Wallet Broker" name="billeteraBroker" type="text" onChange={handleInputChanges} />
                     </div>
-                    <InputField label="Nro. Identidad Broker" name="nroIdentidadBroker" type="text" onChange={handleInputChanges} />
+                    <InputField label="Nro. Identidad Broker" name="nroFiscalBroker" type="text" onChange={handleInputChanges} />
                 </Section>
 
                 {/* Condiciones del Grano */}
