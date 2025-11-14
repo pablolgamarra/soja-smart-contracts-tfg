@@ -103,61 +103,61 @@ const FormContratoRegister: React.FC = () => {
         }
 
         // ESTADO DE PRUEBA PARA TESTEOS
-        // const testState = {
-        //         "billeteraComprador": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
-        //         "nroFiscalComprador": "123456789-0",
-        //         "nombreComprador": "Glymax",
-        //         "billeteraVendedor": "0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266",
-        //         "nroFiscalVendedor": "6090356-0",
-        //         "nombreVendedor": "Lorenzo Escobar",
-        //         "billeterabroker": "0x90f79bf6eb2c4f870365e785982e1f101e93b906",
-        //         "nroFiscalBroker": "1597538426-0",
-        //         "nombreBroker": "Lorenzeti",
-        //         "emailComprador": "pablogamarra@glymax.com",
-        //         "telefonoComprador": "595993373436",
-        //         "emailVendedor": "pablogamarra@glymax.com",
-        //         "telefonoVendedor": "595993373436",
+        const testState = {
+                "billeteraComprador": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+                "nroFiscalComprador": "123456789-0",
+                "nombreComprador": "Glymax",
+                "billeteraVendedor": "0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266",
+                "nroFiscalVendedor": "6090356-0",
+                "nombreVendedor": "Lorenzo Escobar",
+                "billeterabroker": "0x90f79bf6eb2c4f870365e785982e1f101e93b906",
+                "nroFiscalBroker": "1597538426-0",
+                "nombreBroker": "Lorenzeti",
+                "emailComprador": "pablogamarra@glymax.com",
+                "telefonoComprador": "595993373436",
+                "emailVendedor": "pablogamarra@glymax.com",
+                "telefonoVendedor": "595993373436",
 
-        //         "cantidadToneladasMetricas": 0,
-        //         "tipoGrano": "Soja",
-        //         "cosecha": "2025",
-        //         "empaque": "Granel",
-        //         "fechaEntregaInicio": "2025-11-13",
-        //         "fechaEntregaFin": "2025-11-13",
-        //         "tipoContrato": TipoContrato.PrecioFijo,
-        //         "precioPorToneladaMetrica": 159753,
-        //         "precioCBOTBushel": 0,
-        //         "ajusteCBOT": 0,
-        //         "fechaPrecioChicago": "2025-11-13",
-        //         "incoterm": "FOB",
-        //         "precioFinal": 159753,
-        //         "puertoEmbarque": "Puerto Rosario",
-        //         "destinoFinal": "Copenhagen",
-        //     "hashVersionContrato": "hashVersionContrato_v1",
-        //     "evidenceURI": "http://localhost:1234/evidencia",
-        // }
+                "cantidadToneladasMetricas": 0,
+                "tipoGrano": "Soja",
+                "cosecha": "2025",
+                "empaque": "Granel",
+                "fechaEntregaInicio": "2025-11-13",
+                "fechaEntregaFin": "2025-11-13",
+                "tipoContrato": TipoContrato.PrecioFijo,
+                "precioPorToneladaMetrica": 159753,
+                "precioCBOTBushel": 0,
+                "ajusteCBOT": 0,
+                "fechaPrecioChicago": "2025-11-13",
+                "incoterm": "FOB",
+                "precioFinal": 159753,
+                "puertoEmbarque": "Puerto Rosario",
+                "destinoFinal": "Copenhagen",
+            "hashVersionContrato": "hashVersionContrato_v1",
+            "evidenceURI": "http://localhost:1234/evidencia",
+        }
 
         try {
             // Usamos el servicio para crear el contrato en la blockchain
-            const contractResponse = await ContratoService.crearContrato(formState, web3Context);
+            // const contractResponse = await ContratoService.crearContrato(formState, web3Context);
             
             // TODO: DEJAR ACA POR SI NECESITAMOS PARA PROBAR
-            // const contractResponse = await ContratoService.crearContrato(testState, web3Context);
+            const contractResponse = await ContratoService.crearContrato(testState, web3Context);
 
             if (contractResponse.success) {
                 // Ahora que el contrato está creado, generamos el OTP
-                const otpResponse = await OTPService.generarOtpContrato({
-                    id: contractResponse.contractId, // El contractId del contrato recién creado
-                    emailVendedor: formState.emailVendedor,
-                    telefonoVendedor: formState.telefonoVendedor
-                } as Contrato);
-                
-                // TODO: VERIFICAR EL CIRCUITO COMPLETO
                 // const otpResponse = await OTPService.generarOtpContrato({
                 //     id: contractResponse.contractId, // El contractId del contrato recién creado
-                //     emailVendedor: testState.emailVendedor,
-                //     telefonoVendedor: testState.telefonoVendedor
+                //     emailVendedor: formState.emailVendedor,
+                //     telefonoVendedor: formState.telefonoVendedor
                 // } as Contrato);
+                
+                // TODO: VERIFICAR EL CIRCUITO COMPLETO
+                const otpResponse = await OTPService.generarOtpContrato({
+                    id: contractResponse.contractId, // El contractId del contrato recién creado
+                    emailVendedor: testState.emailVendedor,
+                    telefonoVendedor: testState.telefonoVendedor
+                } as Contrato);
 
                 if (otpResponse) {
                     alert("Contrato creado y OTP enviado al vendedor.");

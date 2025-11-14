@@ -1,3 +1,4 @@
+import type { Contrato } from "@types/Contrato";
 import type { ethers } from "ethers";
 import { useEffect, useState } from "react";
 
@@ -32,7 +33,7 @@ export const useAddressContractList = (
 
                 const filtrados = contractsData.filter(
                     (c: any) =>
-                        c.identificadorPartes.comprador?.toLowerCase() ===
+                        c.partes.comprador?.toLowerCase() ===
                         userAddress?.toLowerCase()
                 );
 
