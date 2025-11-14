@@ -61,8 +61,6 @@ class ContratosController{
                 creado: contratoView.filters.ContratoCreado(contractId),
                 firmado: contratoView.filters.ContratoFirmado(contractId),
                 entrega: contratoView.filters.EntregaConfirmada(contractId),
-                pago: contratoView.filters.PagoEjecutado(contractId),
-                penalizacion: contratoView.filters.PenalizacionAplicada(contractId),
                 cerrado: contratoView.filters.ContratoCerrado(contractId),
             };
     

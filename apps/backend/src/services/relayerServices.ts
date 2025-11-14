@@ -1,9 +1,10 @@
+import type { ContratoGranosSoja } from "@blockchain/types/ContratoGranosSoja.ts";
 import { blockchainConnection } from "src/blockchain/BlockchainConnection.ts";
 
 /** ========= 📄 OBTENER CONTRATO DESDE BLOCKCHAIN ========= **/
 export async function obtenerContratoDesdeBlockchain(idContrato: string) {
     try {
-        const data = await blockchainConnection.contratoView.contratos(idContrato);
+        const data:ContratoGranosSoja.ContratoStruct = await blockchainConnection.contratoView.contratos(idContrato);
 
         // Adaptamos el resultado del struct a un formato más legible
         return {
@@ -35,7 +36,7 @@ export async function obtenerContratoDesdeBlockchain(idContrato: string) {
 
             // CONDICIONES DE PRECIO
             tipoContrato: data.condicionesPrecio.tipoContrato,
-            precioPorToneladaMetrica: data.condicionesPrecio.precioPorTonelada,
+            precioPorToneladaMetrica: data.condicionesPrecio.precioPorToneladaMetrica,
             precioCBOTBushel: data.condicionesPrecio.precioCBOTBushel,
             ajusteCBOT: data.condicionesPrecio.ajusteCBOT, // al par=0 / más=1 / menos=-1
             fechaPrecioChicago: data.condicionesPrecio.fechaPrecioChicago,
@@ -65,7 +66,7 @@ export async function crearTransaccion({ contractId, sellerAddress }: { contract
         console.log(`🔗 Enviando firma meta-tx para contrato #${contractId}`);
 
         // Ejecuta la función del contrato por parte del relayer
-        const tx = await blockchainConnection.contratoView.firmarContratoMetaTx(
+        const tx = await blockchainConnection.contratoRelayer.firmarContratoMetaTx(
             contractId,
             `consentHash_${Date.now()}`,   // simulación hash de consentimiento (podrías usar uno real desde el front)
             `ipfs://evidencias/${sellerAddress}_${Date.now()}` // URI de evidencia (ej. logs u OTP en IPFS)
