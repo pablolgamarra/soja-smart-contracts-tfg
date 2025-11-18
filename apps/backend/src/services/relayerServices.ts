@@ -1,62 +1,21 @@
-import type { ContratoGranosSoja } from "@blockchain/types/ContratoGranosSoja.ts";
-import { blockchainConnection } from "src/blockchain/BlockchainConnection.ts";
+import { Contrato } from "@types/Contrato.ts";
+import { blockchainConnection, BlockchainConnection } from "src/blockchain/BlockchainConnection.ts";
 
 /** ========= 📄 OBTENER CONTRATO DESDE BLOCKCHAIN ========= **/
-export async function obtenerContratoDesdeBlockchain(idContrato: string) {
+export async function obtenerContratoDesdeBlockchain(idContrato: string): Promise<Contrato> {
     try {
-        const data:ContratoGranosSoja.ContratoStruct = await blockchainConnection.contratoView.contratos(idContrato);
+        if(!idContrato) {
+            throw Error(`El parametro ID es obligatorio.`)
+        }
+        const contrato= BlockchainConnection.parseBlockchainContractToObject(blockchainConnection.contratoView.contratos(idContrato));
 
-        // Adaptamos el resultado del struct a un formato más legible
+        // Insertar id del contrato
         return {
-            id: idContrato,
-            billeteraComprador: data.partes.comprador,
-            billeteraVendedor: data.partes.vendedor,
-            billeteraBroker: data.partes.broker,
-            nombreComprador: data.partes.nombreComprador,
-            nombreVendedor: data.partes.nombreVendedor,
-            nombreBroker: data.partes.nombreBroker,
-            nroFiscalComprador: data.partes.nroIdentidadComprador,
-            nroFiscalVendedor: data.partes.nroIdentidadVendedor,
-            nroFiscalBroker: data.partes.nroIdentidadBroker,
-            // TODO: ESTAS PARTES NO TENGO EN EL CONTRATO BC, PERO DEJO PORSI
-            // emailComprador: string;
-            // telefonoComprador: string;
-            // emailVendedor: string;
-            // telefonoVendedor: string;
-
-            // CONDICIONES DEL GRANO
-            cantidadToneladas: data.condicionesGrano.cantidadToneladasMetricas,
-            tipoGrano: data.condicionesGrano.tipoGrano,
-            cosecha: data.condicionesGrano.cosecha,
-
-            // CONDICIONES DE ENTREGA
-            empaque: data.condicionesEntrega.empaque,
-            fechaEntregaInicio: data.condicionesEntrega.fechaEntregaInicio,
-            fechaEntregaFin: data.condicionesEntrega.fechaEntregaFin,
-
-            // CONDICIONES DE PRECIO
-            tipoContrato: data.condicionesPrecio.tipoContrato,
-            precioPorToneladaMetrica: data.condicionesPrecio.precioPorToneladaMetrica,
-            precioCBOTBushel: data.condicionesPrecio.precioCBOTBushel,
-            ajusteCBOT: data.condicionesPrecio.ajusteCBOT, // al par=0 / más=1 / menos=-1
-            fechaPrecioChicago: data.condicionesPrecio.fechaPrecioChicago,
-            incoterm: data.condicionesPrecio.incoterm,
-            precioFinal: data.condicionesPrecio.precioFinal,
-
-            // CONDICIONES EMBARQUE
-            puertoEmbarque: data.condicionesEmbarque.puertoEmbarque,
-            destinoFinal: data.condicionesEmbarque.destinoFinal,
-
-            // CONDICIONES CONTRATO
-            hashVersionContrato: data.hashVersionContrato,
-            evidenceURI: data.evidenceURI,
-            fechaCelebracionContrato: data.fechaCelebracionContrato,
-            estado: data.estado,
-            clausulasAdicionales: data.clausulasAdicionales,
+            ...contrato,
+            id: Number(idContrato),
         };
-    } catch (err) {
-        console.error("❌ Error obteniendo contrato desde blockchain:", err);
-        return null;
+    } catch (error) {
+        throw Error(`Error obteniendo contrato desde blockchain -> ${error}`);
     }
 }
 
