@@ -1,7 +1,7 @@
 import dotenv from "dotenv";
 
 // Convertir cualquier tipo de Big Int a String. Incluso objetos con valores bigInt
-export function convertBigIntToString(obj: any): any {
+export function convertBigIntToString(obj: Object | string | Array<any>): any {
     if (typeof obj === "bigint") {
         return obj.toString();
     }
@@ -58,4 +58,21 @@ export function prepareOtpMessage(otp:string){
     return `🔐 Código de verificación
         Tu código OTP es: *${ otp }*
             Válido por 10 minutos.`
+}
+
+// FUNCIONES PARA PASAR DE MILISEGUNDOS (UNIX TIMESTAMP) A DATE Y VICEVERSA
+export function parseUnixSecondsToDate(unixSeconds:string | number | bigint): Date {
+    if(!unixSeconds){
+        throw Error(`Passed data not valid to parse`);
+    }
+
+    return new Date(Number(unixSeconds) * 1000);
+}
+
+export function parseDateToUnixSeconds(date: Date | string): number {
+    if (!date) {
+        throw Error(`Passed data not valid to parse`);
+    }
+
+    return Math.floor(new Date(date).getTime() / 1000);
 }
