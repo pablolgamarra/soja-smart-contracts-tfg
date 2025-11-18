@@ -4,6 +4,7 @@ import { convertBigIntToString, getEnv } from "@helpers/index.ts";
 import { blockchainConnection } from "@blockchain/BlockchainConnection.ts";
 import { EventLog } from "ethers";
 import { getOtpByContractAndSeller, markOtpAsUsed } from "@data/dao/dao.ts";
+import { Contrato } from "@types/Contrato.ts";
 
 const { contratoView } = blockchainConnection;
 
@@ -12,27 +13,24 @@ const CONFIG = {
 }
 
 class ContratosController{
-    public obtenerPorId = async (req:Request, res:Response, next:NextFunction) => {
+    public obtenerPorId = async (req:Request, res:Response, next:NextFunction): Promise<{success: boolean, data: Contrato, error?: string}> => {
         try {
             const { id } = req.params;
     
             if (!id) {
-                return res.status(400).json({ error: "ID del contrato requerido." });
+                res.status(400).json({ success: false, data: undefined, error: "ID del contrato requerido." });
             }
     
             // Leer desde blockchain usando ethers.js
             const contrato = await obtenerContratoDesdeBlockchain(id);
     
             if (!contrato) {
-                return res.status(404).json({ error: "Contrato no encontrado en blockchain." });
+                res.status(404).json({ success: false, data: undefined, error: "Contrato no encontrado en blockchain." });
             }
-    
-            // Convertir BigInt a string antes de enviar la respuesta
-            const contratoSinBigInt = convertBigIntToString(contrato);
     
             res.json({
                 success: true,
-                contrato: contratoSinBigInt,
+                contrato: contrato,
             });
         } catch (e) {
             console.error("Error obteniendo contrato:", e);
