@@ -2,7 +2,6 @@ import { Request, Response, NextFunction } from "express";
 import { getEnv } from "@helpers/index.ts";
 import { blockchainConnection } from "@blockchain/BlockchainConnection.ts";
 import { EventLog } from "ethers";
-import { getOtpByContractAndSeller, markOtpAsUsed } from "@data/dao/dao.ts";
 import { otpService } from "@services/otpService.ts";
 
 const { contratoView } = blockchainConnection;
@@ -82,7 +81,7 @@ class ContratosController{
             // Aplanar y ordenar por bloque
             const eventosPlano = logs.flat().sort((a, b) => a.blockNumber - b.blockNumber);
     
-            res.status(200).json({
+            return res.status(200).json({
                 success: true,
                 eventos: eventosPlano,
                 total: eventosPlano.length,
@@ -128,7 +127,7 @@ class ContratosController{
             // Ejecutar la transacción de firma meta-tx
             const tx = await blockchainConnection.firmarContratoMetaTx({id:contractId, billeteraVendedor: sellerAddress});
     
-            res.json({
+            return res.json({
                 success: true,
                 message: "Contrato firmado correctamente.",
                 txHash: tx.hash,
