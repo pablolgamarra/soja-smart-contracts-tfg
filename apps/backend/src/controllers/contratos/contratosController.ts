@@ -3,6 +3,7 @@ import { getEnv } from "@helpers/index.ts";
 import { blockchainConnection } from "@blockchain/BlockchainConnection.ts";
 import { EventLog } from "ethers";
 import { getOtpByContractAndSeller, markOtpAsUsed } from "@data/dao/dao.ts";
+import { otpService } from "@services/otpService.ts";
 
 const { contratoView } = blockchainConnection;
 
@@ -98,33 +99,34 @@ class ContratosController{
             const sellerAddress = CONFIG.relayer 
 
             if (!contractId || !otp) {
-                return res.status(400).json({ error: "Datos incompletos" });
+                return res.status(400).json({ error: 'Datos incompletos' });
             }
     
             // Buscar OTP en base de datos
-            const otpRecord = await getOtpByContractAndSeller(contractId, sellerAddress);
+            const checkOtp = await otpService.verificarOTP(contractId, sellerAddress);
     
-            if (!otpRecord) {
+            if (checkOtp.message === 'OTP no encontrado') {
                 return res.status(404).json({ error: "OTP no encontrado" });
             }
     
-            if (otpRecord.otp !== otp) {
+            if (checkOtp.message === 'OTP incorrecto') {
                 return res.status(401).json({ error: "OTP incorrecto" });
             }
     
-            if (new Date(otpRecord.expiresAt) < new Date()) {
+            if (checkOtp.message === 'OTP expirado') {
                 return res.status(410).json({ error: "OTP expirado" });
             }
     
-            if (otpRecord.used) {
+            if (checkOtp.message === 'OTP ya utilizado') {
                 return res.status(409).json({ error: "OTP ya utilizado" });
             }
-    
-            // Marcar OTP como usado
-            await markOtpAsUsed(otpRecord.id.toString());
+
+            if(!checkOtp.valid){
+                return res.status(400).json({ error: "Error verificando OTP" });
+            }
     
             // Ejecutar la transacción de firma meta-tx
-            const tx = await blockchainConnection.firmarContratoMetaTx({ contractId, sellerAddress });
+            const tx = await blockchainConnection.firmarContratoMetaTx({id:contractId, billeteraVendedor: sellerAddress});
     
             res.json({
                 success: true,
