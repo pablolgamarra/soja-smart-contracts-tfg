@@ -1,10 +1,8 @@
 import { Request, Response, NextFunction } from "express";
-import { crearTransaccion, obtenerContratoDesdeBlockchain } from "@services/relayerServices.ts";
-import { convertBigIntToString, getEnv } from "@helpers/index.ts";
+import { getEnv } from "@helpers/index.ts";
 import { blockchainConnection } from "@blockchain/BlockchainConnection.ts";
 import { EventLog } from "ethers";
 import { getOtpByContractAndSeller, markOtpAsUsed } from "@data/dao/dao.ts";
-import { Contrato } from "@types/Contrato.ts";
 
 const { contratoView } = blockchainConnection;
 
@@ -13,27 +11,26 @@ const CONFIG = {
 }
 
 class ContratosController{
-    public obtenerPorId = async (req:Request, res:Response, next:NextFunction): Promise<{success: boolean, data: Contrato, error?: string}> => {
+    public obtenerPorId = async (req:Request, res:Response, next:NextFunction) => {
         try {
             const { id } = req.params;
     
             if (!id) {
-                res.status(400).json({ success: false, data: undefined, error: "ID del contrato requerido." });
+                return res.status(400).json({ success: false, data: undefined, error: "ID del contrato requerido." });
             }
     
-            // Leer desde blockchain usando ethers.js
-            const contrato = await obtenerContratoDesdeBlockchain(id);
+            // Leer contrato desde conexion blockchain
+            const contrato = await blockchainConnection.obtenerContratoPorId(id);
     
             if (!contrato) {
-                res.status(404).json({ success: false, data: undefined, error: "Contrato no encontrado en blockchain." });
+                return res.status(404).json({ success: false, data: undefined, error: `Contrato con ID ${id}no encontrado en blockchain.` });
             }
     
-            res.json({
+            res.status(200).json({
                 success: true,
-                contrato: contrato,
+                data: contrato,
             });
         } catch (e) {
-            console.error("Error obteniendo contrato:", e);
             next(e);
         }
     }
@@ -43,15 +40,15 @@ class ContratosController{
             const { id } = req.params;
             const contractId = parseInt(id);
     
-            if (isNaN(contractId)) {
-                return res.status(400).json({ error: "ID de contrato inválido" });
+            if (!id) {
+                return res.status(400).json({ success: false, data: undefined, error: "ID del contrato requerido." });
             }
     
-            // Leer desde blockchain usando ethers.js
-            const contrato = await obtenerContratoDesdeBlockchain(id);
+            // Verificar si el contrato buscado esta registrado
+            const contrato = await blockchainConnection.obtenerContratoPorId(id);
     
             if(!contrato || contrato === null) {
-                return res.status(400).json({ error: `Contrato con ID: ${contractId} no encontrado en los registros` });
+                return res.status(404).json({ success: false, data: undefined, error: `Contrato con ID ${id}no encontrado en blockchain.` });
             }
     
             // Obtener filtros para cada tipo de evento (filtrado por idContrato)
@@ -84,18 +81,17 @@ class ContratosController{
             // Aplanar y ordenar por bloque
             const eventosPlano = logs.flat().sort((a, b) => a.blockNumber - b.blockNumber);
     
-            res.json({
+            res.status(200).json({
                 success: true,
-                total: eventosPlano.length,
                 eventos: eventosPlano,
+                total: eventosPlano.length,
             });
         } catch (e) {
-            console.error("Error obteniendo eventos:", e);
             next(e);
         }
     }
 
-    public firmarContrato = async (req:Request, res:Response) => {
+    public firmarContrato = async (req:Request, res:Response, next: NextFunction) => {
         try {
             const { contractId, otp } = req.body;
     
@@ -128,7 +124,7 @@ class ContratosController{
             await markOtpAsUsed(otpRecord.id.toString());
     
             // Ejecutar la transacción de firma meta-tx
-            const tx = await crearTransaccion({ contractId, sellerAddress });
+            const tx = await blockchainConnection.firmarContratoMetaTx({ contractId, sellerAddress });
     
             res.json({
                 success: true,
@@ -136,8 +132,7 @@ class ContratosController{
                 txHash: tx.hash,
             });
         } catch (e) {
-            console.error("Error firmando contrato:", e);
-            res.status(500).json({ error: "Error interno del servidor" });
+            next(e);
         }
     }
 }
