@@ -126,33 +126,30 @@ export class BlockchainConnection {
     }
 
     /** ========= CREAR TRANSACCIÓN META-TX (Relayer) ========= **/
-    public async firmarContratoMetaTx({ contractId, sellerAddress }: { contractId: number; sellerAddress: string }) {
-    try {
-        console.log(`Enviando meta transaccion para firma de contrato #${contractId}`);
+    public async firmarContratoMetaTx(props : Pick<ContratoOnChain, 'id' | 'billeteraVendedor'>): Promise<{ success: boolean, hash: string; status: number; }> {
+        try {
+            console.log(`Enviando meta transaccion para firma de contrato #${props.id} por parte del vendedor ${props.billeteraVendedor}...`);
 
-        // Ejecuta la función del contrato por parte del relayer
-        const tx = await blockchainConnection.contratoRelayer.firmarContratoMetaTx(
-            contractId,
-            `consentHash_${Date.now()}`,   // simulación hash de consentimiento (podrías usar uno real desde el front)
-            `ipfs://evidencias/${sellerAddress}_${Date.now()}` // URI de evidencia (ej. logs u OTP en IPFS)
-        );
+            // Ejecuta la firma del contrato mediante el relayer
+            const tx = await blockchainConnection.contratoRelayer.firmarContratoMetaTx(
+                props.id,
+                `consentHash_${Date.now()}`,   // simulación hash de consentimiento (podrías usar uno real desde el front)
+                `ipfs://evidencias/${props.billeteraVendedor}_${Date.now()}` // URI de evidencia (ej. logs u OTP en IPFS)
+            );
 
-        const receipt = await tx.wait();
+            const receipt = await tx.wait();
 
-        console.log(`✅ Contrato firmado por relayer. Hash: ${receipt.hash}`);
+            console.log(`✅ Contrato firmado por relayer. Hash: ${receipt.hash}`);
 
-        return {
-            hash: receipt.hash,
-            status: receipt.status,
-        };
-    } catch (error) {
-        console.error("❌ Error ejecutando transacción de firma:", error);
-        throw error;
+            return {
+                success: true,
+                hash: receipt.hash,
+                status: receipt.status,
+            };
+        } catch (error) {
+            throw Error(`Error creando meta transaccion de firma de contrato -> ${error}`);
+        }
     }
-}
-
-
-
 }
 
 export const blockchainConnection = new BlockchainConnection();
