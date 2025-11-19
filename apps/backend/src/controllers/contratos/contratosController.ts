@@ -105,23 +105,23 @@ class ContratosController{
             const checkOtp = await otpService.verificarOTP(contractId, sellerAddress);
     
             if (checkOtp.message === 'OTP no encontrado') {
-                return res.status(404).json({ error: "OTP no encontrado" });
-            }
-    
-            if (checkOtp.message === 'OTP incorrecto') {
-                return res.status(401).json({ error: "OTP incorrecto" });
-            }
-    
-            if (checkOtp.message === 'OTP expirado') {
-                return res.status(410).json({ error: "OTP expirado" });
-            }
-    
-            if (checkOtp.message === 'OTP ya utilizado') {
-                return res.status(409).json({ error: "OTP ya utilizado" });
+                return res.status(404).json({ success: false, message: "OTP no encontrado" });
             }
 
-            if(!checkOtp.valid){
-                return res.status(400).json({ error: "Error verificando OTP" });
+            if (checkOtp.message === 'OTP incorrecto') {
+                return res.status(401).json({ success: false, message: "OTP incorrecto" });
+            }
+
+            if (checkOtp.message === 'OTP expirado') {
+                return res.status(410).json({ success: false, message: "OTP expirado" });
+            }
+
+            if (checkOtp.message === 'OTP ya utilizado') {
+                return res.status(409).json({ success: false, message: "OTP ya utilizado" });
+            }
+
+            if (!checkOtp.valid) {
+                return res.status(400).json({ success: false, message: "Error verificando OTP" });
             }
     
             // Ejecutar la transacción de firma meta-tx
