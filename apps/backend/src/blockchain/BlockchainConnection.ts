@@ -1,4 +1,4 @@
-import { ethers, JsonRpcProvider, Wallet } from "ethers";
+import { ethers, id, JsonRpcProvider, Wallet } from "ethers";
 import { convertBigIntToString, getEnv, parseUnixSecondsToDate } from "src/helpers/index.ts";
 import {ContratoGranosSoja, ContratoGranosSoja__factory} from "./types/index.ts";
 import { EstadoContrato, TipoContrato, type ContratoOnChain} from "@types/Contrato.ts";
@@ -27,7 +27,7 @@ export class BlockchainConnection {
     /**
      * Retorna información de la red actual
      */
-    async getNetworkInfo() {
+    public async getNetworkInfo() {
         const network = await this.rpcProvider.getNetwork();
         console.log(`Conectado a red: ${network.name} (chainId: ${network.chainId})`);
     }
@@ -84,6 +84,75 @@ export class BlockchainConnection {
             })),
         };
     }
+
+    /** ========= OBTENER CONTRATO DESDE BLOCKCHAIN ========= **/
+    public async obtenerContratoPorId(idContrato: string): Promise<ContratoOnChain> {
+        try {
+            if (!idContrato) {
+                throw Error(`El parametro ID es obligatorio.`)
+            }
+
+            const contrato = BlockchainConnection.parseBlockchainContractToObject(this.contratoView.contratos(idContrato));
+
+            // Insertar id del contrato
+            return {
+                ...contrato,
+                id: Number(idContrato),
+            };
+        } catch (error) {
+            throw Error(`Error obteniendo contrato desde blockchain -> ${error}`);
+        }
+    }
+
+    public async obtenerTodosLosContratos(): Promise<ContratoOnChain[]> {
+        try {
+            const total = Number(await this.contratoView.contadorContratos());
+            const contratos = [];
+
+            for (let i = 1; i <= total; i++) {
+                const contrato = await this.contratoView.contratos(i);
+                contratos.push(
+                    {
+                        ...BlockchainConnection.parseBlockchainContractToObject(contrato),
+                        id: i
+                    }
+                );
+            }
+
+            return contratos;
+        } catch (error) {
+            throw Error(`Error obteniendo todos los contratos desde blockchain -> ${error}`);
+        }
+    }
+
+    /** ========= CREAR TRANSACCIÓN META-TX (Relayer) ========= **/
+    public async firmarContratoMetaTx({ contractId, sellerAddress }: { contractId: number; sellerAddress: string }) {
+    try {
+        console.log(`Enviando meta transaccion para firma de contrato #${contractId}`);
+
+        // Ejecuta la función del contrato por parte del relayer
+        const tx = await blockchainConnection.contratoRelayer.firmarContratoMetaTx(
+            contractId,
+            `consentHash_${Date.now()}`,   // simulación hash de consentimiento (podrías usar uno real desde el front)
+            `ipfs://evidencias/${sellerAddress}_${Date.now()}` // URI de evidencia (ej. logs u OTP en IPFS)
+        );
+
+        const receipt = await tx.wait();
+
+        console.log(`✅ Contrato firmado por relayer. Hash: ${receipt.hash}`);
+
+        return {
+            hash: receipt.hash,
+            status: receipt.status,
+        };
+    } catch (error) {
+        console.error("❌ Error ejecutando transacción de firma:", error);
+        throw error;
+    }
+}
+
+
+
 }
 
 export const blockchainConnection = new BlockchainConnection();

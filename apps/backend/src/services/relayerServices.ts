@@ -1,12 +1,13 @@
-import { Contrato } from "@types/Contrato.ts";
+import { ContratoOnChain } from "@types/Contrato.ts";
 import { blockchainConnection, BlockchainConnection } from "src/blockchain/BlockchainConnection.ts";
 
 /** ========= 📄 OBTENER CONTRATO DESDE BLOCKCHAIN ========= **/
-export async function obtenerContratoDesdeBlockchain(idContrato: string): Promise<Contrato> {
+export async function obtenerContratoDesdeBlockchain(idContrato: string): Promise<ContratoOnChain> {
     try {
         if(!idContrato) {
             throw Error(`El parametro ID es obligatorio.`)
         }
+
         const contrato= BlockchainConnection.parseBlockchainContractToObject(blockchainConnection.contratoView.contratos(idContrato));
 
         // Insertar id del contrato
@@ -22,7 +23,7 @@ export async function obtenerContratoDesdeBlockchain(idContrato: string): Promis
 /** ========= ✍️ CREAR TRANSACCIÓN META-TX (Relayer) ========= **/
 export async function crearTransaccion({ contractId, sellerAddress }: { contractId: number; sellerAddress: string }) {
     try {
-        console.log(`🔗 Enviando firma meta-tx para contrato #${contractId}`);
+        console.log(`Enviando transaccion meta-tx para firma de contrato #${contractId}`);
 
         // Ejecuta la función del contrato por parte del relayer
         const tx = await blockchainConnection.contratoRelayer.firmarContratoMetaTx(
