@@ -27,3 +27,5 @@ cache/
 #Package-lock
 package-lock.json
 /package-lock.json
+/apps/backend/src/blockchain/types/index.ts
+ignition/deployments/chain-31337/journal.jsonl
