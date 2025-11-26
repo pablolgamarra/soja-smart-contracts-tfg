@@ -9,6 +9,7 @@ interface ICardContratoCompactProps {
 const CardContratoCompact: React.FC<ICardContratoCompactProps> = ({ contrato, onSelect }) => {
     if (!contrato) return null;
 
+    // TODO: Mover a un helper
     const formatDate = (date?: string | number) => {
         if (!date) return "-";
         const d = new Date(date);

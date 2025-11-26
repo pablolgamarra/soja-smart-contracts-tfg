@@ -3,7 +3,8 @@
 	"version": "1.0.0",
 	"type": "module",
 	"scripts": {
-		"dev": "tsx watch src/index.ts",
+		"dev": "npm run typechain && tsx watch src/index.ts",
+        "typechain": "typechain --target ethers-v6 --out-dir src/blockchain/types 'src/blockchain/abis/*.json'",
 		"build": "tsc",
 		"start": "node dist/index.js"
 	},

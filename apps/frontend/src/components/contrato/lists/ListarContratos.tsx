@@ -1,6 +1,7 @@
 import { useWeb3Context } from "@hooks/useWeb3Context";
 import { useAddressContractList } from "@hooks/useAddressContractList";
 import { useState } from "react";
+import CardContratoCompact from "../cards/CardContratoCompact";
 
 export default function ListarContratos() {
     const web3 = useWeb3Context();
@@ -46,13 +47,13 @@ export default function ListarContratos() {
                                 <strong>Contrato #{i + 1}</strong>
                             </div>
                             <div>
-                                <strong>Vendedor:</strong> {c.identificadorPartes.vendedor}
+                                <strong>Vendedor:</strong> {c.partes.vendedor}
                             </div>
                             <div>
                                 <strong>Estado:</strong>{" "}
-                                {c.estado === 1
-                                    ? "Ofrecido"
-                                    : c.estado === 2
+                                {c.estado.toString() === "0"
+                                    ? "Enviado"
+                                    : c.estado === "2"
                                         ? "Aceptado"
                                         : "Otro"}
                             </div>
@@ -64,28 +65,7 @@ export default function ListarContratos() {
             {/* Mostrar detalles del contrato seleccionado */}
             {selectedContract && (
                 <div className="mt-6 p-4 border rounded-md bg-gray-800 text-gray-100">
-                    <h3 className="text-xl font-semibold mb-4">Detalles del Contrato</h3>
-                    <p><strong>Contrato ID:</strong> {selectedContract.id}</p> {/* Mostrar contractId */}
-                    <p><strong>Vendedor:</strong> {selectedContract.identificadorPartes.vendedor}</p>
-                    <p><strong>Comprador:</strong> {selectedContract.identificadorPartes.comprador}</p>
-                    <p><strong>Incoterm:</strong> {selectedContract.condicionesComerciales.incoterm}</p>
-                    <p><strong>Flete a cargo de:</strong> {selectedContract.condicionesComerciales.fleteACargoDe}</p>
-                    <p><strong>Condiciones de calidad:</strong> {selectedContract.condicionesComerciales.condicionesCalidad}</p>
-                    <p><strong>Cantidad (Toneladas):</strong> {selectedContract.condicionesComerciales.cantidadToneladas}</p>
-                    <p><strong>Precio por tonelada:</strong> {selectedContract.condicionesComerciales.precioPorTonelada} ETH</p>
-                    <p><strong>Lugar de entrega:</strong> {selectedContract.condicionesComerciales.lugarEntrega}</p>
-                    <p><strong>Modalidad de pago:</strong> {selectedContract.condicionesEconomicas.modalidadPago}</p>
-                    <p><strong>Estado del contrato:</strong>
-                        {selectedContract.estado === 1
-                            ? "Enviado"
-                            : selectedContract.estado === 2
-                                ? "Aceptado"
-                                : selectedContract.estado === 3
-                                    ? "Entregado"
-                                    : selectedContract.estado === 4
-                                        ? "Liquidado"
-                                        : "Otro"}
-                    </p>
+                    <CardContratoCompact contrato={selectedContract}/>
                 </div>
             )}
         </div>

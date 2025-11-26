@@ -45,7 +45,7 @@ const CardContratoFull: React.FC<ICardContratoProps> = ({ contrato }) => {
                     {contrato.nombreBroker && (
                         <p><strong>Broker:</strong> {contrato.nombreBroker}</p>
                     )}
-                    <p><strong>Billetera Vendedor:</strong> {contrato.billeteraVendedor}</p>
+                    <p><strong>Billetera Vendedor:</strong> {contrato.billeteraVendedor?.toString()}</p>
                 </div>
             </section>
 
@@ -66,7 +66,7 @@ const CardContratoFull: React.FC<ICardContratoProps> = ({ contrato }) => {
             <section className="mb-4">
                 <h4 className="text-lg font-semibold text-gray-300 mb-2">🚚 Entrega</h4>
                 <div className="grid grid-cols-2 gap-2 text-sm">
-                    <p><strong>Período:</strong> {formatDate(contrato.fechaEntregaInicio)} – {formatDate(contrato.fechaEntregaFin)}</p>
+                    <p><strong>Período:</strong> {formatDate(contrato.fechaEntregaInicio?.toString())} – {formatDate(contrato.fechaEntregaFin?.toString())}</p>
                     <p><strong>Puerto de Embarque:</strong> {contrato.puertoEmbarque}</p>
                     <p><strong>Destino Final:</strong> {contrato.destinoFinal}</p>
                 </div>
@@ -80,13 +80,13 @@ const CardContratoFull: React.FC<ICardContratoProps> = ({ contrato }) => {
                     <p><strong>Precio CBOT:</strong> {contrato.precioCBOTBushel} Bushel</p>
                     <p><strong>Ajuste CBOT:</strong> {contrato.ajusteCBOT == -1 ? 'Menos' : contrato.ajusteCBOT == 0 ? 'Al par' : 'Más'}</p>
                     <p><strong>Precio Final:</strong> <span className="text-green-400 font-semibold">{contrato.precioFinal} USD</span></p>
-                    <p><strong>Fecha Precio Chicago:</strong> {formatDate(contrato.fechaPrecioChicago)}</p>
+                    <p><strong>Fecha Precio Chicago:</strong> {formatDate(contrato.fechaPrecioChicago?.toString())}</p>
                 </div>
             </section>
 
             {/* METADATOS */}
             <section className="border-t border-gray-600 pt-3 text-sm">
-                <p><strong>Fecha de celebración:</strong> {formatDate(contrato.fechaCelebracionContrato)}</p>
+                <p><strong>Fecha de celebración:</strong> {formatDate(contrato.fechaCelebracionContrato?.toString())}</p>
                 {contrato.hashVersionContrato && (
                     <p><strong>Hash versión:</strong> <code>{contrato.hashVersionContrato}</code></p>
                 )}

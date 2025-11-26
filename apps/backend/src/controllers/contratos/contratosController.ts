@@ -1,9 +1,8 @@
 import { Request, Response, NextFunction } from "express";
-import { crearTransaccion, obtenerContratoDesdeBlockchain } from "@services/relayerServices.ts";
-import { convertBigIntToString, getEnv } from "@helpers/index.ts";
+import { getEnv } from "@helpers/index.ts";
 import { blockchainConnection } from "@blockchain/BlockchainConnection.ts";
 import { EventLog } from "ethers";
-import { getOtpByContractAndSeller, markOtpAsUsed } from "@data/dao/dao.ts";
+import { otpService } from "@services/otpService.ts";
 
 const { contratoView } = blockchainConnection;
 
@@ -17,25 +16,21 @@ class ContratosController{
             const { id } = req.params;
     
             if (!id) {
-                return res.status(400).json({ error: "ID del contrato requerido." });
+                return res.status(400).json({ success: false, data: undefined, error: "ID del contrato requerido." });
             }
     
-            // Leer desde blockchain usando ethers.js
-            const contrato = await obtenerContratoDesdeBlockchain(id);
+            // Leer contrato desde conexion blockchain
+            const contrato = await blockchainConnection.obtenerContratoPorId(id);
     
             if (!contrato) {
-                return res.status(404).json({ error: "Contrato no encontrado en blockchain." });
+                return res.status(404).json({ success: false, data: undefined, error: `Contrato con ID ${id}no encontrado en blockchain.` });
             }
     
-            // Convertir BigInt a string antes de enviar la respuesta
-            const contratoSinBigInt = convertBigIntToString(contrato);
-    
-            res.json({
+            res.status(200).json({
                 success: true,
-                contrato: contratoSinBigInt,
+                data: contrato,
             });
         } catch (e) {
-            console.error("Error obteniendo contrato:", e);
             next(e);
         }
     }
@@ -45,15 +40,15 @@ class ContratosController{
             const { id } = req.params;
             const contractId = parseInt(id);
     
-            if (isNaN(contractId)) {
-                return res.status(400).json({ error: "ID de contrato inválido" });
+            if (!id) {
+                return res.status(400).json({ success: false, data: undefined, error: "ID del contrato requerido." });
             }
     
-            // Leer desde blockchain usando ethers.js
-            const contrato = await obtenerContratoDesdeBlockchain(id);
+            // Verificar si el contrato buscado esta registrado
+            const contrato = await blockchainConnection.obtenerContratoPorId(id);
     
             if(!contrato || contrato === null) {
-                return res.status(400).json({ error: `Contrato con ID: ${contractId} no encontrado en los registros` });
+                return res.status(404).json({ success: false, data: undefined, error: `Contrato con ID ${id}no encontrado en blockchain.` });
             }
     
             // Obtener filtros para cada tipo de evento (filtrado por idContrato)
@@ -61,8 +56,6 @@ class ContratosController{
                 creado: contratoView.filters.ContratoCreado(contractId),
                 firmado: contratoView.filters.ContratoFirmado(contractId),
                 entrega: contratoView.filters.EntregaConfirmada(contractId),
-                pago: contratoView.filters.PagoEjecutado(contractId),
-                penalizacion: contratoView.filters.PenalizacionAplicada(contractId),
                 cerrado: contratoView.filters.ContratoCerrado(contractId),
             };
     
@@ -88,60 +81,59 @@ class ContratosController{
             // Aplanar y ordenar por bloque
             const eventosPlano = logs.flat().sort((a, b) => a.blockNumber - b.blockNumber);
     
-            res.json({
+            return res.status(200).json({
                 success: true,
-                total: eventosPlano.length,
                 eventos: eventosPlano,
+                total: eventosPlano.length,
             });
         } catch (e) {
-            console.error("Error obteniendo eventos:", e);
             next(e);
         }
     }
 
-    public firmarContrato = async (req:Request, res:Response) => {
+    public firmarContrato = async (req:Request, res:Response, next: NextFunction) => {
         try {
             const { contractId, otp } = req.body;
     
             const sellerAddress = CONFIG.relayer 
 
             if (!contractId || !otp) {
-                return res.status(400).json({ error: "Datos incompletos" });
+                return res.status(400).json({ error: 'Datos incompletos' });
             }
     
             // Buscar OTP en base de datos
-            const otpRecord = await getOtpByContractAndSeller(contractId, sellerAddress);
+            const checkOtp = await otpService.verificarOTP(contractId, sellerAddress);
     
-            if (!otpRecord) {
-                return res.status(404).json({ error: "OTP no encontrado" });
+            if (checkOtp.message === 'OTP no encontrado') {
+                return res.status(404).json({ success: false, message: "OTP no encontrado" });
             }
-    
-            if (otpRecord.otp !== otp) {
-                return res.status(401).json({ error: "OTP incorrecto" });
+
+            if (checkOtp.message === 'OTP incorrecto') {
+                return res.status(401).json({ success: false, message: "OTP incorrecto" });
             }
-    
-            if (new Date(otpRecord.expiresAt) < new Date()) {
-                return res.status(410).json({ error: "OTP expirado" });
+
+            if (checkOtp.message === 'OTP expirado') {
+                return res.status(410).json({ success: false, message: "OTP expirado" });
             }
-    
-            if (otpRecord.used) {
-                return res.status(409).json({ error: "OTP ya utilizado" });
+
+            if (checkOtp.message === 'OTP ya utilizado') {
+                return res.status(409).json({ success: false, message: "OTP ya utilizado" });
             }
-    
-            // Marcar OTP como usado
-            await markOtpAsUsed(otpRecord.id.toString());
+
+            if (!checkOtp.valid) {
+                return res.status(400).json({ success: false, message: "Error verificando OTP" });
+            }
     
             // Ejecutar la transacción de firma meta-tx
-            const tx = await crearTransaccion({ contractId, sellerAddress });
+            const tx = await blockchainConnection.firmarContratoMetaTx({id:contractId, billeteraVendedor: sellerAddress});
     
-            res.json({
+            return res.json({
                 success: true,
                 message: "Contrato firmado correctamente.",
                 txHash: tx.hash,
             });
         } catch (e) {
-            console.error("Error firmando contrato:", e);
-            res.status(500).json({ error: "Error interno del servidor" });
+            next(e);
         }
     }
 }
