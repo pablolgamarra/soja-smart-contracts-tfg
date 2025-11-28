@@ -28,9 +28,13 @@ export default function ListarContratos() {
     };
 
     return (
-        <div className="p-6">
-            <h2 className="text-2xl font-semibold mb-4">📋 Contratos creados</h2>
-
+        <div className = "flex flex-col gap-4 p-4 bg-gray-800 rounded-xl shadow-lg text-gray-100 min-w-8/12 mt-12" >
+            <div className="bg-gradient-to-r from-gray-800 to-gray-900 rounded-xl shadow-2xl p-8 mb-6 border border-gray-700">
+                <h1 className="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400 mb-2">
+                    Listado de Contratos
+                </h1>
+                <p className="text-gray-400 text-lg">Aquí se muestra un listado de los contratos creados</p>
+            </div>
             {loading ? (
                 <p>Cargando contratos...</p>
             ) : contracts.length === 0 ? (
