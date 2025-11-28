@@ -67,8 +67,7 @@ export const Web3ContextProvider = ({
     /** 🔹 Conecta MetaMask manualmente */
     const connectWallet = useCallback(async () => {
         if (!window.ethereum) {
-            alert("MetaMask no detectado. Por favor, instale MetaMask e intente de nuevo.");
-            return;
+            throw Error(`No se detectó la extensión MetaMask. Por favor, instale y recargue la página.`, {cause: "NoMetaMask"} );
         }
 
         try {
@@ -84,7 +83,7 @@ export const Web3ContextProvider = ({
             setIsConnected(true);
         } catch (err) {
             console.error("Error al conectar con MetaMask ->", err);
-            alert("Hubo un error al conectar con MetaMask. Por favor, intente de nuevo.");
+            throw Error(`Hubo un error al conectar con MetaMask. Por favor, intente de nuevo.`, { cause: err } );
         } finally {
             setIsLoading(false);
         }
