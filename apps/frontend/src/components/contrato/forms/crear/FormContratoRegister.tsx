@@ -174,7 +174,7 @@ const FormContratoRegister: React.FC = () => {
     };
 
     return (
-        <form className="flex flex-col gap-4 p-4 bg-gray-800 rounded-xl shadow-lg text-gray-100" onSubmit={handleSubmit}>
+        <form className="flex flex-col gap-4 p-4 bg-gray-800 rounded-xl shadow-lg text-gray-100 min-w-8/12 mt-12" onSubmit={handleSubmit}>
             <div className="bg-gradient-to-r from-gray-800 to-gray-900 rounded-xl shadow-2xl p-8 mb-6 border border-gray-700">
                 <h1 className="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400 mb-2">
                     Nuevo Contrato de Granos
