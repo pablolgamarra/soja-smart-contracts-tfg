@@ -4,13 +4,16 @@ import './index.css'
 import App from './App.tsx'
 import { Web3ContextProvider } from './context/Web3Context.tsx'
 import { BrowserRouter as Router } from 'react-router-dom'
+import { ToastProvider } from '@context/ToastContext.tsx'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <Web3ContextProvider>
-        <Router>
-            <App />
-        </Router>
+        <ToastProvider>
+            <Router>
+                <App />
+            </Router>
+        </ToastProvider>
     </Web3ContextProvider>
   </StrictMode>,
 )
