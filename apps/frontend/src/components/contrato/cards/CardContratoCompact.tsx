@@ -13,7 +13,7 @@ const CardContratoCompact: React.FC<ICardContratoCompactProps> = ({ contrato, on
     const formatDate = (date?: string | number) => {
         if (!date) return "-";
         const d = new Date(date);
-        return d.toLocaleDateString("es-AR", { year: "numeric", month: "short", day: "numeric" });
+        return d.toLocaleDateString("es-PY", { year: "numeric", month: "short", day: "numeric" });
     };
 
     const estadoColor = {
