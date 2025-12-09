@@ -1,4 +1,5 @@
 import type { Contrato } from "@types/Contrato";
+import { CalendarSync, CalendarX2, FilePenLine } from "lucide-react";
 import React from "react";
 
 export interface ICardContratoProps {
@@ -34,6 +35,46 @@ const CardContratoFull: React.FC<ICardContratoProps> = ({ contrato }) => {
                 >
                     {contrato.estado ?? "Desconocido"}
                 </span>
+
+                {/* Botón para volver a generar codigo OTP */}
+                <button
+                    onClick={(e) => {
+                        // Detener la propagación del evento para que no se active el handleSelectContract
+                        e.stopPropagation();
+
+                    }}
+                    className="text-gray-400 hover:text-blue-400 transition-colors"
+                    title="Cancelar contrato"
+                >
+                    <CalendarX2 size={20} />
+                </button>
+
+                {/* Botón para volver a generar codigo OTP */}
+                <button
+                    onClick={(e) => {
+                        // Detener la propagación del evento para que no se active el handleSelectContract
+                        e.stopPropagation();
+
+                    }}
+                    className="text-gray-400 hover:text-blue-400 transition-colors"
+                    title="Volver a enviar codigo OTP"
+                >
+                    <CalendarSync size={20} />
+                </button>
+
+                {/* Botón para editar contrato */}
+                <button
+                    onClick={(e) => {
+                        // Detener la propagación del evento para que no se active el handleSelectContract
+                        e.stopPropagation();
+
+                    }}
+                    className="text-gray-400 hover:text-blue-400 transition-colors"
+                    title="Editar condiciones de contrato"
+                >
+                    <FilePenLine size={20} />
+                </button>
+
             </div>
 
             {/* PARTES DEL CONTRATO */}
