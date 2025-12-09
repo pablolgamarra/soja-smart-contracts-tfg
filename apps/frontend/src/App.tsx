@@ -1,22 +1,26 @@
 import ErrorComponent from "@components/common/ErrorComponent";
+import LoadingWeb3 from "@components/common/LoadingWeb3";
 import { useWeb3Context } from "@hooks/useWeb3Context";
 import Login from "@pages/Login";
 import AppRouter from "@routes/AppRouter";
 
-const App:React.FC = ()=>{
+//Muestra la pagina de login si no se detecta conexion con la wallet
+const App:React.FC = () => {
     const web3Context = useWeb3Context();
 
-    if(!web3Context) return <ErrorComponent message="Web3Context no disponible"></ErrorComponent> 
-
-    if(!web3Context.isConnected) return <Login />;
-
+    if(!web3Context) {
+        return <ErrorComponent message="Web3Context no disponible" /> 
+    }
+    
     if (web3Context.isLoading) {
         return (
-            <div className="flex flex-col items-center justify-center min-h-screen">
-                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
-                <p className="mt-4 text-gray-500">Inicializando conexión Web3...</p>
-                <p className="mt-4 text-gray-500">Verifique el panel de Metamask</p>
-            </div>
+            <LoadingWeb3 />
+        );
+    }
+
+    if(!web3Context.isConnected) {
+        return (
+            <Login />
         );
     }
 
