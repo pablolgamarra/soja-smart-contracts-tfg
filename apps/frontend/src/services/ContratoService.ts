@@ -1,6 +1,6 @@
 import type { Web3ContextType } from "@context/Web3Context";
 import getEnv from "@helpers/getEnv.ts";
-import type { Contrato } from "@types/Contrato"; // Asegúrate de que este tipo esté bien definido
+import { type Contrato } from "@types/Contrato"; // Asegúrate de que este tipo esté bien definido
 import { ethers } from "ethers";
 
 const CONFIG = {
