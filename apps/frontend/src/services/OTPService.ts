@@ -8,8 +8,8 @@ const CONFIG = {
 
 class OTPService {
     public async generarOtpContrato(contrato: Contrato) {
-        try{
-            const {id,emailVendedor, telefonoVendedor} = contrato;
+        try {
+            const { id, emailVendedor, telefonoVendedor } = contrato;
             const response = await fetch(`http://${CONFIG.BACKEND_HOST}:${CONFIG.BACKEND_PORT}/otp/generate`, {
                 method: 'POST',
                 headers: {
@@ -24,19 +24,19 @@ class OTPService {
 
             const data = await response.json();
 
-            if(data.success) {
+            if (data.success) {
                 return true;
             } else {
                 throw Error(data.message);
             }
-        } catch(e){
+        } catch (e) {
             throw Error(`Error generando OTP -> ${e}`)
         }
     }
-    
-    public async validarOtpContrato(contrato:Contrato, otp:string):Promise<boolean> {
+
+    public async validarOtpContrato(contrato: Contrato, otp: string): Promise<boolean> {
         try {
-            const {id} = contrato;
+            const { id } = contrato;
 
             const response = await fetch(`http://${CONFIG.BACKEND_HOST}:${CONFIG.BACKEND_PORT}/otp/verify`, {
                 method: 'POST',
@@ -44,8 +44,8 @@ class OTPService {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    "contractId": id, 
-                    "otp": otp 
+                    "contractId": id,
+                    "otp": otp
                 }),
             });
 
