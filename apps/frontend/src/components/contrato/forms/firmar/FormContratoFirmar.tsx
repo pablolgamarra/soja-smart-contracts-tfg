@@ -7,6 +7,7 @@ import { Link } from "react-router-dom";
 import { SquarePen } from "lucide-react";
 import Section from "@components/common/Section";
 import { useContratoFirmar } from "@hooks/forms/contratos/useContratoFirmar"; // 👈 Usar el hook
+import SectionHeader from "@components/common/SectionHeader";
 
 // Ya no necesitamos IFormContratoFirmarState o IFormContratoFirmarProps aquí,
 // ya que el hook maneja el estado.
@@ -45,13 +46,8 @@ const FormContratoFirmar: React.FC = () => {
 
     // Renderizado UNVERIFIED (Formulario)
     return (
-        <form className="flex flex-col gap-4 p-4 bg-gray-800 rounded-xl shadow-lg text-gray-100 w-full max-w-4xl mx-auto mt-6">
-            <div className="bg-gradient-to-r from-gray-800 to-gray-900 rounded-xl shadow-2xl p-8 mb-6 border border-gray-700">
-                <h1 className="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400 mb-2">
-                    Firmar un Contrato
-                </h1>
-                <p className="text-gray-400 text-lg">Ingrese los datos que le fueron enviados</p>
-            </div>
+        <form className="flex flex-col gap-6 rounded-xl shadow-lg text-gray-100 w-full max-w-4xl mx-auto">
+            <SectionHeader title="Firmar Contrato" description="Ingrese los datos para validar y firmar el contrato" />
 
             <Section icon={SquarePen} title="Datos Para Validar" variant="info">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
