@@ -1,13 +1,13 @@
-import PageWrapper from "@components/common/PageWrapper";
 import FormContratoFirmar from "@components/contrato/forms/firmar/FormContratoFirmar";
+import BaseLayout from "@components/layouts/BaseLayout";
 
 const FirmarContrato:React.FC = () => {
     return (
-        <PageWrapper>
-            <article className="w-6/12 mt-6">
+        <BaseLayout>
+            <div className="flex flex-col gap-6 p-8 bg-gray-900 rounded-xl shadow-2xl text-gray-100 mt-12 w-full max-w-5xl mx-auto border border-gray-700">
                 <FormContratoFirmar />
-            </article>
-        </PageWrapper>
+            </div>
+        </BaseLayout>
     );
 }
 
