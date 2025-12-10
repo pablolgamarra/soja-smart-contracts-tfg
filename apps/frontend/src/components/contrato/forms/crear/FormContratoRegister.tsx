@@ -76,12 +76,11 @@ const FormContratoRegister: React.FC = () => {
         // El onClick en el botón debe ser type="submit" para que el form lo capture.
         // O si ya tiene type="button" el form debe llamar el handler en el onSubmit.
         <form
-            className="flex flex-col gap-4 p-4 rounded-xl shadow-lg text-gray-100 min-w-8/12"
             onSubmit={handleSubmit}
         >
+            <div className="space-y-6">
             <SectionHeader title="Nuevo contrato de granos" description="Complete con los datos necesarios" />
 
-            <div className="space-y-6">
                 {/* Comprador */}
                 <Section icon={User} title="Datos del Comprador" variant="info">
                     {/* ... Inputs del comprador (usando formState y handleInputChanges) ... */}

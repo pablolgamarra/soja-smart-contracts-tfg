@@ -28,9 +28,13 @@ const FormContratoFirmar: React.FC = () => {
     // Renderizado condicional
     if (viewMode === "VERIFIED" && contrato) {
         return (
-            <div className="flex flex-col gap-6 p-4 bg-gray-800 rounded-xl shadow-lg text-gray-100 w-full max-w-4xl mx-auto mt-6">
+            <div 
+            // className="flex flex-col gap-6 p-4 bg-gray-800 rounded-xl shadow-lg text-gray-100 w-full max-w-4xl mx-auto mt-6"
+            >
                 <CardContratoFull contrato={contrato} />
-                <div className="flex justify-end gap-4 pt-6 pb-2 border-t border-gray-700">
+                <div 
+                // className="flex justify-end gap-4 pt-6 pb-2 border-t border-gray-700"
+                >
                     <Link to="/">
                         <Button type="button" variant="secondary">
                             Cancelar
@@ -46,46 +50,50 @@ const FormContratoFirmar: React.FC = () => {
 
     // Renderizado UNVERIFIED (Formulario)
     return (
-        <form className="flex flex-col gap-6 rounded-xl shadow-lg text-gray-100 w-full max-w-4xl mx-auto">
-            <SectionHeader title="Firmar Contrato" description="Ingrese los datos para validar y firmar el contrato" />
+        <form 
+        // className="flex flex-col gap-6 rounded-xl shadow-lg text-gray-100 w-full max-w-4xl mx-auto"
+        >
+            <div className="space-y-6">
+                <SectionHeader title="Firmar Contrato" description="Ingrese los datos para validar y firmar el contrato" />
 
-            <Section icon={SquarePen} title="Datos Para Validar" variant="info">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <InputField
-                        label="ID del Contrato"
-                        name="idContrato"
-                        type="text"
-                        value={formState.idContrato}
-                        onChange={handleInputChanges}
-                        required
-                    />
+                <Section icon={SquarePen} title="Datos para validar" variant="info">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <InputField
+                            label="ID del Contrato"
+                            name="idContrato"
+                            type="text"
+                            value={formState.idContrato}
+                            onChange={handleInputChanges}
+                            required
+                            />
 
-                    <InputField
-                        label="Código OTP"
-                        name="codigoOtp"
-                        type="text"
-                        onChange={handleInputChanges}
-                        value={formState.codigoOtp}
-                        required
-                    />
-                </div>
-            </Section>
+                        <InputField
+                            label="Código OTP"
+                            name="codigoOtp"
+                            type="text"
+                            onChange={handleInputChanges}
+                            value={formState.codigoOtp}
+                            required
+                            />
+                    </div>
+                </Section>
 
-            {/* Botones */}
-            <div className="flex justify-end gap-4 pt-6 pb-8">
-                <Link to="/">
-                    <Button type="button" variant="secondary">
-                        Cancelar
+                {/* Botones */}
+                <div className="flex justify-end gap-4 pt-6 pb-8">
+                    <Link to="/">
+                        <Button type="button" variant="secondary">
+                            Cancelar
+                        </Button>
+                    </Link>
+                    <Button
+                        type="submit"
+                        variant="success"
+                        onClick={handleVerifyOTP}
+                        disabled={loading || !formState.idContrato || !formState.codigoOtp}
+                        >
+                        {loading ? "Verificando..." : "Verificar Código OTP"}
                     </Button>
-                </Link>
-                <Button
-                    type="submit"
-                    variant="success"
-                    onClick={handleVerifyOTP}
-                    disabled={loading || !formState.idContrato || !formState.codigoOtp}
-                >
-                    {loading ? "Verificando..." : "Verificar Código OTP"}
-                </Button>
+                </div>
             </div>
         </form>
     );
