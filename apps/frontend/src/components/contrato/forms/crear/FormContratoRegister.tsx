@@ -1,16 +1,16 @@
-import { useState } from "react";
-import { useWeb3Context } from "@hooks/useWeb3Context";
-import { InputField } from "@components/common/InputField"; // Componente de InputField
+import React from "react";
+import { useContratoRegister } from "@hooks/forms/contratos/useContratoRegister"; // 👈 Usar el hook
+import { InputField } from "@components/common/InputField";
 import SelectField from "@components/common/SelectField";
 import Button from "@components/common/Button";
 import Section from "@components/common/Section";
 import { Briefcase, DollarSign, FileText, Package, Truck, User } from "lucide-react";
 import { Link } from "react-router-dom";
 import { TipoContrato } from "@constants/TipoContrato";
-import ContratoService from "@services/ContratoService";
-import OTPService from "@services/OTPService";
-import type { Contrato } from "@types/Contrato";
+import SectionHeader from "@components/common/SectionHeader";
+import type { EstadoContrato } from "@constants/EstadoContrato";
 
+// Exportar la interfaz de estado desde aquí o desde un archivo de tipos
 export interface IFormContratoRegisterState {
     // IDENTIFICADORES
     id?: number;
@@ -27,17 +27,14 @@ export interface IFormContratoRegisterState {
     telefonoComprador: string;
     emailVendedor: string;
     telefonoVendedor: string;
-
     // CONDICIONES DEL GRANO
     cantidadToneladas: number;
     tipoGrano: string;
     cosecha: string;
-
     // CONDICIONES DE ENTREGA
     empaque: string;
     fechaEntregaInicio: string;
     fechaEntregaFin: string;
-
     // CONDICIONES DE PRECIO
     tipoContrato: TipoContrato;
     precioPorToneladaMetrica: number;
@@ -46,11 +43,9 @@ export interface IFormContratoRegisterState {
     fechaPrecioChicago: string;
     incoterm: string;
     precioFinal: number;
-
     // CONDICIONES EMBARQUE
     puertoEmbarque: string;
     destinoFinal: string;
-
     // CONDICIONES CONTRATO
     hashVersionContrato: string;
     evidenceURI: string;
@@ -59,150 +54,55 @@ export interface IFormContratoRegisterState {
     clausulasAdicionales: Array<{ clausula: string, CID: string }>
 }
 
+
 const FormContratoRegister: React.FC = () => {
-    const [formState, setFormState] = useState<IFormContratoRegisterState>({} as IFormContratoRegisterState);
-    const web3Context = useWeb3Context();
+    // Obtener toda la lógica del hook
+    const {
+        formState,
+        isSubmitting,
+        handleInputChanges,
+        handleClausulaChange,
+        addClausula,
+        removeClausula,
+        handleSubmit,
+        web3Context,
+    } = useContratoRegister();
 
-    const handleInputChanges = (e) => {
-        const { name, value } = e.target;
-        console.log(name, value);
-        setFormState(prev => ({ ...prev, [ name ]: value }));
-    };
+    // Convertir el tipo de contrato para la renderización condicional
+    const isPrecioAFijar = formState.tipoContrato?.toString() == TipoContrato.PrecioAFijar.toString();
 
-    const handleClausulaChange = (index, field, value) => {
-        const newClausulas = [ ...formState.clausulasAdicionales ];
-        newClausulas[ index ] = { ...newClausulas[ index ], [ field ]: value };
-        setFormState(prev => ({ ...prev, clausulasAdicionales: newClausulas }));
-    };
-
-    const addClausula = () => {
-        setFormState(prev => ({
-            ...prev,
-            clausulasAdicionales: [ ...(prev.clausulasAdicionales || []), { clausula: '', CID: '' } ]
-        }));
-    };
-
-    const removeClausula = (index:number) => {
-        setFormState(prev => ({
-            ...prev,
-            clausulasAdicionales: prev.clausulasAdicionales.filter((_, i) => i !== index)
-        }));
-    };
-
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-
-        if (!web3Context.isConnected) {
-            alert("Por favor, conecte su wallet antes de continuar.");
-            return;
-        }
-
-        if (!web3Context.deployedContract || !web3Context.signer) {
-            alert("Contrato o signer no inicializado.");
-            return;
-        }
-
-        // ESTADO DE PRUEBA PARA TESTEOS
-        const testState = {
-                "billeteraComprador": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
-                "nroFiscalComprador": "123456789-0",
-                "nombreComprador": "Glymax",
-                "billeteraVendedor": "0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266",
-                "nroFiscalVendedor": "6090356-0",
-                "nombreVendedor": "Lorenzo Escobar",
-                "billeterabroker": "0x90f79bf6eb2c4f870365e785982e1f101e93b906",
-                "nroFiscalBroker": "1597538426-0",
-                "nombreBroker": "Lorenzeti",
-                "emailComprador": "pablogamarra@glymax.com",
-                "telefonoComprador": "595993373436",
-                "emailVendedor": "pablogamarra@glymax.com",
-                "telefonoVendedor": "595993373436",
-
-                "cantidadToneladasMetricas": 0,
-                "tipoGrano": "Soja",
-                "cosecha": "2025",
-                "empaque": "Granel",
-                "fechaEntregaInicio": "2025-11-13",
-                "fechaEntregaFin": "2025-11-13",
-                "tipoContrato": TipoContrato.PrecioFijo,
-                "precioPorToneladaMetrica": 159753,
-                "precioCBOTBushel": 0,
-                "ajusteCBOT": 0,
-                "fechaPrecioChicago": "2025-11-13",
-                "incoterm": "FOB",
-                "precioFinal": 159753,
-                "puertoEmbarque": "Puerto Rosario",
-                "destinoFinal": "Copenhagen",
-            "hashVersionContrato": "hashVersionContrato_v1",
-            "evidenceURI": "http://localhost:1234/evidencia",
-        }
-
-        try {
-            // Usamos el servicio para crear el contrato en la blockchain
-            // const contractResponse = await ContratoService.crearContrato(formState, web3Context);
-            
-            // TODO: DEJAR ACA POR SI NECESITAMOS PARA PROBAR
-            const contractResponse = await ContratoService.crearContrato(testState, web3Context);
-
-            if (contractResponse.success) {
-                // Ahora que el contrato está creado, generamos el OTP
-                // const otpResponse = await OTPService.generarOtpContrato({
-                //     id: contractResponse.contractId, // El contractId del contrato recién creado
-                //     emailVendedor: formState.emailVendedor,
-                //     telefonoVendedor: formState.telefonoVendedor
-                // } as Contrato);
-                
-                // TODO: VERIFICAR EL CIRCUITO COMPLETO
-                const otpResponse = await OTPService.generarOtpContrato({
-                    id: contractResponse.contractId, // El contractId del contrato recién creado
-                    emailVendedor: testState.emailVendedor,
-                    telefonoVendedor: testState.telefonoVendedor
-                } as Contrato);
-
-                if (otpResponse) {
-                    alert("Contrato creado y OTP enviado al vendedor.");
-                } else {
-                    alert("Hubo un error al generar el OTP.");
-                }
-            } else {
-                alert("Error al crear el contrato.");
-            }
-        } catch (error) {
-            console.error("Error en la creación del contrato o generación de OTP:", error);
-            alert("Hubo un error procesando la ceel contrato.");
-        }
-    };
 
     return (
-        <form className="flex flex-col gap-4 p-4 bg-gray-800 rounded-xl shadow-lg text-gray-100" onSubmit={handleSubmit}>
-            <div className="bg-gradient-to-r from-gray-800 to-gray-900 rounded-xl shadow-2xl p-8 mb-6 border border-gray-700">
-                <h1 className="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400 mb-2">
-                    Nuevo Contrato de Granos
-                </h1>
-                <p className="text-gray-400 text-lg">Complete los datos del contrato de compraventa</p>
-            </div>
-
+        // El onClick en el botón debe ser type="submit" para que el form lo capture.
+        // O si ya tiene type="button" el form debe llamar el handler en el onSubmit.
+        <form
+            onSubmit={handleSubmit}
+        >
             <div className="space-y-6">
+            <SectionHeader title="Nuevo contrato de granos" description="Complete con los datos necesarios" />
+
                 {/* Comprador */}
                 <Section icon={User} title="Datos del Comprador" variant="info">
+                    {/* ... Inputs del comprador (usando formState y handleInputChanges) ... */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <InputField label="Nombre del Comprador" name="nombreComprador" type="text" onChange={handleInputChanges} required />
-                        <InputField label="Nro. Identidad Comprador" name="nroFiscalComprador" type="text" onChange={handleInputChanges} required />
+                        <InputField label="Nombre del Comprador" name="nombreComprador" type="text" onChange={handleInputChanges} required value={formState.nombreComprador || ''} />
+                        <InputField label="Nro. Identidad Comprador" name="nroFiscalComprador" type="text" onChange={handleInputChanges} required value={formState.nroFiscalComprador || ''} />
                     </div>
-                    <InputField label="Dirección Wallet Comprador" name="billeteraComprador" type="text" onChange={handleInputChanges} required />
-                    <InputField label="Dirección de Correo del Comprador" name="emailComprador" type="text" onChange={handleInputChanges} required />
-                    <InputField label="Numero de Telefono del Comprador" name="telefonoComprador" type="text" onChange={handleInputChanges} required />
+                    <InputField label="Dirección Wallet Comprador" name="billeteraComprador" type="text" onChange={handleInputChanges} required value={formState.billeteraComprador || ''} />
+                    <InputField label="Dirección de Correo del Comprador" name="emailComprador" type="email" onChange={handleInputChanges} required value={formState.emailComprador || ''} /> {/* Tipo email */}
+                    <InputField label="Numero de Telefono del Comprador" name="telefonoComprador" type="tel" onChange={handleInputChanges} required value={formState.telefonoComprador || ''} /> {/* Tipo tel */}
                 </Section>
 
                 {/* Vendedor */}
                 <Section icon={User} title="Datos del Vendedor" variant="success">
+                    {/* ... Inputs del vendedor ... */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <InputField label="Nombre del Vendedor" name="nombreVendedor" type="text" onChange={handleInputChanges} required />
-                        <InputField label="Nro. Identidad Vendedor" name="nroFiscalVendedor" type="text" onChange={handleInputChanges} required />
+                        <InputField label="Nombre del Vendedor" name="nombreVendedor" type="text" onChange={handleInputChanges} required value={formState.nombreVendedor || ''} />
+                        <InputField label="Nro. Identidad Vendedor" name="nroFiscalVendedor" type="text" onChange={handleInputChanges} required value={formState.nroFiscalVendedor || ''} />
                     </div>
-                    <InputField label="Dirección Wallet Vendedor" name="billeteraVendedor" type="text" onChange={handleInputChanges} required />
-                    <InputField label="Dirección de Correo del Vendedor" name="emailVendedor" type="text" onChange={handleInputChanges} required />
-                    <InputField label="Numero de Telefono del Vendedor" name="telefonoVendedor" type="text" onChange={handleInputChanges} required />
+                    <InputField label="Dirección Wallet Vendedor" name="billeteraVendedor" type="text" onChange={handleInputChanges} required value={formState.billeteraVendedor || ''} />
+                    <InputField label="Dirección de Correo del Vendedor" name="emailVendedor" type="email" onChange={handleInputChanges} required value={formState.emailVendedor || ''} />
+                    <InputField label="Numero de Telefono del Vendedor" name="telefonoVendedor" type="tel" onChange={handleInputChanges} required value={formState.telefonoVendedor || ''} />
                 </Section>
 
                 {/* Broker (opcional) */}
@@ -222,7 +122,7 @@ const FormContratoRegister: React.FC = () => {
                     </div>
                 </Section>
 
-                {/* Condiciones de Precio */}                
+                {/* Condiciones de Precio */}
                 <Section icon={DollarSign} title="Condiciones del Precio" variant="success">
                     <SelectField
                         label="Tipo de Contrato"
@@ -233,28 +133,32 @@ const FormContratoRegister: React.FC = () => {
                         ]}
                         onChange={handleInputChanges}
                         required
+                        value={formState.tipoContrato?.toString()} // Asegurarse de que el valor sea el string del enum
                     />
+
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        {(formState.tipoContrato?.toString() == TipoContrato.PrecioAFijar) &&
+                        {/* Renderizado condicional basado en isPrecioAFijar */}
+                        {isPrecioAFijar && (
                             <>
-                                <InputField label="Precio por Tonelada (USD)" name="precioPorToneladaMetrica" type="number" onChange={handleInputChanges} required />
-                                <InputField label="Precio CBOT Bushel" name="precioCBOTBushel" type="number" onChange={handleInputChanges} required />
+                                <InputField label="Precio por Tonelada (USD)" name="precioPorToneladaMetrica" type="number" onChange={handleInputChanges} required value={formState.precioPorToneladaMetrica || ''} />
+                                <InputField label="Precio CBOT Bushel" name="precioCBOTBushel" type="number" onChange={handleInputChanges} required value={formState.precioCBOTBushel || ''} />
                                 <SelectField
                                     label="Ajuste CBOT"
                                     name="ajusteCBOT"
                                     options={[
-                                        { label: "Al par (0)", value: 0 },
-                                        { label: "Más (+1)", value: 1 },
-                                        { label: "Menos (-1)", value: -1 },
+                                        { label: "Al par (0)", value: "0" }, // Asegurarse de que los valores sean strings si vienen de event.target.value
+                                        { label: "Más (+1)", value: "1" },
+                                        { label: "Menos (-1)", value: "-1" },
                                     ]}
                                     onChange={handleInputChanges}
+                                    value={formState.ajusteCBOT?.toString()}
                                 />
-                                <InputField label="Fecha Fijacion Precio" name="fechaPrecioChicago" type="date" onChange={handleInputChanges} required />
+                                <InputField label="Fecha Fijacion Precio" name="fechaPrecioChicago" type="date" onChange={handleInputChanges} required value={formState.fechaPrecioChicago || ''} />
                             </>
-                        }
+                        )}
                     </div>
-                    <InputField label="Incoterm" name="incoterm" type="text" onChange={handleInputChanges} required />
-                    <InputField label="Precio Final (USD)" name="precioFinal" type="number" onChange={handleInputChanges} required />
+                    <InputField label="Incoterm" name="incoterm" type="text" onChange={handleInputChanges} required value={formState.incoterm || ''} />
+                    <InputField label="Precio Final (USD)" name="precioFinal" type="number" onChange={handleInputChanges} required value={formState.precioFinal || ''} />
                 </Section>
 
                 {/* Condiciones de Entrega */}
@@ -274,10 +178,10 @@ const FormContratoRegister: React.FC = () => {
                     </div>
                 </Section>
 
-
                 {/* Cláusulas Adicionales */}
                 <Section icon={FileText} title="Cláusulas Adicionales" variant="warning">
-                    {formState.clausulasAdicionales?.map((clausula, index) => (
+                    {/* Asegurarse de que formState.clausulasAdicionales esté inicializado */}
+                    {(formState.clausulasAdicionales || []).map((clausula, index) => (
                         <div key={index} className="bg-gray-900/50 rounded-lg p-4 mb-4 border border-gray-700">
                             <div className="flex justify-between items-center mb-3">
                                 <h3 className="font-semibold text-gray-300">Cláusula #{index + 1}</h3>
@@ -308,18 +212,11 @@ const FormContratoRegister: React.FC = () => {
                             </div>
                         </div>
                     ))}
-                    <Button type="button" onClick={addClausula} variant="secondary">
+                    <Button type="button" onClick={addClausula} variant="secondary" disabled={isSubmitting}>
                         + Agregar Cláusula
                     </Button>
                 </Section>
 
-                {/* Condiciones Adicionales */}
-                <Section icon={Truck} title="Datos del Contrato (Internos)" variant="warning">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <InputField label="Hash Versión Contrato" name="hashVersionContrato" type="text" onChange={handleInputChanges} />
-                    <InputField label="Evidence URI" name="evidenceURI" type="text" onChange={handleInputChanges} />
-                    </div>
-                </Section >
 
                 {/* Submit Button */}
                 <div className="flex justify-end gap-4 pt-6 pb-8">
@@ -328,8 +225,12 @@ const FormContratoRegister: React.FC = () => {
                             Cancelar
                         </Button>
                     </Link>
-                    <Button type="button" variant="success" onClick={handleSubmit}>
-                        Guardar Contrato
+                    <Button
+                        type="submit" // 👈 Cambiar a type="submit" para que active el onSubmit del form
+                        variant="success"
+                        disabled={isSubmitting || !web3Context.isConnected}
+                    >
+                        {isSubmitting ? 'Creando Contrato...' : 'Guardar Contrato'}
                     </Button>
                 </div>
             </div>

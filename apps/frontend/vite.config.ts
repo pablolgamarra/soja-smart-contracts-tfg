@@ -23,6 +23,7 @@ export default defineConfig({
             "@context": path.resolve(__dirname, "src/context"),
             "@helpers": path.resolve(__dirname, "src/helpers"),
             "@hooks": path.resolve(__dirname, "src/hooks"),
+            "@mock": path.resolve(__dirname, "src/mock"),
             "@pages": path.resolve(__dirname, "src/pages"),
             "@routes": path.resolve(__dirname, "src/routes"),
             "@services": path.resolve(__dirname, "src/services"),

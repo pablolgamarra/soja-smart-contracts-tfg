@@ -1,11 +1,11 @@
-import PageWrapper from "@components/common/PageWrapper";
-import ListarContratos from "@components/contrato/lists/ListarContratos";
+import ListaContratos from "@components/contrato/lists/ListaContratos";
+import BaseLayout from "@components/layouts/BaseLayout";
 
 const Home:React.FC = ()=>{
     return (
-        <PageWrapper>
-                <ListarContratos />
-        </PageWrapper>
+        <BaseLayout>
+            <ListaContratos />
+        </BaseLayout>
     )
 }
 

@@ -1,6 +1,7 @@
-import type { Contrato } from "@types/Contrato";
+import getEnv from "@helpers/getEnv";
 import type { ethers } from "ethers";
 import { useEffect, useState } from "react";
+import { contratosMock } from "@mock/contratosMock";
 
 export const useAddressContractList = (
     deployedContract: ethers.Contract | null,
@@ -12,8 +13,19 @@ export const useAddressContractList = (
     const [ loading, setLoading ] = useState<boolean>(true);
     const [ error, setError ] = useState<string | null>(null);
 
+    const env = getEnv("ENV");
+
     useEffect(() => {
         const obtenerContracts = async () => {
+            if (env === "development") {
+                console.log("🚀 useAddressContractList - deployedContract:", deployedContract);
+                console.log("🚀 useAddressContractList - userAddress:", userAddress);
+                console.log("🚀 useAddressContractList - isConnected:", isConnected);
+                setContracts(contratosMock);
+                setLoading(false);
+                return;
+            }
+
             if (isLoadingContext || !isConnected) return; // Espera hasta que el contexto esté listo
 
             if (!deployedContract) {
@@ -48,7 +60,7 @@ export const useAddressContractList = (
         };
 
         obtenerContracts();
-    }, [ deployedContract, userAddress, isConnected, isLoadingContext ]);
+    }, [ deployedContract, userAddress, isConnected, isLoadingContext, env ]);
 
     return { contracts, loading, error };
 };

@@ -1,16 +1,31 @@
 import { useWeb3Context } from "@hooks/useWeb3Context";
-import Button from "@components/common/Button";
-import PageWrapper from "@components/common/PageWrapper";
+import { useToast } from "@hooks/useToast";
+import LoginCard from "@components/auth/LoginCard";
+import { useState } from "react";
+import AuthLayout from "@components/layouts/AuthLayout";
 
 export default function Login() {
     const { connectWallet } = useWeb3Context();
+    const { addToast } = useToast();
+
+    const [ isConnecting, setIsConnecting ] = useState<boolean>(false);
+
+    const handleConnectWallet = async () => {
+        setIsConnecting(true);
+        try {
+            await connectWallet();
+        } catch (error) {
+            addToast((error as Error).message || "Conexión rechazada o fallida.", "error");
+            setIsConnecting(false);
+        }
+    }
 
     return (
-        <PageWrapper>
-            <div className="d-flex mx-auto rp-6 border rounded-lg shadow-md">
-                <h2 className="text-xl font-semibold mb-2">Se debe conectar con Metamask</h2>
-                <Button variant="primary" onClick={connectWallet} >Conectar a Metamask</Button>
-            </div>
-        </PageWrapper>
+        <AuthLayout>
+            <LoginCard
+                onConnect={handleConnectWallet}
+                isConnecting={isConnecting}
+            />
+        </AuthLayout>
     );
 }

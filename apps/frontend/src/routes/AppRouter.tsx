@@ -1,3 +1,4 @@
+import ContratoDetalle from "@pages/ContratoDetalle"
 import CrearContrato from "@pages/CrearContrato"
 import ErrorPage from "@pages/ErrorPage"
 import FirmarContrato from "@pages/FirmarContrato"
@@ -12,6 +13,7 @@ const AppRouter:React.FC = () => {
                 <Route path="/" element={<Home />} />
                 <Route path="/crear" element={<CrearContrato />} />
                 <Route path="/firmar" element={<FirmarContrato />} />
+                <Route path="/contrato/:id" element={<ContratoDetalle />} />
                 <Route path="*" element={<ErrorPage />} />
             </Routes>
     )
