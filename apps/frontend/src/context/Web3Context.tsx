@@ -17,6 +17,17 @@ export interface Web3ContextType {
     isLoading: boolean;
     deployedContract: ethers.Contract | null;
     connectWallet: () => Promise<void>;
+    getContractEvents: (eventName: string, options?: EventFilterOptions) => Promise<{
+        args: any;
+        blockNumber: number;
+        transactionHash: string;
+        eventName: string; // ✅ Cambiado de 'event' a 'eventName'
+    }[]>;
+}
+
+interface EventFilterOptions {
+    fromBlock?: number;
+    toBlock?: number;
 }
 
 const Web3Context = createContext<Web3ContextType | null>(null);
@@ -132,6 +143,35 @@ export const Web3ContextProvider = ({
         }
     }, [ signer, provider ]);
 
+    const getContractEvents = useCallback(
+        async (eventName: string, options: EventFilterOptions = {}) => {
+            if (!deployedContract) throw new Error("Contrato no inicializado");
+
+            const { fromBlock = 0, toBlock = "latest" } = options;
+
+            try {
+                // Genera filtro para el evento específico
+                const filter = deployedContract.filters[ eventName ] ? deployedContract.filters[ eventName ]() : null;
+                if (!filter) throw new Error(`Evento ${eventName} no existe en el contrato`);
+
+                // Trae los logs del evento
+                const logs = await deployedContract.queryFilter(filter, fromBlock, toBlock);
+
+                // ✅ CORRECCIÓN: En ethers v6, usar eventName del log
+                return logs.map(log => ({
+                    args: log.args,
+                    blockNumber: log.blockNumber,
+                    transactionHash: log.transactionHash,
+                    eventName: log.eventName || log.fragment?.name || eventName // ✅ Usar eventName
+                }));
+            } catch (err) {
+                console.error("Error obteniendo eventos ->", err);
+                throw err;
+            }
+        },
+        [ deployedContract ]
+    );
+
     /** 🔹 Memoriza el contexto (optimización) */
     const contextValue = useMemo(
         () => ({
@@ -142,8 +182,9 @@ export const Web3ContextProvider = ({
             isLoading,
             deployedContract,
             connectWallet,
+            getContractEvents
         }),
-        [ provider, signer, userAddress, isConnected, isLoading, deployedContract, connectWallet ]
+        [ provider, signer, userAddress, isConnected, isLoading, deployedContract, connectWallet, getContractEvents ]
     );
 
     return (

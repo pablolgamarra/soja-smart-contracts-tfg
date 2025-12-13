@@ -290,7 +290,7 @@ class ContratoService {
             console.log(`✅ TX Hash: ${receipt.transactionHash}`);
             console.log("📦 TX confirmada:", receipt.transactionHash);
 
-            alert("✅ Contrato creado con éxito. Enviando OTP al vendedor");
+            // alert("✅ Contrato creado con éxito. Enviando OTP al vendedor");
 
             return {
                 success: true, contractId: contractId.toString(), message: "Contrato creado con éxito."
