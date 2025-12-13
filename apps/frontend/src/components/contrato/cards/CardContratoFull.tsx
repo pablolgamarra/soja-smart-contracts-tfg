@@ -1,3 +1,4 @@
+import { mapEstadoContrato } from "@helpers/constantMapHelpers";
 import type { Contrato } from "@types/Contrato";
 import { CalendarSync, CalendarX2, FilePenLine } from "lucide-react";
 import React from "react";
@@ -15,25 +16,30 @@ const CardContratoFull: React.FC<ICardContratoProps> = ({ contrato }) => {
         return d.toLocaleDateString("es-AR", { year: "numeric", month: "short", day: "numeric" });
     };
 
-    const estadoColor = {
-        Borrador: "bg-gray-500",
-        Enviado: "bg-yellow-500",
-        Firmado: "bg-green-600",
-        Terminado: "bg-blue-600",
-        Cancelado: "bg-red-600",
-    }[ contrato.estado || "Borrador" ];
+    const estadoLabel = mapEstadoContrato(Number(contrato.estado));
+
+    const getEstadoClasses = (estado: string | undefined) => {
+        switch (estado) {
+            case "Enviado":
+                return "bg-yellow-500 text-gray-900";
+            case "Firmado":
+                return "bg-green-600 text-white";
+            default:
+                return "bg-gray-600 text-gray-200";
+        }
+    };
 
     return (
-        <div className="p-6 rounded-xl bg-gray-800 border border-gray-700 shadow-lg text-gray-100 w-full max-w-2xl">
+        <div className="p-6 rounded-xl bg-gray-800 border border-gray-700 shadow-lg text-gray-100 w-full">
             {/* HEADER */}
             <div className="flex justify-between items-center mb-4">
                 <h3 className="text-2xl font-semibold text-green-400">
                     Contrato #{contrato.id ?? "-"}
                 </h3>
                 <span
-                    className={`px-3 py-1 text-sm font-medium rounded-full text-white ${estadoColor}`}
+                    className={`px-3 py-1 text-sm font-medium rounded-full text-white ${getEstadoClasses(estadoLabel)}`}
                 >
-                    {contrato.estado ?? "Desconocido"}
+                    {estadoLabel ?? "Desconocido"}
                 </span>
 
                 {/* Botón para volver a generar codigo OTP */}
@@ -131,13 +137,13 @@ const CardContratoFull: React.FC<ICardContratoProps> = ({ contrato }) => {
                 {contrato.hashVersionContrato && (
                     <p><strong>Hash versión:</strong> <code>{contrato.hashVersionContrato}</code></p>
                 )}
-                {contrato.evidenceURI && (
+                {/* {contrato.evidenceURI && (
                     <p><strong>Evidencia:</strong>
                         <a href={contrato.evidenceURI} target="_blank" rel="noopener noreferrer" className="text-blue-400 underline ml-1">
                             Ver en IPFS
                         </a>
                     </p>
-                )}
+                )} */}
             </section>
         </div>
     );

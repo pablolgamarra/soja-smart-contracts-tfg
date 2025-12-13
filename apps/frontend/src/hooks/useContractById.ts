@@ -15,11 +15,11 @@ export const useContractById = (id: string | undefined) => {
         //Obtener contrato por id llamando a API
         const fetchContrato= async () => {
             try {
-                if (env === "development") {
-                    setContrato(contratosMock[id]);
-                    setLoading(false);
-                    return;
-                }
+                // if (env === "development") {
+                //     setContrato(contratosMock[id]);
+                //     setLoading(false);
+                //     return;
+                // }
 
                 const data = await ContratoService.obtenerPorId(id as string);
                 setContrato(data);

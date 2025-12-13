@@ -2,6 +2,8 @@ import getEnv from "@helpers/getEnv";
 import type { ethers } from "ethers";
 import { useEffect, useState } from "react";
 import { contratosMock } from "@mock/contratosMock";
+import parseContratoFromChain from "@helpers/parseContratoFromChain";
+import type { Contrato } from "@types/Contrato";
 
 export const useAddressContractList = (
     deployedContract: ethers.Contract | null,
@@ -17,14 +19,14 @@ export const useAddressContractList = (
 
     useEffect(() => {
         const obtenerContracts = async () => {
-            if (env === "development") {
-                console.log("🚀 useAddressContractList - deployedContract:", deployedContract);
-                console.log("🚀 useAddressContractList - userAddress:", userAddress);
-                console.log("🚀 useAddressContractList - isConnected:", isConnected);
-                setContracts(contratosMock);
-                setLoading(false);
-                return;
-            }
+            // if (env === "development") {
+            //     console.log("🚀 useAddressContractList - deployedContract:", deployedContract);
+            //     console.log("🚀 useAddressContractList - userAddress:", userAddress);
+            //     console.log("🚀 useAddressContractList - isConnected:", isConnected);
+            //     setContracts(contratosMock);
+            //     setLoading(false);
+            //     return;
+            // }
 
             if (isLoadingContext || !isConnected) return; // Espera hasta que el contexto esté listo
 
@@ -41,11 +43,13 @@ export const useAddressContractList = (
                     await deployedContract.getAddress()
                 );
 
-                const contractsData = await deployedContract.obtenerContratos();
+                const rawContracts = await deployedContract.obtenerContratos();
 
-                const filtrados = contractsData.filter(
-                    (c: any) =>
-                        c.partes.comprador?.toLowerCase() ===
+                const parsedContracts = rawContracts.map(parseContratoFromChain);
+
+                const filtrados = parsedContracts.filter(
+                    (c: Partial<Contrato>) =>
+                        c.billeteraComprador?.toLowerCase() ===
                         userAddress?.toLowerCase()
                 );
 

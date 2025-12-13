@@ -25,15 +25,15 @@ export interface Contrato {
 
     // CONDICIONES DE ENTREGA
     empaque: string;
-    fechaEntregaInicio: string;
-    fechaEntregaFin: string;
+    fechaEntregaInicio: Date;
+    fechaEntregaFin: Date;
 
     // CONDICIONES DE PRECIO
     tipoContrato: TipoContrato;
     precioPorToneladaMetrica: number;
     precioCBOTBushel: number;
     ajusteCBOT: number; // al par=0 / más=1 / menos=-1
-    fechaPrecioChicago: string;
+    fechaPrecioChicago: Date;
     incoterm: string;
     precioFinal: number;
 
@@ -44,7 +44,7 @@ export interface Contrato {
     // CONDICIONES CONTRATO
     hashVersionContrato: string;
     evidenceURI:string;
-    fechaCelebracionContrato:number;
+    fechaCelebracionContrato: Date;
     estado: EstadoContrato;
     clausulasAdicionales: Array<{clausula: string, CID: string}>
 }

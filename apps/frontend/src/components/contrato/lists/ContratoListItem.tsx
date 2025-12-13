@@ -2,6 +2,7 @@ import React from 'react';
 import { SquareArrowOutUpRight, CalendarSync } from "lucide-react";
 import CardContratoCompact from "@components/contrato/cards/CardContratoCompact"; // Asegúrate de que la ruta sea correcta
 import type { Contrato } from '@types/Contrato';
+import { useNavigate } from 'react-router-dom';
 
 interface ContratoListItemProps {
     contrato: Contrato;
@@ -20,7 +21,9 @@ const ContratoListItem: React.FC<ContratoListItemProps> = React.memo(({
     onNavigate,
     onResendOTP
 }) => {
+    console.log(contrato)
     const estadoLabel = contrato.estado?.toString();
+    const navigate = useNavigate();
 
     const getEstadoClasses = (estado: string | undefined) => {
         switch (estado) {
@@ -69,11 +72,11 @@ const ContratoListItem: React.FC<ContratoListItemProps> = React.memo(({
 
                         {/* Botón Ver Detalles */}
                         <button
-                            onClick={(e) => { e.stopPropagation(); onNavigate(contrato.id.toString()); }}
+                            // onClick={(e) => { e.stopPropagation(); onNavigate(contrato.id.toString()); }}
                             className="text-gray-400 hover:text-blue-400 transition-colors"
                             title="Ver detalles completos"
                         >
-                            <SquareArrowOutUpRight size={20} />
+                            <SquareArrowOutUpRight onClick={() => { navigate(`/contrato/${index + 1}`)}}/>
                         </button>
                     </div>
                 </div>

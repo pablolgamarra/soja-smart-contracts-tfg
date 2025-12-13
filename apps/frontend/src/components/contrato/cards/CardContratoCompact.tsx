@@ -11,14 +11,15 @@ interface ICardContratoCompactProps {
 const CardContratoCompact: React.FC<ICardContratoCompactProps> = ({ contrato, onSelect }) => {
     if (!contrato) return null;
 
-    const navigate = useNavigate();
+    // const navigate = useNavigate();
 
     // TODO: mover a helper
     const formatDate = (date?: string | number) => {
         if (!date) return "-";
         const d = new Date(date);
-        return d.toLocaleDateString("es-PY", { year: "numeric", month: "short", day: "numeric" });
+        return d.toLocaleDateString("es-AR", { year: "numeric", month: "short", day: "numeric" });
     };
+
 
     const estadoStyle = {
         Borrador: "bg-gray-600 text-gray-100",
@@ -39,42 +40,42 @@ const CardContratoCompact: React.FC<ICardContratoCompactProps> = ({ contrato, on
             {/* Identificación */}
             <div className="flex flex-col w-1/3">
                 <span className="text-green-400 font-bold text-lg">
-                    #{contrato.id ?? "-"} • {contrato.tipoContrato ?? "Contrato"}
+                    Contrato de {contrato.tipoContrato ?? "Contrato"}
                 </span>
                 <span className="text-sm text-gray-300 mt-1">
-                    {contrato.nombreComprador} → {contrato.nombreVendedor}
+                    {contrato.nombreVendedor} → {contrato.nombreComprador}
                 </span>
             </div>
 
             {/* Fechas */}
             <div className="text-sm w-1/3 text-center">
                 <p className="font-medium text-gray-200">
-                    <span className="text-gray-400">Entrega:</span>
+                    <span className="text-gray-400">Periodo Entrega:</span>
                     {" "}
-                    {formatDate(contrato.fechaEntregaInicio)} – {formatDate(contrato.fechaEntregaFin)}
+                    {formatDate(contrato.fechaEntregaInicio?.toString())} – {formatDate(contrato.fechaEntregaFin?.toString())}
                 </p>
                 <p className="text-xs text-gray-500 mt-1">
-                    Celebrado: {formatDate(contrato.fechaCelebracionContrato)}
+                    Celebrado: {formatDate(contrato.fechaCelebracionContrato?.toString())}
                 </p>
             </div>
 
             {/* Precio + Estado */}
-            <div className="flex row text-right w-1/3">
+            <div className="flex row text-right">
                 <p className="text-xl font-extrabold text-green-400">
                     {contrato.precioFinal ? `${contrato.precioFinal} USD` : "-"}
                 </p>
 
-                <span
+                {/* <span
                     className={`inline-block mt-2 px-3 py-1 rounded-full text-xs font-bold ${estadoStyle}`}
                 >
                     {contrato.estado}
-                </span>
+                </span> */}
 
-                <span
+                {/* <span
                     className={`inline-block mt-2 px-3 py-1 rounded-full text-xs font-bold`}
                 >
                     <SquareArrowOutUpRight onClick={()=>{navigate(`/contrato/${contrato.id}`)}}/>
-                </span>
+                </span> */}
             </div>
         </div>
     );
