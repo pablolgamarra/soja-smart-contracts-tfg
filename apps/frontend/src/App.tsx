@@ -5,26 +5,19 @@ import Login from "@pages/Login";
 import AppRouter from "@routes/AppRouter";
 
 //Muestra la pagina de login si no se detecta conexion con la wallet
-const App:React.FC = () => {
+const App: React.FC = () => {
     const web3Context = useWeb3Context();
 
-    if(!web3Context) {
-        return <ErrorComponent message="Web3Context no disponible" /> 
+    if (!web3Context) {
+        return <ErrorComponent message="Web3Context no disponible" />;
     }
-    
+
     if (web3Context.isLoading) {
-        return (
-            <LoadingWeb3 />
-        );
+        return <LoadingWeb3 />;
     }
 
-    if(!web3Context.isConnected) {
-        return (
-            <Login />
-        );
-    }
+    return <AppRouter isConnected={web3Context.isConnected} />;
+};
 
-    return <AppRouter/>
-}
 
 export default App;
