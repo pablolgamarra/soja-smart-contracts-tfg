@@ -78,10 +78,7 @@ export class BlockchainConnection {
             
             estado: Number(contratoBlockchain.estado) as EstadoContrato,
 
-            clausulasAdicionales: contratoBlockchain.clausulasAdicionales.map(cl => ({
-                textoClausula: cl.textoClausula,
-                CID: cl.CID
-            })),
+            clausulasAdicionales: [],
         };
     }
 
@@ -92,7 +89,7 @@ export class BlockchainConnection {
                 throw Error(`El parametro ID es obligatorio.`)
             }
 
-            const contrato = BlockchainConnection.parseBlockchainContractToObject(this.contratoView.contratos(idContrato));
+            const contrato = BlockchainConnection.parseBlockchainContractToObject(await this.contratoView.contratos(idContrato));
 
             // Insertar id del contrato
             return {

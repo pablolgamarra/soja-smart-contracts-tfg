@@ -101,28 +101,28 @@ class ContratosController{
                 return res.status(400).json({ error: 'Datos incompletos' });
             }
     
-            // Buscar OTP en base de datos
-            const checkOtp = await otpService.verificarOTP(contractId, sellerAddress);
+            // // Buscar OTP en base de datos
+            // const checkOtp = await otpService.verificarOTP({ id: contractId, billeteraVendedor: sellerAddress }, otp);
     
-            if (checkOtp.message === 'OTP no encontrado') {
-                return res.status(404).json({ success: false, message: "OTP no encontrado" });
-            }
+            // if (checkOtp.message === 'OTP no encontrado') {
+            //     return res.status(404).json({ success: false, message: "OTP no encontrado" });
+            // }
 
-            if (checkOtp.message === 'OTP incorrecto') {
-                return res.status(401).json({ success: false, message: "OTP incorrecto" });
-            }
+            // if (checkOtp.message === 'OTP incorrecto') {
+            //     return res.status(401).json({ success: false, message: "OTP incorrecto" });
+            // }
 
-            if (checkOtp.message === 'OTP expirado') {
-                return res.status(410).json({ success: false, message: "OTP expirado" });
-            }
+            // if (checkOtp.message === 'OTP expirado') {
+            //     return res.status(410).json({ success: false, message: "OTP expirado" });
+            // }
 
-            if (checkOtp.message === 'OTP ya utilizado') {
-                return res.status(409).json({ success: false, message: "OTP ya utilizado" });
-            }
+            // if (checkOtp.message === 'OTP ya utilizado') {
+            //     return res.status(409).json({ success: false, message: "OTP ya utilizado" });
+            // }
 
-            if (!checkOtp.valid) {
-                return res.status(400).json({ success: false, message: "Error verificando OTP" });
-            }
+            // if (!checkOtp.valid) {
+            //     return res.status(400).json({ success: false, message: "Error verificando OTP" });
+            // }
     
             // Ejecutar la transacción de firma meta-tx
             const tx = await blockchainConnection.firmarContratoMetaTx({id:contractId, billeteraVendedor: sellerAddress});

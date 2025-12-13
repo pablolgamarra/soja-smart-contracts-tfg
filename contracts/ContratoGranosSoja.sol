@@ -117,7 +117,7 @@ contract ContratoGranosSoja is ERC721, Ownable, ERC2771Context {
         contadorContratos++;
         uint id = contadorContratos;
         datos.partes.comprador = _msgSender();
-        datos.estado = Estado.Borrador;
+        datos.estado = Estado.Enviado;
         contratos[id] = datos;
         _mint(_msgSender(), id);
         emit ContratoCreado(id, _msgSender(), datos.partes.vendedor);

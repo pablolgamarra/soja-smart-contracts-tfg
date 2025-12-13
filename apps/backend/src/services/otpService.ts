@@ -22,6 +22,7 @@ class OTPService {
 
     // Verificar OTP
     public async verificarOTP(props: Pick<ContratoOnChain, 'id' | 'billeteraVendedor'>, otp: string): Promise<{ valid: boolean, message?: string }> {
+        console.log('Verificando OTP para contrato:', props.id, 'y vendedor:', props.billeteraVendedor);
         // Buscar OTP registrado en la base de datos
         const otpRecord = await getOtpByContractAndSeller(props.id.toString(), props.billeteraVendedor);
 

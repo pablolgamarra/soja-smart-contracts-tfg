@@ -92,7 +92,7 @@ const TEST_STATE: IFormContratoRegisterState = {
     evidenceURI: 'http://localhost:1234/evidencia',
     fechaCelebracionContrato: Date.now(),
     estado: EstadoContrato.Borrador,
-    clausulasAdicionales: [ { clausula: '', CID: '' } ]
+    // clausulasAdicionales: [ { clausula: '', CID: '' } ]
 }
 
 const env = getEnv("ENV");
